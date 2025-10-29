@@ -6,3 +6,4 @@ itsdangerous==2.1.2
 Click==8.1.7
 requests==2.31.0
 gunicorn
+httpx==0.27.0
