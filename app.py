@@ -47,6 +47,7 @@ def send_sms(phone, message):
     except Exception as e:
         print(f"❌ SMS Error: {str(e)}")
         return {'success': False, 'error': str(e)}
+
 def check_and_send_automatic_reminders():
     """Check for due returns and send automatic reminders 2 days before end date"""
     try:
@@ -195,11 +196,12 @@ def init_db():
                  service_type TEXT NOT NULL,
                  password TEXT NOT NULL,
                  description TEXT,
+                 business_document TEXT,  
+                 document_verified TEXT DEFAULT 'pending',  
                  registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                  status TEXT DEFAULT 'pending')''')
     
-    # ✅ SIMPLIFIED: Rent requests table with only essential fields
-     # Equipment table
+    
     c_vendors.execute('''
       
         CREATE TABLE IF NOT EXISTS equipment (
@@ -271,20 +273,77 @@ def init_db():
     # Add this to your init_db() function in vendors.db
     c_vendors.execute('''
     CREATE TABLE IF NOT EXISTS reviews (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user_id INTEGER NOT NULL,
-        user_name TEXT NOT NULL,
-        equipment_id INTEGER NOT NULL,
-        equipment_name TEXT NOT NULL,
-        vendor_email TEXT NOT NULL,
-        rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
-        title TEXT NOT NULL,
-        comment TEXT NOT NULL,
-        booking_id INTEGER,
-        created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        status TEXT DEFAULT 'active'
-    )
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    user_name TEXT NOT NULL,
+    equipment_id INTEGER NOT NULL,
+    equipment_name TEXT NOT NULL,
+    vendor_email TEXT NOT NULL,
+    vendor_name TEXT NOT NULL,
+    order_type TEXT NOT NULL, -- 'booking' or 'rent'
+    order_id INTEGER NOT NULL, -- booking_id or rent_request_id
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    title TEXT NOT NULL,
+    comment TEXT NOT NULL,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'active'
+)
 ''')
+    
+    c_vendors.execute('''
+        CREATE TABLE IF NOT EXISTS cancellation_requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            
+            -- Order Identification
+            order_id INTEGER NOT NULL,
+            order_type TEXT NOT NULL, -- 'booking' or 'rent'
+            
+            -- User Information (Complete Details)
+            user_id INTEGER NOT NULL,
+            user_name TEXT NOT NULL,
+            user_email TEXT NOT NULL,
+            user_phone TEXT NOT NULL,
+            user_location TEXT,
+            
+            -- Vendor Information (Complete Details)
+            vendor_email TEXT NOT NULL,
+            vendor_name TEXT NOT NULL,
+            vendor_business_name TEXT,
+            vendor_contact_phone TEXT,
+            
+            -- Equipment Information (Complete Details)
+            equipment_id INTEGER NOT NULL,
+            equipment_name TEXT NOT NULL,
+            equipment_category TEXT,
+            equipment_description TEXT,
+            equipment_price REAL,
+            equipment_price_unit TEXT,
+            equipment_location TEXT,
+            equipment_image_url TEXT,
+            
+            -- Order Information (Complete Details)
+            total_amount REAL NOT NULL,
+            start_date TEXT,
+            end_date TEXT,
+            duration INTEGER,
+            order_notes TEXT,
+            purpose TEXT, -- For rent requests
+            order_status_before_cancel TEXT NOT NULL,
+            order_created_date TEXT,
+            
+            -- Cancellation Details
+            cancellation_reason TEXT NOT NULL,
+            status TEXT DEFAULT 'pending', -- 'pending', 'approved', 'rejected'
+            requested_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            processed_date TIMESTAMP,
+            processed_by TEXT, -- 'vendor' or 'system'
+            vendor_response_notes TEXT,
+            
+            -- Additional Metadata
+            days_until_start INTEGER,
+            is_urgent BOOLEAN DEFAULT 0
+        )
+    ''')
     conn_vendors.commit()
     conn_vendors.close()
 
@@ -315,7 +374,7 @@ def init_db():
     
     conn_agri.commit()
     conn_agri.close()
-
+    add_missing_columns()
 # ================= File Upload Config ==================
 UPLOAD_FOLDER = 'static/uploads/equipment'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
@@ -336,6 +395,85 @@ def save_uploaded_image(file):
         file.save(filepath)
         return f"/static/uploads/equipment/{unique_filename}"  # This should be the return value
     return None
+def create_cancellation_requests_table():
+    """Create the cancellation_requests table with all required columns"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Drop the table if it exists to recreate it with proper schema
+        cursor.execute("DROP TABLE IF EXISTS cancellation_requests")
+        
+        # Create the table with complete schema
+        cursor.execute('''
+            CREATE TABLE cancellation_requests (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                
+                -- Order Identification
+                order_id INTEGER NOT NULL,
+                order_type TEXT NOT NULL, -- 'booking' or 'rent'
+                
+                -- User Information (Complete Details)
+                user_id INTEGER NOT NULL,
+                user_name TEXT NOT NULL,
+                user_email TEXT NOT NULL,
+                user_phone TEXT NOT NULL,
+                user_location TEXT,
+                
+                -- Vendor Information (Complete Details)
+                vendor_email TEXT NOT NULL,
+                vendor_name TEXT NOT NULL,
+                vendor_business_name TEXT,
+                vendor_contact_phone TEXT,
+                
+                -- Equipment Information (Complete Details)
+                equipment_id INTEGER NOT NULL,
+                equipment_name TEXT NOT NULL,
+                equipment_category TEXT,
+                equipment_description TEXT,
+                equipment_price REAL,
+                equipment_price_unit TEXT,
+                equipment_location TEXT,
+                equipment_image_url TEXT,
+                
+                -- Order Information (Complete Details)
+                total_amount REAL NOT NULL,
+                start_date TEXT,
+                end_date TEXT,
+                duration INTEGER,
+                order_notes TEXT,
+                purpose TEXT, -- For rent requests
+                order_status_before_cancel TEXT NOT NULL,
+                order_created_date TEXT,
+                
+                -- Cancellation Details
+                cancellation_reason TEXT NOT NULL,
+                status TEXT DEFAULT 'pending', -- 'pending', 'approved', 'rejected'
+                requested_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                processed_date TIMESTAMP,
+                processed_by TEXT, -- 'vendor' or 'system'
+                vendor_response_notes TEXT,
+                
+                -- Additional Metadata
+                days_until_start INTEGER,
+                is_urgent BOOLEAN DEFAULT 0
+            )
+        ''')
+        
+        conn.commit()
+        conn.close()
+        print("✅ cancellation_requests table created successfully with all columns")
+        
+    except Exception as e:
+        print(f"❌ Error creating cancellation_requests table: {str(e)}")
+@app.route('/recreate-cancellation-table')
+def recreate_cancellation_table():
+    """Recreate the cancellation_requests table with proper schema"""
+    try:
+        create_cancellation_requests_table()
+        return "✅ cancellation_requests table recreated successfully!"
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
 @app.route('/static/uploads/equipment/<filename>')
 def serve_equipment_image(filename):
     return send_from_directory('static/uploads/equipment', filename)
@@ -348,14 +486,1468 @@ def serve_equipment_image_to_users(filename):
 @app.route('/')
 def index():
     return redirect(url_for('dashboard'))
-
+@app.route('/fix-vendor-table')
+def fix_vendor_table():
+    """Add missing columns to vendors table"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check existing columns
+        cursor.execute("PRAGMA table_info(vendors)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        result = "<h3>Current columns:</h3><ul>"
+        for col in columns:
+            result += f"<li>{col}</li>"
+        result += "</ul>"
+        
+        # Try to add missing columns
+        try:
+            cursor.execute("ALTER TABLE vendors ADD COLUMN business_document TEXT")
+            result += "<p>✅ Added business_document column</p>"
+        except:
+            result += "<p>⚠️ business_document column already exists</p>"
+            
+        try:
+            cursor.execute("ALTER TABLE vendors ADD COLUMN document_verified TEXT DEFAULT 'pending'")
+            result += "<p>✅ Added document_verified column</p>"
+        except:
+            result += "<p>⚠️ document_verified column already exists</p>"
+        
+        conn.commit()
+        conn.close()
+        
+        result += "<p><a href='/vendorreg'>Go to vendor registration</a></p>"
+        return result
+        
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
 @app.route('/dashboard')
 def dashboard():
+    lang = request.args.get('lang', 'en')
+    if lang == 'kn':
+        # Set session for Kannada
+        session['language'] = 'kn'
     return render_template('dashboard.html')
-
+@app.context_processor
+def inject_lang():
+    return {'current_lang': session.get('language', 'en')}
 @app.route('/index.html')
 def index_page():
     return render_template('index.html')
+@app.route('/api/user/orders')
+def get_user_orders():
+    """Get all orders (bookings and rent requests) for the logged-in user"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        user_id = session['user_id']
+        print(f"🔄 Fetching orders for user ID: {user_id}")
+        
+        # Connect to vendors database
+        conn_vendors = sqlite3.connect('vendors.db')
+        conn_vendors.row_factory = sqlite3.Row
+        cursor_vendors = conn_vendors.cursor()
+        
+        # FIXED: Get bookings - use vendor's contact_name instead of business_name
+        cursor_vendors.execute("""
+            SELECT 
+                b.id, 
+                'booking' as order_type,
+                b.equipment_name,
+                v.contact_name as vendor_name,  -- CHANGED: Use vendor's contact_name
+                b.vendor_email,
+                b.start_date,
+                b.end_date,
+                b.duration,
+                b.total_amount,
+                b.status,
+                b.created_date,
+                b.cancellation_requested_date,
+                b.cancellation_reason,
+                b.status_before_cancel,
+                b.cancelled_date,
+                e.image_url as equipment_image,
+                b.equipment_id,
+                b.user_name,
+                b.user_email,
+                b.user_phone,
+                v.business_name,
+                v.contact_name as vendor_contact
+            FROM bookings b
+            LEFT JOIN equipment e ON b.equipment_id = e.id
+            LEFT JOIN vendors v ON b.vendor_email = v.email
+            WHERE b.user_id = ?
+            ORDER BY b.created_date DESC
+        """, (user_id,))
+        
+        bookings = cursor_vendors.fetchall()
+        print(f"✅ Found {len(bookings)} bookings")
+        
+        # FIXED: Get rent requests - use vendor's contact_name instead of business_name
+        cursor_vendors.execute("""
+            SELECT 
+                rr.id,
+                'rent' as order_type,
+                rr.equipment_name,
+                v.contact_name as vendor_name,  -- CHANGED: Use vendor's contact_name
+                rr.vendor_email,
+                rr.start_date,
+                rr.end_date,
+                rr.duration,
+                rr.total_amount,
+                rr.status,
+                rr.submitted_date as created_date,
+                rr.cancellation_requested_date,
+                rr.cancellation_reason,
+                rr.status_before_cancel,
+                rr.cancelled_date,
+                e.image_url as equipment_image,
+                rr.equipment_id,
+                rr.user_name,
+                rr.user_email,
+                rr.user_phone,
+                v.business_name,
+                v.contact_name as vendor_contact
+            FROM rent_requests rr
+            JOIN vendors v ON rr.vendor_email = v.email
+            LEFT JOIN equipment e ON rr.equipment_id = e.id
+            WHERE rr.user_id = ?
+            ORDER BY rr.submitted_date DESC
+        """, (user_id,))
+        
+        rent_requests = cursor_vendors.fetchall()
+        print(f"✅ Found {len(rent_requests)} rent requests")
+        
+        conn_vendors.close()
+        
+        # Debug: Check what vendor names we're getting
+        print("🔍 DEBUG - Vendor contact names:")
+        for booking in bookings:
+            print(f"  Booking {booking['id']}: vendor_name = '{booking['vendor_name']}'")
+        
+        for rent in rent_requests:
+            print(f"  Rent {rent['id']}: vendor_name = '{rent['vendor_name']}'")
+        
+        # Combine and format orders
+        orders_list = []
+        
+        # Process bookings
+        for booking in bookings:
+            # Use contact_name as vendor name
+            vendor_name = booking['vendor_name'] or booking['vendor_contact'] or 'Vendor'
+            
+            orders_list.append({
+                'id': booking['id'],
+                'order_type': 'booking',
+                'equipment_name': booking['equipment_name'],
+                'vendor_name': vendor_name,  # This is now the contact person's name
+                'vendor_email': booking['vendor_email'],
+                'vendor_contact': booking['vendor_contact'],
+                'business_name': booking['business_name'],  # Keep business name separate
+                'start_date': booking['start_date'],
+                'end_date': booking['end_date'],
+                'duration': booking['duration'],
+                'total_amount': float(booking['total_amount']),
+                'status': booking['status'],
+                'created_date': booking['created_date'],
+                'cancellation_requested_date': booking['cancellation_requested_date'],
+                'cancellation_reason': booking['cancellation_reason'],
+                'status_before_cancel': booking['status_before_cancel'],
+                'cancelled_date': booking['cancelled_date'],
+                'equipment_image': booking['equipment_image'],
+                'equipment_id': booking['equipment_id'],
+                'user_name': booking['user_name'],
+                'user_email': booking['user_email'],
+                'user_phone': booking['user_phone'],
+                'can_cancel': booking['status'] in ['pending', 'confirmed'] and booking['status'] != 'cancellation_requested',
+                'is_cancellation_requested': booking['status'] == 'cancellation_requested'
+            })
+        
+        # Process rent requests
+        for rent in rent_requests:
+            vendor_name = rent['vendor_name'] or rent['vendor_contact'] or 'Vendor'
+            
+            orders_list.append({
+                'id': rent['id'],
+                'order_type': 'rent',
+                'equipment_name': rent['equipment_name'],
+                'vendor_name': vendor_name,  # This is now the contact person's name
+                'vendor_email': rent['vendor_email'],
+                'vendor_contact': rent['vendor_contact'],
+                'business_name': rent['business_name'],  # Keep business name separate
+                'start_date': rent['start_date'],
+                'end_date': rent['end_date'],
+                'duration': rent['duration'],
+                'total_amount': float(rent['total_amount']),
+                'status': rent['status'],
+                'created_date': rent['created_date'],
+                'cancellation_requested_date': rent['cancellation_requested_date'],
+                'cancellation_reason': rent['cancellation_reason'],
+                'status_before_cancel': rent['status_before_cancel'],
+                'cancelled_date': rent['cancelled_date'],
+                'equipment_image': rent['equipment_image'],
+                'equipment_id': rent['equipment_id'],
+                'user_name': rent['user_name'],
+                'user_email': rent['user_email'],
+                'user_phone': rent['user_phone'],
+                'can_cancel': rent['status'] in ['pending', 'approved'] and rent['status'] != 'cancellation_requested',
+                'is_cancellation_requested': rent['status'] == 'cancellation_requested'
+            })
+        
+        # Sort by creation date (newest first)
+        orders_list.sort(key=lambda x: x['created_date'], reverse=True)
+        
+        print(f"📦 Total orders to return: {len(orders_list)}")
+        return jsonify(orders_list)
+        
+    except Exception as e:
+        print(f"❌ Error fetching user orders: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/admin/broadcast-history')
+def api_admin_broadcast_history():
+    """Get broadcast message history"""
+    if 'admin_id' not in session or session.get('user_type') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        # For now, return mock data. You can add a proper database table later
+        # Create a broadcasts table in your database to store history
+        return jsonify([
+            {
+                'id': 1,
+                'title': 'New Equipment Available',
+                'type': 'new_equipment',
+                'recipients_count': 150,
+                'status': 'sent',
+                'sent_date': datetime.now().isoformat()
+            },
+            {
+                'id': 2,
+                'title': 'System Maintenance Notice',
+                'type': 'maintenance',
+                'recipients_count': 150,
+                'status': 'sent',
+                'sent_date': (datetime.now() - timedelta(days=3)).isoformat()
+            }
+        ])
+    except Exception as e:
+        print(f"Error fetching broadcast history: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/broadcast', methods=['POST'])
+def api_admin_send_broadcast():
+    """Send broadcast message to all farmers"""
+    if 'admin_id' not in session or session.get('user_type') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.get_json()
+        title = data.get('title', '').strip()
+        content = data.get('content', '').strip()
+        message_type = data.get('type', 'announcement')
+        
+        if not title or not content:
+            return jsonify({'error': 'Title and content are required'}), 400
+        
+        # Get all approved farmers' phone numbers
+        conn = sqlite3.connect('agriculture.db')
+        cursor = conn.cursor()
+        cursor.execute("SELECT full_name, phone FROM farmers WHERE status = 'approved'")
+        farmers = cursor.fetchall()
+        conn.close()
+        
+        if not farmers:
+            return jsonify({'error': 'No approved farmers found'}), 400
+        
+        success_count = 0
+        failed_count = 0
+        failed_numbers = []
+        
+        # Format the message
+        full_message = f"📢 *{title}*\n\n{content}\n\n- Lend A Hand"
+        
+        # Send SMS to each farmer
+        for farmer in farmers:
+            farmer_name, farmer_phone = farmer
+            
+            try:
+                # Clean phone number
+                phone_clean = ''.join(filter(str.isdigit, str(farmer_phone)))
+                
+                if phone_clean and len(phone_clean) >= 10:
+                    sms_result = send_sms(phone_clean, full_message)
+                    
+                    if sms_result.get('success'):
+                        success_count += 1
+                        print(f"✅ Broadcast sent to {farmer_name} ({phone_clean})")
+                    else:
+                        failed_count += 1
+                        failed_numbers.append(f"{farmer_name} - {phone_clean}")
+                else:
+                    failed_count += 1
+                    failed_numbers.append(f"{farmer_name} - Invalid phone")
+                    
+            except Exception as e:
+                failed_count += 1
+                failed_numbers.append(f"{farmer_name} - Error: {str(e)}")
+        
+        # Create a response message
+        if success_count > 0:
+            message = f"Broadcast sent successfully to {success_count} farmers"
+            if failed_count > 0:
+                message += f". Failed for {failed_count} farmers"
+        else:
+            return jsonify({
+                'error': f'Failed to send broadcast to any farmers. Check farmer phone numbers.'
+            }), 400
+        
+        # TODO: Save to database history table
+        # You should create a broadcasts table with columns:
+        # id, title, content, type, recipients_count, success_count, failed_count, sent_by, sent_date
+        
+        return jsonify({
+            'success': True,
+            'message': message,
+            'stats': {
+                'total': len(farmers),
+                'success': success_count,
+                'failed': failed_count
+            }
+        })
+        
+    except Exception as e:
+        print(f"Error sending broadcast: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/admin/farmers-count')
+def api_admin_farmers_count():
+    """Get count of approved farmers for broadcast"""
+    if 'admin_id' not in session or session.get('user_type') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        conn = sqlite3.connect('agriculture.db')
+        cursor = conn.cursor()
+        
+        # Get count of approved farmers
+        cursor.execute("SELECT COUNT(*) FROM farmers WHERE status = 'approved'")
+        count = cursor.fetchone()[0]
+        
+        conn.close()
+        
+        return jsonify({
+            'total_farmers': count,
+            'success': True
+        })
+        
+    except Exception as e:
+        print(f"Error fetching farmers count: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/user/order/request-cancel', methods=['POST'])
+def request_order_cancellation():
+    """Request cancellation for an order - STORES ONLY ESSENTIAL DATA"""
+    print("📥 Received cancellation request")
+    
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        data = request.get_json()
+        print("📦 Request data:", data)
+        
+        if not data:
+            return jsonify({'error': 'No JSON data received'}), 400
+            
+        order_id = data.get('order_id')
+        order_type = data.get('order_type')  # 'booking' or 'rent'
+        cancellation_reason = data.get('cancellation_reason', '')
+        
+        print(f"🔍 Processing: {order_type} #{order_id}, reason: {cancellation_reason}")
+        
+        if not order_id or not order_type:
+            return jsonify({'error': 'Order ID and type are required'}), 400
+        
+        user_id = session['user_id']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Get ONLY the essential data that shows in order details
+        if order_type == 'booking':
+            cursor.execute("""
+                SELECT 
+                    b.equipment_id,
+                    b.equipment_name,
+                    b.status,
+                    b.total_amount,
+                    b.created_date,
+                    b.start_date,
+                    b.end_date,
+                    b.duration,
+                    b.vendor_email,
+                    b.user_name,
+                    b.user_email,
+                    b.user_phone,
+                    v.contact_name as vendor_name
+                FROM bookings b
+                JOIN vendors v ON b.vendor_email = v.email
+                WHERE b.id = ? AND b.user_id = ?
+            """, (order_id, user_id))
+        else:  # rent
+            cursor.execute("""
+                SELECT 
+                    rr.equipment_id,
+                    rr.equipment_name,
+                    rr.status,
+                    rr.total_amount,
+                    rr.submitted_date as created_date,
+                    rr.start_date,
+                    rr.end_date,
+                    rr.duration,
+                    rr.vendor_email,
+                    rr.user_name,
+                    rr.user_email,
+                    rr.user_phone,
+                    v.contact_name as vendor_name
+                FROM rent_requests rr
+                JOIN vendors v ON rr.vendor_email = v.email
+                WHERE rr.id = ? AND rr.user_id = ?
+            """, (order_id, user_id))
+        
+        order = cursor.fetchone()
+        
+        if not order:
+            conn.close()
+            return jsonify({'error': 'Order not found or access denied'}), 404
+        
+        # Extract ONLY essential data
+        equipment_id, equipment_name, status, total_amount, created_date, start_date, end_date, duration, vendor_email, user_name, user_email, user_phone, vendor_name = order
+        
+        print("📋 Extracted essential order details:")
+        print(f"   - Equipment: {equipment_name}")
+        print(f"   - Vendor: {vendor_name} ({vendor_email})")
+        print(f"   - User: {user_name} ({user_email}, {user_phone})")
+        print(f"   - Amount: ₹{total_amount}")
+        print(f"   - Dates: {start_date} to {end_date}")
+        print(f"   - Duration: {duration} days")
+        
+        # Update order status to cancellation_requested
+        if order_type == 'booking':
+            cursor.execute("""
+                UPDATE bookings 
+                SET status = 'cancellation_requested',
+                    cancellation_requested_date = CURRENT_TIMESTAMP,
+                    cancellation_reason = ?,
+                    status_before_cancel = ?
+                WHERE id = ? AND user_id = ?
+            """, (cancellation_reason, status, order_id, user_id))
+        else:  # rent
+            cursor.execute("""
+                UPDATE rent_requests 
+                SET status = 'cancellation_requested',
+                    cancellation_requested_date = CURRENT_TIMESTAMP,
+                    cancellation_reason = ?,
+                    status_before_cancel = ?
+                WHERE id = ? AND user_id = ?
+            """, (cancellation_reason, status, order_id, user_id))
+        
+        # Store ONLY essential data - remove order_notes, purpose, user_location
+        cursor.execute("""
+            INSERT INTO cancellation_requests 
+            (order_id, order_type, user_id, user_name, user_email, user_phone,
+             vendor_email, vendor_name, equipment_id, equipment_name, total_amount, 
+             start_date, end_date, duration, order_status_before_cancel, 
+             order_created_date, cancellation_reason, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
+        """, (
+            order_id, 
+            order_type, 
+            user_id, 
+            user_name, 
+            user_email, 
+            user_phone,
+            vendor_email, 
+            vendor_name,
+            equipment_id,
+            equipment_name,
+            total_amount, 
+            start_date,
+            end_date, 
+            duration,
+            status, 
+            created_date,
+            cancellation_reason
+        ))
+        
+        cancellation_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        
+        print(f"✅ Cancellation request #{cancellation_id} stored successfully")
+        
+        return jsonify({
+            'success': True,
+            'message': 'Cancellation request submitted successfully! Waiting for vendor approval.',
+            'cancellation_id': cancellation_id
+        })
+        
+    except Exception as e:
+        print(f"❌ Error in cancellation request: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
+
+@app.route('/cleanup-cancellation-table')
+def cleanup_cancellation_table():
+    """Remove unnecessary columns from cancellation_requests table"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Create a new table without unnecessary columns
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS cancellation_requests_clean (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                order_id INTEGER NOT NULL,
+                order_type TEXT NOT NULL,
+                user_id INTEGER NOT NULL,
+                user_name TEXT NOT NULL,
+                user_email TEXT NOT NULL,
+                user_phone TEXT NOT NULL,
+                vendor_email TEXT NOT NULL,
+                vendor_name TEXT NOT NULL,
+                equipment_id INTEGER NOT NULL,
+                equipment_name TEXT NOT NULL,
+                total_amount REAL NOT NULL,
+                start_date TEXT,
+                end_date TEXT,
+                duration INTEGER,
+                order_status_before_cancel TEXT NOT NULL,
+                order_created_date TEXT,
+                cancellation_reason TEXT NOT NULL,
+                status TEXT DEFAULT 'pending',
+                requested_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                processed_date TIMESTAMP,
+                processed_by TEXT
+            )
+        """)
+        
+        # Copy data from old table to new table
+        cursor.execute("""
+            INSERT INTO cancellation_requests_clean 
+            (order_id, order_type, user_id, user_name, user_email, user_phone,
+             vendor_email, vendor_name, equipment_id, equipment_name, total_amount,
+             start_date, end_date, duration, order_status_before_cancel,
+             order_created_date, cancellation_reason, status, requested_date,
+             processed_date, processed_by)
+            SELECT 
+                order_id, order_type, user_id, user_name, user_email, user_phone,
+                vendor_email, vendor_name, equipment_id, equipment_name, total_amount,
+                start_date, end_date, duration, order_status_before_cancel,
+                order_created_date, cancellation_reason, status, requested_date,
+                processed_date, processed_by
+            FROM cancellation_requests
+        """)
+        
+        # Drop old table and rename new one
+        cursor.execute("DROP TABLE cancellation_requests")
+        cursor.execute("ALTER TABLE cancellation_requests_clean RENAME TO cancellation_requests")
+        
+        conn.commit()
+        conn.close()
+        
+        return "✅ Cancellation table cleaned up successfully!"
+        
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+@app.route('/debug-vendor-cancellations')
+def debug_vendor_cancellations():
+    """Debug vendor cancellation requests"""
+    if 'vendor_email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        vendor_email = session['vendor_email']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Get all cancellation requests for this vendor
+        cursor.execute("""
+            SELECT id, order_id, order_type, equipment_name, user_name, 
+                   cancellation_reason, status, requested_date
+            FROM cancellation_requests 
+            WHERE vendor_email = ? 
+            ORDER BY requested_date DESC
+        """, (vendor_email,))
+        
+        cancellations = cursor.fetchall()
+        conn.close()
+        
+        cancellations_list = []
+        for cancel in cancellations:
+            cancellations_list.append({
+                'cancellation_id': cancel[0],
+                'order_id': cancel[1],
+                'order_type': cancel[2],
+                'equipment_name': cancel[3],
+                'user_name': cancel[4],
+                'cancellation_reason': cancel[5],
+                'status': cancel[6],
+                'requested_date': cancel[7]
+            })
+        
+        return jsonify({
+            'vendor_email': vendor_email,
+            'cancellation_requests': cancellations_list,
+            'total_requests': len(cancellations_list)
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)})
+@app.route('/check-cancellation-storage')
+def check_cancellation_storage():
+    """Check what's actually stored in cancellation_requests"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Get the latest cancellation request
+        cursor.execute("""
+            SELECT 
+                equipment_name, vendor_name, vendor_email,
+                user_name, user_email, user_phone,
+                total_amount, start_date, end_date, duration,
+                cancellation_reason, status
+            FROM cancellation_requests 
+            ORDER BY id DESC LIMIT 1
+        """)
+        latest = cursor.fetchone()
+        
+        conn.close()
+        
+        if latest:
+            return jsonify({
+                'stored_data': {
+                    'equipment': latest[0],
+                    'vendor_name': latest[1],
+                    'vendor_email': latest[2],
+                    'user_name': latest[3],
+                    'user_email': latest[4],
+                    'user_phone': latest[5],
+                    'total_amount': latest[6],
+                    'start_date': latest[7],
+                    'end_date': latest[8],
+                    'duration': latest[9],
+                    'cancellation_reason': latest[10],
+                    'status': latest[11]
+                }
+            })
+        else:
+            return jsonify({'message': 'No cancellation requests found'})
+            
+    except Exception as e:
+        return jsonify({'error': str(e)})
+@app.route('/api/vendor/cancellation-requests/details')
+def get_vendor_cancellation_requests_details():
+    """Get complete cancellation request details for vendor dashboard"""
+    if 'vendor_email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        vendor_email = session['vendor_email']
+        status_filter = request.args.get('status', 'pending')
+        
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        query = """
+            SELECT * FROM cancellation_requests 
+            WHERE vendor_email = ?
+        """
+        
+        params = [vendor_email]
+        
+        if status_filter != 'all':
+            query += " AND status = ?"
+            params.append(status_filter)
+        
+        query += " ORDER BY requested_date DESC"
+        
+        cursor.execute(query, params)
+        cancellation_requests = cursor.fetchall()
+        conn.close()
+        
+        # Format complete response
+        requests_list = []
+        for req in cancellation_requests:
+            requests_list.append({
+                # Cancellation Info
+                'cancellation_id': req['id'],
+                'order_type': req['order_type'],
+                'order_id': req['order_id'],
+                'requested_date': req['requested_date'],
+                'cancellation_reason': req['cancellation_reason'],
+                'status': req['status'],
+                
+                # ✅ User Information (Complete)
+                'user_name': req['user_name'],
+                'user_email': req['user_email'],
+                'user_phone': req['user_phone'],
+                'user_location': req['user_location'],
+                'user_id': req['user_id'],
+                
+                # ✅ Vendor Information
+                'vendor_name': req['vendor_name'],
+                'vendor_business_name': req['vendor_business_name'],
+                'vendor_contact_phone': req['vendor_contact_phone'],
+                
+                # ✅ Equipment Information (Complete)
+                'equipment_name': req['equipment_name'],
+                'equipment_category': req['equipment_category'],
+                'equipment_description': req['equipment_description'],
+                'equipment_price': req['equipment_price'],
+                'equipment_price_unit': req['equipment_price_unit'],
+                'equipment_location': req['equipment_location'],
+                'equipment_image_url': req['equipment_image_url'],
+                
+                # ✅ Order Information (Complete)
+                'total_amount': req['total_amount'],
+                'start_date': req['start_date'],
+                'end_date': req['end_date'],
+                'duration': req['duration'],
+                'order_notes': req['order_notes'],
+                'purpose': req['purpose'],
+                'order_status_before_cancel': req['order_status_before_cancel'],
+                'order_created_date': req['order_created_date'],
+                
+                # Additional Info
+                'days_until_start': req['days_until_start'],
+                'is_urgent': bool(req['is_urgent']),
+                'processed_date': req['processed_date'],
+                'vendor_response_notes': req['vendor_response_notes']
+            })
+        
+        print(f"📊 Returning {len(requests_list)} cancellation requests with complete details")
+        return jsonify(requests_list)
+        
+    except Exception as e:
+        print(f"❌ Error fetching cancellation requests: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/vendor/cancellation-requests')
+def get_vendor_cancellation_requests():
+    """Get pending cancellation requests for vendor - WITH COMPLETE DETAILS"""
+    if 'vendor_email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        vendor_email = session['vendor_email']
+        
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Get cancellation requests from dedicated table
+        cursor.execute("""
+            SELECT 
+                cr.*,
+                v.business_name,
+                v.contact_name as vendor_contact_name,
+                CASE 
+                    WHEN cr.order_type = 'booking' THEN b.notes
+                    WHEN cr.order_type = 'rent' THEN rr.purpose
+                END as order_notes
+            FROM cancellation_requests cr
+            LEFT JOIN vendors v ON cr.vendor_email = v.email
+            LEFT JOIN bookings b ON cr.order_type = 'booking' AND cr.order_id = b.id
+            LEFT JOIN rent_requests rr ON cr.order_type = 'rent' AND cr.order_id = rr.id
+            WHERE cr.vendor_email = ? AND cr.status = 'pending'
+            ORDER BY cr.requested_date DESC
+        """, (vendor_email,))
+        
+        cancellation_requests = cursor.fetchall()
+        
+        conn.close()
+        
+        # Format response with ALL details
+        requests_list = []
+        for request in cancellation_requests:
+            requests_list.append({
+                'cancellation_id': request['id'],
+                'order_type': request['order_type'],
+                'order_id': request['order_id'],
+                'user_name': request['user_name'],
+                'user_phone': request['user_phone'],
+                'user_email': request['user_email'],
+                'equipment_name': request['equipment_name'],
+                'total_amount': request['total_amount'],
+                'start_date': request['start_date'],
+                'end_date': request['end_date'],
+                'cancellation_reason': request['cancellation_reason'],
+                'requested_date': request['requested_date'],
+                'previous_status': request['order_status_before_cancel'],
+                'vendor_business_name': request['business_name'],
+                'vendor_contact_name': request['vendor_contact_name'],
+                'vendor_email': request['vendor_email'],
+                'notes': request['order_notes'],
+                'equipment_id': request['equipment_id']
+            })
+        
+        print(f"📊 Returning {len(requests_list)} cancellation requests with complete details")
+        return jsonify(requests_list)
+        
+    except Exception as e:
+        print(f"❌ Error fetching vendor cancellation requests: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/user/order/<int:order_id>')
+def get_order_details(order_id):
+    try:
+        user_id = session.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'Not authenticated'}), 401
+        
+        order_type = request.args.get('type', 'booking')
+        
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        
+        if order_type == 'booking':
+            order = conn.execute("""
+                SELECT b.*, e.image_url as equipment_image, 
+                       v.contact_name as vendor_name,  -- CHANGED: Use contact_name
+                       v.email as vendor_email, 
+                       v.business_name,
+                       b.user_name, b.user_email, b.user_phone
+                FROM bookings b
+                LEFT JOIN equipment e ON b.equipment_id = e.id
+                LEFT JOIN vendors v ON b.vendor_email = v.email
+                WHERE b.id = ? AND b.user_id = ?
+            """, (order_id, user_id)).fetchone()
+        else:  # rent
+            order = conn.execute("""
+                SELECT rr.*, e.image_url as equipment_image, 
+                       v.contact_name as vendor_name,  -- CHANGED: Use contact_name
+                       v.email as vendor_email,
+                       v.business_name,
+                       rr.user_name, rr.user_email, rr.user_phone
+                FROM rent_requests rr
+                LEFT JOIN equipment e ON rr.equipment_id = e.id
+                LEFT JOIN vendors v ON rr.vendor_email = v.email
+                WHERE rr.id = ? AND rr.user_id = ?
+            """, (order_id, user_id)).fetchone()
+        
+        conn.close()
+        
+        if not order:
+            return jsonify({'error': 'Order not found'}), 404
+        
+        # Format order details with contact name as vendor_name
+        if order_type == 'booking':
+            order_details = {
+                'id': order['id'],
+                'order_type': 'booking',
+                'equipment_name': order['equipment_name'],
+                'vendor_name': order['vendor_name'],  # This is now contact_name
+                'vendor_email': order['vendor_email'],
+                'business_name': order['business_name'],
+                'start_date': order['start_date'],
+                'end_date': order['end_date'],
+                'duration': order['duration'],
+                'total_amount': order['total_amount'],
+                'status': order['status'],
+                'notes': order['notes'],
+                'created_date': order['created_date'],
+                'cancellation_requested_date': order['cancellation_requested_date'],
+                'cancellation_reason': order['cancellation_reason'],
+                'equipment_image': order['equipment_image'],
+                'user_name': order['user_name'],
+                'user_email': order['user_email'],
+                'user_phone': order['user_phone']
+            }
+        else:  # rent
+            order_details = {
+                'id': order['id'],
+                'order_type': 'rent',
+                'equipment_name': order['equipment_name'],
+                'vendor_name': order['vendor_name'],  # This is now contact_name
+                'vendor_email': order['vendor_email'],
+                'business_name': order['business_name'],
+                'start_date': order['start_date'],
+                'end_date': order['end_date'],
+                'duration': order['duration'],
+                'total_amount': order['total_amount'],
+                'status': order['status'],
+                'purpose': order['purpose'],
+                'notes': order['notes'],
+                'created_date': order['submitted_date'],
+                'cancellation_requested_date': order['cancellation_requested_date'],
+                'cancellation_reason': order['cancellation_reason'],
+                'equipment_image': order['equipment_image'],
+                'user_name': order['user_name'],
+                'user_email': order['user_email'],
+                'user_phone': order['user_phone']
+            }
+        
+        return jsonify(order_details)
+        
+    except Exception as e:
+        print(f"Error fetching order details: {e}")
+        return jsonify({'error': 'Failed to fetch order details'}), 500
+@app.route('/fix-cancellation-table-columns')
+def fix_cancellation_table_columns():
+    """Add missing columns to cancellation_requests table"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check existing columns
+        cursor.execute("PRAGMA table_info(cancellation_requests)")
+        columns = [column[1] for column in cursor.fetchall()]
+        print("📋 Current cancellation_requests columns:", columns)
+        
+        # Add missing columns if they don't exist
+        missing_columns = [
+            ('processed_date', 'TIMESTAMP'),
+            ('processed_by', 'TEXT'),
+            ('vendor_response_notes', 'TEXT')
+        ]
+        
+        for col_name, col_type in missing_columns:
+            if col_name not in columns:
+                cursor.execute(f"ALTER TABLE cancellation_requests ADD COLUMN {col_name} {col_type}")
+                print(f"✅ Added {col_name} to cancellation_requests")
+        
+        conn.commit()
+        conn.close()
+        return "✅ Cancellation table columns fixed successfully!"
+        
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+@app.route('/api/vendor/cancellation-request/approve', methods=['POST'])
+def approve_cancellation_request():
+    """Vendor approves a cancellation request - USING DEDICATED TABLE"""
+    if 'vendor_email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.get_json()
+        cancellation_id = data.get('cancellation_id')
+        
+        if not cancellation_id:
+            return jsonify({'error': 'Missing cancellation ID'}), 400
+        
+        vendor_email = session['vendor_email']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Get cancellation request details
+        cursor.execute("""
+            SELECT order_id, order_type, equipment_id, user_phone, user_name, equipment_name
+            FROM cancellation_requests 
+            WHERE id = ? AND vendor_email = ? AND status = 'pending'
+        """, (cancellation_id, vendor_email))
+        
+        cancellation_request = cursor.fetchone()
+        
+        if not cancellation_request:
+            conn.close()
+            return jsonify({'error': 'Cancellation request not found or access denied'}), 404
+        
+        order_id, order_type, equipment_id, user_phone, user_name, equipment_name = cancellation_request
+        
+        if order_type == 'booking':
+            # Update booking status to cancelled
+            cursor.execute("""
+                UPDATE bookings 
+                SET status = 'cancelled'
+                WHERE id = ? AND vendor_email = ?
+            """, (order_id, vendor_email))
+            
+        elif order_type == 'rent':
+            # Update rent request status to cancelled
+            cursor.execute("""
+                UPDATE rent_requests 
+                SET status = 'cancelled'
+                WHERE id = ? AND vendor_email = ?
+            """, (order_id, vendor_email))
+        
+        # Restock equipment for both booking and rent
+        cursor.execute("""
+            UPDATE equipment 
+            SET stock_quantity = stock_quantity + 1,
+                status = CASE 
+                    WHEN stock_quantity + 1 > 0 THEN 'available' 
+                    ELSE status 
+                END
+            WHERE id = ?
+        """, (equipment_id,))
+        
+        # Update cancellation request status - with error handling for missing columns
+        try:
+            cursor.execute("""
+                UPDATE cancellation_requests 
+                SET status = 'approved', 
+                    processed_date = CURRENT_TIMESTAMP,
+                    processed_by = 'vendor'
+                WHERE id = ?
+            """, (cancellation_id,))
+        except sqlite3.OperationalError as e:
+            if "no such column" in str(e):
+                # Fallback if columns don't exist yet
+                cursor.execute("""
+                    UPDATE cancellation_requests 
+                    SET status = 'approved'
+                    WHERE id = ?
+                """, (cancellation_id,))
+                print("⚠️ Using fallback update (missing columns)")
+            else:
+                raise e
+        
+        conn.commit()
+        conn.close()
+        
+        # Send notification to user
+        sms_message = f"Dear {user_name}, your cancellation request for {equipment_name} has been approved by the vendor. Equipment has been restocked. - Lend A Hand"
+        send_sms(user_phone, sms_message)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Cancellation approved and equipment restocked successfully'
+        })
+        
+    except Exception as e:
+        print(f"❌ Error approving cancellation: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/vendor/cancellation-request/reject', methods=['POST'])
+def reject_cancellation_request():
+    """Vendor rejects a cancellation request - USING DEDICATED TABLE"""
+    if 'vendor_email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.get_json()
+        cancellation_id = data.get('cancellation_id')
+        
+        if not cancellation_id:
+            return jsonify({'error': 'Missing cancellation ID'}), 400
+        
+        vendor_email = session['vendor_email']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Get cancellation request details
+        cursor.execute("""
+            SELECT order_id, order_type, user_phone, user_name, equipment_name, order_status_before_cancel
+            FROM cancellation_requests 
+            WHERE id = ? AND vendor_email = ? AND status = 'pending'
+        """, (cancellation_id, vendor_email))
+        
+        cancellation_request = cursor.fetchone()
+        
+        if not cancellation_request:
+            conn.close()
+            return jsonify({'error': 'Cancellation request not found'}), 404
+        
+        order_id, order_type, user_phone, user_name, equipment_name, previous_status = cancellation_request
+        
+        if order_type == 'booking':
+            # Restore booking to previous status
+            cursor.execute("""
+                UPDATE bookings 
+                SET status = ? 
+                WHERE id = ? AND vendor_email = ?
+            """, (previous_status, order_id, vendor_email))
+            
+        elif order_type == 'rent':
+            # Restore rent request to previous status
+            cursor.execute("""
+                UPDATE rent_requests 
+                SET status = ? 
+                WHERE id = ? AND vendor_email = ?
+            """, (previous_status, order_id, vendor_email))
+        
+        # Update cancellation request status - with error handling for missing columns
+        try:
+            cursor.execute("""
+                UPDATE cancellation_requests 
+                SET status = 'rejected', 
+                    processed_date = CURRENT_TIMESTAMP,
+                    processed_by = 'vendor'
+                WHERE id = ?
+            """, (cancellation_id,))
+        except sqlite3.OperationalError as e:
+            if "no such column" in str(e):
+                # Fallback if columns don't exist yet
+                cursor.execute("""
+                    UPDATE cancellation_requests 
+                    SET status = 'rejected'
+                    WHERE id = ?
+                """, (cancellation_id,))
+                print("⚠️ Using fallback update (missing columns)")
+            else:
+                raise e
+        
+        conn.commit()
+        conn.close()
+        
+        # Send notification to user
+        sms_message = f"Your cancellation request for {equipment_name} has been rejected. Order remains active. - Lend A Hand"
+        send_sms(user_phone, sms_message)
+        
+        return jsonify({
+            'success': True,
+            'message': 'Cancellation rejected'
+        })
+        
+    except Exception as e:
+        print(f"❌ Error rejecting cancellation: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+
+
+@app.route('/api/user/order/cancel', methods=['POST'])
+def cancel_user_order():
+    """Cancel a user order (booking or rent request) and restock equipment"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        data = request.get_json()
+        order_type = data.get('order_type')  # 'booking' or 'rent'
+        order_id = data.get('order_id')
+        cancellation_reason = data.get('cancellation_reason', '')
+        
+        if not order_type or not order_id:
+            return jsonify({'error': 'Missing order type or ID'}), 400
+        
+        user_id = session['user_id']
+        
+        conn_vendors = sqlite3.connect('vendors.db')
+        cursor_vendors = conn_vendors.cursor()
+        
+        if order_type == 'booking':
+            # Check if booking exists and belongs to user
+            cursor_vendors.execute("""
+                SELECT equipment_id, status FROM bookings 
+                WHERE id = ? AND user_id = ?
+            """, (order_id, user_id))
+            
+            booking = cursor_vendors.fetchone()
+            
+            if not booking:
+                conn_vendors.close()
+                return jsonify({'error': 'Booking not found'}), 404
+            
+            equipment_id, current_status = booking
+            
+            # Only allow cancellation for pending or confirmed bookings
+            if current_status not in ['pending', 'confirmed']:
+                conn_vendors.close()
+                return jsonify({'error': 'Cannot cancel booking with current status'}), 400
+            
+            # Update booking status to cancelled
+            cursor_vendors.execute("""
+                UPDATE bookings 
+                SET status = 'cancelled', 
+                    cancelled_date = CURRENT_TIMESTAMP,
+                    cancellation_reason = ?
+                WHERE id = ? AND user_id = ?
+            """, (cancellation_reason, order_id, user_id))
+            
+            # Restock equipment
+            cursor_vendors.execute("""
+                UPDATE equipment 
+                SET stock_quantity = stock_quantity + 1,
+                    status = CASE 
+                        WHEN stock_quantity + 1 > 0 THEN 'available' 
+                        ELSE status 
+                    END
+                WHERE id = ?
+            """, (equipment_id,))
+            
+        elif order_type == 'rent':
+            # Check if rent request exists and belongs to user
+            cursor_vendors.execute("""
+                SELECT equipment_id, status FROM rent_requests 
+                WHERE id = ? AND user_id = ?
+            """, (order_id, user_id))
+            
+            rent_request = cursor_vendors.fetchone()
+            
+            if not rent_request:
+                conn_vendors.close()
+                return jsonify({'error': 'Rent request not found'}), 404
+            
+            equipment_id, current_status = rent_request
+            
+            # Only allow cancellation for pending or approved rent requests
+            if current_status not in ['pending', 'approved']:
+                conn_vendors.close()
+                return jsonify({'error': 'Cannot cancel rent request with current status'}), 400
+            
+            # Update rent request status to cancelled
+            cursor_vendors.execute("""
+                UPDATE rent_requests 
+                SET status = 'cancelled', 
+                    cancelled_date = CURRENT_TIMESTAMP,
+                    cancellation_reason = ?
+                WHERE id = ? AND user_id = ?
+            """, (cancellation_reason, order_id, user_id))
+            
+            # Restock equipment
+            cursor_vendors.execute("""
+                UPDATE equipment 
+                SET stock_quantity = stock_quantity + 1,
+                    status = CASE 
+                        WHEN stock_quantity + 1 > 0 THEN 'available' 
+                        ELSE status 
+                    END
+                WHERE id = ?
+            """, (equipment_id,))
+        
+        else:
+            conn_vendors.close()
+            return jsonify({'error': 'Invalid order type'}), 400
+        
+        conn_vendors.commit()
+        conn_vendors.close()
+        
+        return jsonify({
+            'success': True,
+            'message': f'{order_type.capitalize()} cancelled successfully'
+        })
+        
+    except Exception as e:
+        print(f"Error cancelling order: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/fix-cancellation-columns')
+def fix_cancellation_columns():
+    """Fix missing cancellation columns in database"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check and add columns to bookings table
+        cursor.execute("PRAGMA table_info(bookings)")
+        booking_columns = [column[1] for column in cursor.fetchall()]
+        
+        cancellation_columns = [
+            ('cancellation_requested_date', 'TIMESTAMP'),
+            ('cancellation_reason', 'TEXT'),
+            ('status_before_cancel', 'TEXT'),
+            ('cancelled_date', 'TIMESTAMP')
+        ]
+        
+        for col_name, col_type in cancellation_columns:
+            if col_name not in booking_columns:
+                cursor.execute(f"ALTER TABLE bookings ADD COLUMN {col_name} {col_type}")
+                print(f"✅ Added {col_name} to bookings")
+        
+        # Check and add columns to rent_requests table
+        cursor.execute("PRAGMA table_info(rent_requests)")
+        rent_columns = [column[1] for column in cursor.fetchall()]
+        
+        for col_name, col_type in cancellation_columns:
+            if col_name not in rent_columns:
+                cursor.execute(f"ALTER TABLE rent_requests ADD COLUMN {col_name} {col_type}")
+                print(f"✅ Added {col_name} to rent_requests")
+        
+        conn.commit()
+        conn.close()
+        return "✅ Cancellation columns fixed successfully!"
+        
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+# Add this route to your Flask app to fix the database
+@app.route('/api/user/booking/<int:booking_id>/request-cancel', methods=['POST'])
+def request_booking_cancellation(booking_id):
+    """Request cancellation for a specific booking"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        data = request.get_json()
+        cancellation_reason = data.get('cancellation_reason', 'No reason provided')
+        
+        user_id = session['user_id']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check if booking exists and belongs to user
+        cursor.execute("""
+            SELECT status FROM bookings 
+            WHERE id = ? AND user_id = ?
+        """, (booking_id, user_id))
+        
+        booking = cursor.fetchone()
+        
+        if not booking:
+            conn.close()
+            return jsonify({'error': 'Booking not found'}), 404
+        
+        current_status = booking[0]
+        
+        # Only allow cancellation for pending or confirmed bookings
+        if current_status not in ['pending', 'confirmed']:
+            conn.close()
+            return jsonify({'error': 'Cannot cancel booking with current status'}), 400
+        
+        # Update booking status to cancellation_requested
+        cursor.execute("""
+            UPDATE bookings 
+            SET status = 'cancellation_requested', 
+                cancellation_requested_date = CURRENT_TIMESTAMP,
+                cancellation_reason = ?,
+                status_before_cancel = ?
+            WHERE id = ? AND user_id = ?
+        """, (cancellation_reason, current_status, booking_id, user_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Cancellation request submitted successfully! Waiting for vendor approval.'
+        })
+        
+    except Exception as e:
+        print(f"Error requesting booking cancellation: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/user/rent-request/<int:request_id>/request-cancel', methods=['POST'])
+def request_rent_cancellation(request_id):
+    """Request cancellation for a specific rent request"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        data = request.get_json()
+        cancellation_reason = data.get('cancellation_reason', 'No reason provided')
+        
+        user_id = session['user_id']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check if rent request exists and belongs to user
+        cursor.execute("""
+            SELECT status FROM rent_requests 
+            WHERE id = ? AND user_id = ?
+        """, (request_id, user_id))
+        
+        rent_request = cursor.fetchone()
+        
+        if not rent_request:
+            conn.close()
+            return jsonify({'error': 'Rent request not found'}), 404
+        
+        current_status = rent_request[0]
+        
+        # Only allow cancellation for pending or approved rent requests
+        if current_status not in ['pending', 'approved']:
+            conn.close()
+            return jsonify({'error': 'Cannot cancel rent request with current status'}), 400
+        
+        # Update rent request status to cancellation_requested
+        cursor.execute("""
+            UPDATE rent_requests 
+            SET status = 'cancellation_requested', 
+                cancellation_requested_date = CURRENT_TIMESTAMP,
+                cancellation_reason = ?,
+                status_before_cancel = ?
+            WHERE id = ? AND user_id = ?
+        """, (cancellation_reason, current_status, request_id, user_id))
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Cancellation request submitted successfully! Waiting for vendor approval.'
+        })
+        
+    except Exception as e:
+        print(f"Error requesting rent cancellation: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+@app.route('/fix-cancellation-db')
+def fix_cancellation_db():
+    """Add cancellation columns to existing tables using ALTER TABLE"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        print("🔄 Adding cancellation columns to bookings table...")
+        
+        # Add cancellation columns to bookings table
+        try:
+            cursor.execute("ALTER TABLE bookings ADD COLUMN cancellation_requested_date TIMESTAMP")
+            print("✅ Added cancellation_requested_date to bookings")
+        except sqlite3.OperationalError:
+            print("⚠️ cancellation_requested_date already exists in bookings")
+        
+        try:
+            cursor.execute("ALTER TABLE bookings ADD COLUMN cancellation_reason TEXT")
+            print("✅ Added cancellation_reason to bookings")
+        except sqlite3.OperationalError:
+            print("⚠️ cancellation_reason already exists in bookings")
+        
+        try:
+            cursor.execute("ALTER TABLE bookings ADD COLUMN status_before_cancel TEXT")
+            print("✅ Added status_before_cancel to bookings")
+        except sqlite3.OperationalError:
+            print("⚠️ status_before_cancel already exists in bookings")
+        
+        try:
+            cursor.execute("ALTER TABLE bookings ADD COLUMN cancelled_date TIMESTAMP")
+            print("✅ Added cancelled_date to bookings")
+        except sqlite3.OperationalError:
+            print("⚠️ cancelled_date already exists in bookings")
+        
+        print("🔄 Adding cancellation columns to rent_requests table...")
+        
+        # Add cancellation columns to rent_requests table
+        try:
+            cursor.execute("ALTER TABLE rent_requests ADD COLUMN cancellation_requested_date TIMESTAMP")
+            print("✅ Added cancellation_requested_date to rent_requests")
+        except sqlite3.OperationalError:
+            print("⚠️ cancellation_requested_date already exists in rent_requests")
+        
+        try:
+            cursor.execute("ALTER TABLE rent_requests ADD COLUMN cancellation_reason TEXT")
+            print("✅ Added cancellation_reason to rent_requests")
+        except sqlite3.OperationalError:
+            print("⚠️ cancellation_reason already exists in rent_requests")
+        
+        try:
+            cursor.execute("ALTER TABLE rent_requests ADD COLUMN status_before_cancel TEXT")
+            print("✅ Added status_before_cancel to rent_requests")
+        except sqlite3.OperationalError:
+            print("⚠️ status_before_cancel already exists in rent_requests")
+        
+        try:
+            cursor.execute("ALTER TABLE rent_requests ADD COLUMN cancelled_date TIMESTAMP")
+            print("✅ Added cancelled_date to rent_requests")
+        except sqlite3.OperationalError:
+            print("⚠️ cancelled_date already exists in rent_requests")
+        
+        conn.commit()
+        conn.close()
+        return "✅ Database tables updated with cancellation columns"
+        
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+
+
 
 @app.route('/userreg', methods=['GET', 'POST'])
 def userreg():
@@ -444,6 +2036,32 @@ def vendor_registration():
         confirm_password = request.form.get('confirm_password')
         description = request.form.get('description')
         
+        # === ADD THIS SECTION FOR DOCUMENT UPLOAD ===
+        business_document = request.files.get('business_document')
+        document_filename = None
+        
+        if business_document and business_document.filename:
+            allowed_extensions = {'pdf', 'jpg', 'jpeg', 'png'}
+            if '.' in business_document.filename and \
+               business_document.filename.rsplit('.', 1)[1].lower() in allowed_extensions:
+                
+                filename = secure_filename(business_document.filename)
+                unique_filename = f"{uuid.uuid4().hex}_{filename}"
+                
+                # Create folder if it doesn't exist
+                upload_folder = 'static/uploads/vendor_documents'
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder)
+                
+                filepath = os.path.join(upload_folder, unique_filename)
+                business_document.save(filepath)
+                document_filename = unique_filename
+            else:
+                flash('Invalid file type. Please upload PDF, JPG, or PNG files.', 'error')
+                return render_template('vendorreg.html')
+        # === END OF DOCUMENT UPLOAD SECTION ===
+        
+        # Existing password validation...
         if password != confirm_password:
             flash('Passwords do not match!', 'error')
             return render_template('vendorreg.html')
@@ -464,10 +2082,27 @@ def vendor_registration():
                 flash('Email address already registered!', 'error')
                 return render_template('vendorreg.html')
             
-            c.execute('''INSERT INTO vendors 
-                         (business_name, contact_name, email, phone, service_type, password, description)
-                         VALUES (?, ?, ?, ?, ?, ?, ?)''',
-                         (business_name, contact_name, email, phone, service_type, hashed_password, description))
+            # === UPDATE THIS INSERT STATEMENT ===
+            try:
+                # Try with document columns
+                c.execute('''INSERT INTO vendors 
+                             (business_name, contact_name, email, phone, service_type, 
+                              password, description, business_document, document_verified)
+                             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                             (business_name, contact_name, email, phone, service_type, 
+                              hashed_password, description, document_filename, 'pending'))
+            except sqlite3.OperationalError as e:
+                if "no such column" in str(e):
+                    # Fallback to old columns
+                    c.execute('''INSERT INTO vendors 
+                                 (business_name, contact_name, email, phone, service_type, 
+                                  password, description)
+                                 VALUES (?, ?, ?, ?, ?, ?, ?)''',
+                                 (business_name, contact_name, email, phone, service_type, 
+                                  hashed_password, description))
+                else:
+                    raise e
+            # === END OF UPDATE ===
             
             conn.commit()
             conn.close()
@@ -480,6 +2115,40 @@ def vendor_registration():
             return render_template('vendorreg.html')
     
     return render_template('vendorreg.html')
+def add_missing_columns():
+    """Add missing columns to existing tables"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check and add columns to vendors table
+        cursor.execute("PRAGMA table_info(vendors)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        print("🔍 Current vendor columns:", columns)
+        
+        # Add business_document if missing
+        if 'business_document' not in columns:
+            cursor.execute("ALTER TABLE vendors ADD COLUMN business_document TEXT")
+            print("✅ Added business_document to vendors")
+        
+        # Add document_verified if missing
+        if 'document_verified' not in columns:
+            cursor.execute("ALTER TABLE vendors ADD COLUMN document_verified TEXT DEFAULT 'pending'")
+            print("✅ Added document_verified to vendors")
+        
+        conn.commit()
+        conn.close()
+        
+    except Exception as e:
+        print(f"❌ Error adding columns: {str(e)}")
+@app.route('/uploads/vendor_documents/<filename>')
+def serve_vendor_document(filename):
+    """Serve vendor uploaded documents"""
+    try:
+        return send_from_directory('static/uploads/vendor_documents', filename)
+    except:
+        return "Document not found", 404
 @app.route('/api/user/booking/<int:booking_id>')
 def get_user_booking_detail(booking_id):
     """Get booking details for review"""
@@ -529,64 +2198,7 @@ def complete_expired_rentals():
         return jsonify({'success': True, 'message': 'Expired rentals completion check completed'})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-@app.route('/fix-database-completely')
-def fix_database_completely():
-    """Complete database fix with restart instructions"""
-    try:
-        conn = sqlite3.connect('vendors.db')
-        cursor = conn.cursor()
-        
-        print("🔄 COMPLETE DATABASE FIX...")
-        
-        # 1. Fix rent_requests table
-        cursor.execute("PRAGMA table_info(rent_requests)")
-        columns = [column[1] for column in cursor.fetchall()]
-        
-        changes_made = []
-        if 'last_reminder_sent' not in columns:
-            cursor.execute("ALTER TABLE rent_requests ADD COLUMN last_reminder_sent TIMESTAMP")
-            changes_made.append("last_reminder_sent")
-            print("✅ Added last_reminder_sent column")
-        
-        if 'reminder_type' not in columns:
-            cursor.execute("ALTER TABLE rent_requests ADD COLUMN reminder_type TEXT")
-            changes_made.append("reminder_type")
-            print("✅ Added reminder_type column")
-        
-        # 2. Also check equipment table for stock columns
-        cursor.execute("PRAGMA table_info(equipment)")
-        equipment_columns = [column[1] for column in cursor.fetchall()]
-        
-        if 'stock_quantity' not in equipment_columns:
-            cursor.execute("ALTER TABLE equipment ADD COLUMN stock_quantity INTEGER DEFAULT 1")
-            changes_made.append("stock_quantity")
-        
-        if 'min_stock_threshold' not in equipment_columns:
-            cursor.execute("ALTER TABLE equipment ADD COLUMN min_stock_threshold INTEGER DEFAULT 5")
-            changes_made.append("min_stock_threshold")
-        
-        conn.commit()
-        
-        # Verify
-        cursor.execute("PRAGMA table_info(rent_requests)")
-        final_columns = [column[1] for column in cursor.fetchall()]
-        
-        conn.close()
-        
-        return f"""
-        <h1>✅ Database Fixed Successfully!</h1>
-        <p>Changes made: {changes_made}</p>
-        <p>Final rent_requests columns: {final_columns}</p>
-        <hr>
-        <h2 style="color: red;">⚠️ IMPORTANT NEXT STEP:</h2>
-        <p>You MUST <strong>restart your Flask application</strong> for changes to take effect!</p>
-        <p>1. Stop the current server (Ctrl+C)</p>
-        <p>2. Run: <code>python app.py</code> again</p>
-        <p>3. The error should be gone</p>
-        """
-        
-    except Exception as e:
-        return f"<h1>❌ Error: {str(e)}</h1>"
+
 def check_and_complete_expired_rentals():
     """Check for expired rentals and mark them as completed + restock equipment"""
     try:
@@ -684,6 +2296,35 @@ def get_user_rent_requests():
     except Exception as e:
         print(f"Error fetching user rent requests: {str(e)}")
         return jsonify({'error': str(e)}), 500
+# Add this to your init_db() function or run as a separate migration
+def add_cancellation_columns():
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Add cancellation_requested_date to bookings
+        cursor.execute("PRAGMA table_info(bookings)")
+        booking_columns = [column[1] for column in cursor.fetchall()]
+        
+        if 'cancellation_requested_date' not in booking_columns:
+            cursor.execute("ALTER TABLE bookings ADD COLUMN cancellation_requested_date TIMESTAMP")
+        
+        # Add cancellation_requested_date to rent_requests
+        cursor.execute("PRAGMA table_info(rent_requests)")
+        rent_columns = [column[1] for column in cursor.fetchall()]
+        
+        if 'cancellation_requested_date' not in rent_columns:
+            cursor.execute("ALTER TABLE rent_requests ADD COLUMN cancellation_requested_date TIMESTAMP")
+        
+        conn.commit()
+        conn.close()
+        print("✅ Cancellation columns added successfully")
+        
+    except Exception as e:
+        print(f"❌ Error adding cancellation columns: {str(e)}")
+
+# Call this function after init_db()
+add_cancellation_columns()
 @app.route("/farmerlogin", methods=["GET", "POST"])
 def farmer_login():
     if request.method == "POST":
@@ -897,7 +2538,56 @@ def mark_equipment_returned(request_id):
     except Exception as e:
         print(f"Error marking equipment returned: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
+@app.route('/api/vendor/reviews')
+def get_vendor_reviews():
+    """Get all reviews for the logged-in vendor"""
+    if 'vendor_email' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        vendor_email = session['vendor_email']
+        
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Get reviews for this vendor
+        cursor.execute("""
+            SELECT 
+                r.*,
+                e.image_url as equipment_image,
+                e.category as equipment_category
+            FROM reviews r
+            LEFT JOIN equipment e ON r.equipment_id = e.id
+            WHERE r.vendor_email = ?
+            ORDER BY r.created_date DESC
+        """, (vendor_email,))
+        
+        reviews = cursor.fetchall()
+        conn.close()
+        
+        reviews_list = []
+        for review in reviews:
+            reviews_list.append({
+                'id': review['id'],
+                'user_name': review['user_name'],
+                'equipment_name': review['equipment_name'],
+                'equipment_category': review['equipment_category'],
+                'equipment_image': review['equipment_image'],
+                'rating': review['rating'],
+                'title': review['title'],
+                'comment': review['comment'],
+                'created_date': review['created_date'],
+                'order_type': review['order_type']
+            })
+        
+        print(f"📊 Found {len(reviews_list)} reviews for vendor {vendor_email}")
+        return jsonify(reviews_list)
+        
+    except Exception as e:
+        print(f"❌ Error fetching vendor reviews: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    
 @app.route('/api/vendor/rent-request/<int:request_id>/complete', methods=['POST'])
 def complete_rent_request(request_id):
     """Vendor approves the return and marks request as completed"""
@@ -1193,6 +2883,339 @@ def api_admin_booking_detail(booking_id):
     except Exception as e:
         print(f"Error fetching booking details: {str(e)}")
         return jsonify({'error': str(e)}), 500
+# ================= REVIEW SYSTEM ==================
+@app.route('/api/user/completed-orders')
+def get_user_completed_orders():
+    """Get completed bookings AND rent requests for review writing"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        user_id = session['user_id']
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        # Get completed bookings that haven't been reviewed yet - FIXED QUERY
+        cursor.execute("""
+            SELECT 
+                b.id as order_id,
+                'booking' as order_type,
+                b.equipment_id,
+                b.equipment_name,
+                b.vendor_email,
+                b.vendor_name,
+                b.created_date,
+                b.total_amount,
+                e.image_url as equipment_image
+            FROM bookings b
+            LEFT JOIN equipment e ON b.equipment_id = e.id
+            WHERE b.user_id = ? 
+            AND b.status = 'completed'
+            AND NOT EXISTS (
+                SELECT 1 FROM reviews r 
+                WHERE r.order_id = b.id 
+                AND r.order_type = 'booking' 
+                AND r.user_id = ?
+            )
+            
+            UNION ALL
+            
+            SELECT 
+                rr.id as order_id,
+                'rent' as order_type,
+                rr.equipment_id,
+                rr.equipment_name,
+                rr.vendor_email,
+                v.contact_name as vendor_name,
+                rr.submitted_date as created_date,
+                rr.total_amount,
+                e.image_url as equipment_image
+            FROM rent_requests rr
+            LEFT JOIN equipment e ON rr.equipment_id = e.id
+            LEFT JOIN vendors v ON rr.vendor_email = v.email
+            WHERE rr.user_id = ? 
+            AND rr.status = 'completed'
+            AND NOT EXISTS (
+                SELECT 1 FROM reviews r 
+                WHERE r.order_id = rr.id 
+                AND r.order_type = 'rent' 
+                AND r.user_id = ?
+            )
+            
+            ORDER BY created_date DESC
+        """, (user_id, user_id, user_id, user_id))
+        
+        orders = cursor.fetchall()
+        conn.close()
+        
+        orders_list = []
+        for order in orders:
+            orders_list.append({
+                'order_id': order['order_id'],
+                'order_type': order['order_type'],
+                'equipment_id': order['equipment_id'],
+                'equipment_name': order['equipment_name'],
+                'equipment_image': order['equipment_image'],
+                'vendor_email': order['vendor_email'],
+                'vendor_name': order['vendor_name'] or 'Vendor',
+                'created_date': order['created_date'],
+                'total_amount': order['total_amount']
+            })
+        
+        print(f"✅ Found {len(orders_list)} completed orders: {len([o for o in orders_list if o['order_type'] == 'booking'])} bookings, {len([o for o in orders_list if o['order_type'] == 'rent'])} rentals")
+        return jsonify(orders_list)
+        
+    except Exception as e:
+        print(f"❌ Error fetching completed orders: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+@app.route('/add-avg-rating-column')
+def add_avg_rating_column():
+    """Add avg_rating column to equipment table"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check if column already exists
+        cursor.execute("PRAGMA table_info(equipment)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        if 'avg_rating' not in columns:
+            cursor.execute("ALTER TABLE equipment ADD COLUMN avg_rating REAL DEFAULT 0")
+            print("✅ Added avg_rating column to equipment table")
+        else:
+            print("⚠️ avg_rating column already exists")
+        
+        conn.commit()
+        conn.close()
+        return "✅ avg_rating column added/verified successfully"
+        
+    except Exception as e:
+        return f"❌ Error: {str(e)}"
+@app.route('/api/user/reviews')
+def get_user_reviews():
+    """Get reviews written by the user"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        user_id = session['user_id']
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT r.*, e.image_url as equipment_image
+            FROM reviews r
+            LEFT JOIN equipment e ON r.equipment_id = e.id
+            WHERE r.user_id = ?
+            ORDER BY r.created_date DESC
+        """, (user_id,))
+        
+        reviews = cursor.fetchall()
+        conn.close()
+        
+        reviews_list = []
+        for review in reviews:
+            reviews_list.append({
+                'id': review['id'],
+                'equipment_name': review['equipment_name'],
+                'vendor_name': review['vendor_name'],
+                'order_type': review['order_type'],
+                'rating': review['rating'],
+                'title': review['title'],
+                'comment': review['comment'],
+                'created_date': review['created_date'],
+                'equipment_image': review['equipment_image']
+            })
+        
+        return jsonify(reviews_list)
+        
+    except Exception as e:
+        print(f"Error fetching user reviews: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/user/reviews/submit', methods=['POST'])
+def submit_review():
+    """Submit a new review"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        data = request.get_json()
+        
+        required_fields = ['order_id', 'order_type', 'equipment_id', 'equipment_name', 
+                          'vendor_email', 'vendor_name', 'rating', 'title', 'comment']
+        
+        missing_fields = [field for field in required_fields if field not in data]
+        if missing_fields:
+            return jsonify({'error': f'Missing fields: {", ".join(missing_fields)}'}), 400
+        
+        user_id = session['user_id']
+        user_name = session.get('user_name', 'User')
+        
+        # Check if review already exists for this order
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT id FROM reviews 
+            WHERE user_id = ? AND order_id = ? AND order_type = ?
+        """, (user_id, data['order_id'], data['order_type']))
+        
+        if cursor.fetchone():
+            conn.close()
+            return jsonify({'error': 'You have already reviewed this order'}), 400
+        
+        # Insert the review
+        cursor.execute("""
+            INSERT INTO reviews 
+            (user_id, user_name, equipment_id, equipment_name, vendor_email, 
+             vendor_name, order_type, order_id, rating, title, comment)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            user_id,
+            user_name,
+            data['equipment_id'],
+            data['equipment_name'],
+            data['vendor_email'],
+            data['vendor_name'],
+            data['order_type'],
+            data['order_id'],
+            data['rating'],
+            data['title'],
+            data['comment']
+        ))
+        
+        review_id = cursor.lastrowid
+        
+        try:
+            # Try to update equipment average rating (if column exists)
+            cursor.execute("""
+                UPDATE equipment 
+                SET avg_rating = (
+                    SELECT COALESCE(AVG(rating), 0) FROM reviews 
+                    WHERE equipment_id = ?
+                )
+                WHERE id = ?
+            """, (data['equipment_id'], data['equipment_id']))
+            print(f"✅ Updated avg_rating for equipment #{data['equipment_id']}")
+        except sqlite3.OperationalError as e:
+            if "no such column" in str(e):
+                print(f"⚠️ avg_rating column doesn't exist, skipping rating update")
+                # Column will be added when you run /add-avg-rating-column
+            else:
+                raise e
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Review submitted successfully!',
+            'review_id': review_id
+        })
+        
+    except Exception as e:
+        print(f"❌ Error submitting review: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+@app.route('/api/user/reviews/<int:review_id>/delete', methods=['POST'])
+def delete_review(review_id):
+    """Delete a review"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Please log in first'}), 401
+    
+    try:
+        user_id = session['user_id']
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # Check if review belongs to user and get equipment_id
+        cursor.execute("""
+            SELECT equipment_id FROM reviews 
+            WHERE id = ? AND user_id = ?
+        """, (review_id, user_id))
+        
+        review = cursor.fetchone()
+        
+        if not review:
+            conn.close()
+            return jsonify({'error': 'Review not found or access denied'}), 404
+        
+        equipment_id = review[0]
+        
+        # Delete the review
+        cursor.execute("DELETE FROM reviews WHERE id = ?", (review_id,))
+        
+        try:
+            # Try to update equipment average rating (if column exists)
+            cursor.execute("""
+                UPDATE equipment 
+                SET avg_rating = (
+                    SELECT COALESCE(AVG(rating), 0) FROM reviews 
+                    WHERE equipment_id = ?
+                )
+                WHERE id = ?
+            """, (equipment_id, equipment_id))
+        except sqlite3.OperationalError as e:
+            if "no such column" in str(e):
+                print(f"⚠️ avg_rating column doesn't exist, skipping rating update")
+            else:
+                raise e
+        
+        conn.commit()
+        conn.close()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Review deleted successfully'
+        })
+        
+    except Exception as e:
+        print(f"❌ Error deleting review: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/equipment/<int:equipment_id>/reviews')
+def get_equipment_reviews(equipment_id):
+    """Get reviews for a specific equipment"""
+    try:
+        conn = sqlite3.connect('vendors.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT r.*, u.full_name as user_name 
+            FROM reviews r
+            LEFT JOIN agriculture.farmers u ON r.user_id = u.id
+            WHERE r.equipment_id = ? AND r.status = 'active'
+            ORDER BY r.created_date DESC
+        """, (equipment_id,))
+        
+        reviews = cursor.fetchall()
+        conn.close()
+        
+        reviews_list = []
+        for review in reviews:
+            reviews_list.append({
+                'id': review['id'],
+                'user_name': review['user_name'],
+                'rating': review['rating'],
+                'title': review['title'],
+                'comment': review['comment'],
+                'created_date': review['created_date'],
+                'order_type': review['order_type']
+            })
+        
+        return jsonify(reviews_list)
+        
+    except Exception as e:
+        print(f"Error fetching equipment reviews: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 @app.route('/api/user/completed-bookings')
 def get_user_completed_bookings():
     """Get completed bookings for review writing"""
@@ -1236,209 +3259,8 @@ def get_user_completed_bookings():
         print(f"Error fetching completed bookings: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/reviews/submit', methods=['POST'])
-def submit_review():
-    """Submit a new review"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Please log in first'}), 401
-    
-    try:
-        data = request.get_json()
-        
-        required_fields = ['equipment_id', 'equipment_name', 'vendor_email', 'rating', 'title', 'comment']
-        missing_fields = [field for field in required_fields if field not in data]
-        
-        if missing_fields:
-            return jsonify({'error': f'Missing required fields: {", ".join(missing_fields)}'}), 400
-        
-        # Validate rating
-        rating = int(data['rating'])
-        if rating < 1 or rating > 5:
-            return jsonify({'error': 'Rating must be between 1 and 5'}), 400
-        
-        conn = sqlite3.connect('vendors.db')
-        cursor = conn.cursor()
-        
-        # Insert review
-        cursor.execute("""
-            INSERT INTO reviews 
-            (user_id, user_name, equipment_id, equipment_name, vendor_email, rating, title, comment, booking_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            session['user_id'],
-            session['user_name'],
-            data['equipment_id'],
-            data['equipment_name'],
-            data['vendor_email'],
-            rating,
-            data['title'],
-            data['comment'],
-            data.get('booking_id')
-        ))
-        
-        review_id = cursor.lastrowid
-        
-        # Update equipment average rating
-        update_equipment_rating(data['equipment_id'])
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({
-            'success': True,
-            'message': 'Review submitted successfully!',
-            'review_id': review_id
-        })
-        
-    except Exception as e:
-        print(f"Error submitting review: {str(e)}")
-        return jsonify({'error': str(e)}), 500
 
-def update_equipment_rating(equipment_id):
-    """Update equipment average rating"""
-    try:
-        conn = sqlite3.connect('vendors.db')
-        cursor = conn.cursor()
-        
-        # Calculate new average rating
-        cursor.execute("""
-            SELECT AVG(rating), COUNT(*) 
-            FROM reviews 
-            WHERE equipment_id = ? AND status = 'active'
-        """, (equipment_id,))
-        
-        result = cursor.fetchone()
-        avg_rating = result[0] if result[0] else 0
-        review_count = result[1] if result[1] else 0
-        
-        # Update equipment table (you might need to add these columns)
-        cursor.execute("""
-            UPDATE equipment 
-            SET rating = ?, reviews_count = ?
-            WHERE id = ?
-        """, (round(avg_rating, 1), review_count, equipment_id))
-        
-        conn.commit()
-        conn.close()
-        
-    except Exception as e:
-        print(f"Error updating equipment rating: {str(e)}")
 
-@app.route('/api/user/reviews')
-def get_user_reviews():
-    """Get all reviews by the current user"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Please log in first'}), 401
-    
-    try:
-        conn = sqlite3.connect('vendors.db')
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute("""
-            SELECT r.*, e.image_url as equipment_image
-            FROM reviews r
-            LEFT JOIN equipment e ON r.equipment_id = e.id
-            WHERE r.user_id = ?
-            ORDER BY r.created_date DESC
-        """, (session['user_id'],))
-        
-        reviews = cursor.fetchall()
-        conn.close()
-        
-        reviews_list = []
-        for review in reviews:
-            reviews_list.append({
-                'id': review['id'],
-                'equipment_name': review['equipment_name'],
-                'equipment_image': review['equipment_image'],
-                'rating': review['rating'],
-                'title': review['title'],
-                'comment': review['comment'],
-                'created_date': review['created_date'],
-                'vendor_email': review['vendor_email']
-            })
-        
-        return jsonify(reviews_list)
-        
-    except Exception as e:
-        print(f"Error fetching user reviews: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/vendor/reviews')
-def get_vendor_reviews():
-    """Get all reviews for vendor's equipment"""
-    if 'vendor_email' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    try:
-        conn = sqlite3.connect('vendors.db')
-        conn.row_factory = sqlite3.Row
-        cursor = conn.cursor()
-        
-        cursor.execute("""
-            SELECT r.*, e.name as equipment_name, e.image_url as equipment_image
-            FROM reviews r
-            JOIN equipment e ON r.equipment_id = e.id
-            WHERE r.vendor_email = ? AND r.status = 'active'
-            ORDER BY r.created_date DESC
-        """, (session['vendor_email'],))
-        
-        reviews = cursor.fetchall()
-        conn.close()
-        
-        reviews_list = []
-        for review in reviews:
-            reviews_list.append({
-                'id': review['id'],
-                'user_name': review['user_name'],
-                'equipment_name': review['equipment_name'],
-                'equipment_image': review['equipment_image'],
-                'rating': review['rating'],
-                'title': review['title'],
-                'comment': review['comment'],
-                'created_date': review['created_date']
-            })
-        
-        return jsonify(reviews_list)
-        
-    except Exception as e:
-        print(f"Error fetching vendor reviews: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/reviews/delete/<int:review_id>', methods=['POST'])
-def delete_review(review_id):
-    """Delete a review"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Please log in first'}), 401
-    
-    try:
-        conn = sqlite3.connect('vendors.db')
-        cursor = conn.cursor()
-        
-        # Check if review belongs to user
-        cursor.execute("SELECT equipment_id FROM reviews WHERE id = ? AND user_id = ?", 
-                      (review_id, session['user_id']))
-        review = cursor.fetchone()
-        
-        if not review:
-            conn.close()
-            return jsonify({'error': 'Review not found or access denied'}), 404
-        
-        # Soft delete the review
-        cursor.execute("UPDATE reviews SET status = 'deleted' WHERE id = ?", (review_id,))
-        
-        # Update equipment rating
-        update_equipment_rating(review[0])
-        
-        conn.commit()
-        conn.close()
-        
-        return jsonify({'success': True, 'message': 'Review deleted successfully'})
-        
-    except Exception as e:
-        print(f"Error deleting review: {str(e)}")
-        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/admin/booking/delete/<int:booking_id>', methods=['POST'])
 def api_admin_delete_booking(booking_id):
@@ -1523,7 +3345,6 @@ def api_admin_farmers():
     conn.close()
     return jsonify(farmers_list)
 
-# API endpoint to get vendors data
 @app.route('/api/admin/vendors')
 def api_admin_vendors():
     if 'admin_id' not in session or session.get('user_type') != 'admin':
@@ -1561,7 +3382,7 @@ def api_admin_vendors():
     
     vendors_list = []
     for vendor in vendors:
-        vendors_list.append({
+        vendor_data = {
             'id': vendor['id'],
             'business_name': vendor['business_name'],
             'contact_name': vendor['contact_name'],
@@ -1569,51 +3390,157 @@ def api_admin_vendors():
             'phone': vendor['phone'],
             'service_type': vendor['service_type'],
             'description': vendor['description'],
+            'business_document': vendor['business_document'],  # Document filename
+            'document_verified': vendor['document_verified'],  # Verification status
+            'document_url': url_for('serve_vendor_document', filename=vendor['business_document']) if vendor['business_document'] else None,  # Document URL
             'registration_date': vendor['registration_date'],
             'status': vendor['status']
-        })
+        }
+        
+        # Get counts for this vendor
+        c.execute("SELECT COUNT(*) FROM equipment WHERE vendor_email = ?", (vendor['email'],))
+        equipment_count = c.fetchone()[0]
+        vendor_data['equipment_count'] = equipment_count
+        
+        c.execute("SELECT COUNT(*) FROM bookings WHERE vendor_email = ?", (vendor['email'],))
+        booking_count = c.fetchone()[0]
+        vendor_data['booking_count'] = booking_count
+        
+        vendors_list.append(vendor_data)
     
     conn.close()
     return jsonify(vendors_list)
-
+@app.route('/api/admin/vendor/document/verify', methods=['POST'])
+def verify_vendor_document():
+    """Update vendor document verification status - FIXED VERSION"""
+    if 'admin_id' not in session or session.get('user_type') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.get_json()
+        print("📨 Received verification data:", data)
+        
+        vendor_id = data.get('vendor_id')
+        status = data.get('status')  # 'verified', 'rejected', 'pending'
+        
+        if not vendor_id or not status:
+            return jsonify({'error': 'Missing vendor_id or status'}), 400
+        
+        if status not in ['verified', 'rejected', 'pending']:
+            return jsonify({'error': 'Invalid status. Use verified, rejected, or pending'}), 400
+        
+        conn = sqlite3.connect('vendors.db')
+        cursor = conn.cursor()
+        
+        # First, check if vendor exists
+        cursor.execute("SELECT id, email, business_name FROM vendors WHERE id = ?", (vendor_id,))
+        vendor = cursor.fetchone()
+        
+        if not vendor:
+            conn.close()
+            return jsonify({'error': 'Vendor not found'}), 404
+        
+        # Get vendor's phone for SMS notification
+        cursor.execute("SELECT phone FROM vendors WHERE id = ?", (vendor_id,))
+        vendor_phone_result = cursor.fetchone()
+        vendor_phone = vendor_phone_result[0] if vendor_phone_result else None
+        
+        # Update document verification status
+        cursor.execute("""
+            UPDATE vendors 
+            SET document_verified = ? 
+            WHERE id = ?
+        """, (status, vendor_id))
+        
+        affected_rows = cursor.rowcount
+        
+        conn.commit()
+        conn.close()
+        
+        print(f"✅ Updated vendor {vendor_id} document status to {status}. Affected rows: {affected_rows}")
+        
+        # Send SMS notification if phone exists
+        if vendor_phone:
+            if status == 'verified':
+                sms_message = "🎉 Your business document has been verified! Your vendor account is now fully active."
+            elif status == 'rejected':
+                sms_message = "⚠️ Your business document verification was rejected. Please upload a valid document or contact support."
+            elif status == 'pending':
+                sms_message = "📄 Your document verification status has been reset to pending."
+            
+            sms_result = send_sms(vendor_phone, sms_message)
+            print(f"📱 Sent {status} notification to vendor {vendor_phone}: {sms_result}")
+        
+        return jsonify({
+            'success': True,
+            'message': f'Document status updated to {status}',
+            'vendor_id': vendor_id,
+            'status': status,
+            'affected_rows': affected_rows
+        })
+        
+    except Exception as e:
+        print(f"❌ Error verifying document: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
 @app.route('/api/admin/stats')
 def api_admin_stats():
     if 'admin_id' not in session or session.get('user_type') != 'admin':
         return jsonify({'error': 'Unauthorized'}), 401
     
-    stats = {}
-    
-    conn_agri = sqlite3.connect('agriculture.db')
-    c_agri = conn_agri.cursor()
-    
-    c_agri.execute("SELECT COUNT(*) FROM farmers")
-    stats['total_farmers'] = c_agri.fetchone()[0]
-    
-    c_agri.execute("SELECT COUNT(*) FROM farmers WHERE status = 'pending'")
-    stats['pending_farmers'] = c_agri.fetchone()[0]
-    
-    conn_agri.close()
-    
-    conn_vendors = sqlite3.connect('vendors.db')
-    c_vendors = conn_vendors.cursor()
-    
-    c_vendors.execute("SELECT COUNT(*) FROM vendors")
-    stats['total_vendors'] = c_vendors.fetchone()[0]
-    
-    c_vendors.execute("SELECT COUNT(*) FROM vendors WHERE status = 'pending'")
-    stats['pending_vendors'] = c_vendors.fetchone()[0]
-    
-    # Add equipment count
-    c_vendors.execute("SELECT COUNT(*) FROM equipment")
-    stats['total_equipment'] = c_vendors.fetchone()[0]
-    
-    # Add bookings count
-    c_vendors.execute("SELECT COUNT(*) FROM bookings")
-    stats['total_bookings'] = c_vendors.fetchone()[0]
-    
-    conn_vendors.close()
-    
-    return jsonify(stats)
+    try:
+        stats = {}
+        
+        # Connect to agriculture database
+        conn_agri = sqlite3.connect('agriculture.db')
+        c_agri = conn_agri.cursor()
+        
+        # Get ALL farmers count (total registered) ✅ THIS IS CORRECT
+        c_agri.execute("SELECT COUNT(*) FROM farmers")
+        total_farmers_result = c_agri.fetchone()
+        stats['total_farmers'] = total_farmers_result[0] if total_farmers_result else 0
+        
+        # Get PENDING farmers count
+        c_agri.execute("SELECT COUNT(*) FROM farmers WHERE status = 'pending'")
+        pending_farmers_result = c_agri.fetchone()
+        stats['pending_farmers'] = pending_farmers_result[0] if pending_farmers_result else 0
+        
+        conn_agri.close()
+        
+        # ================ ADD VENDOR STATS ================
+        conn_vendors = sqlite3.connect('vendors.db')
+        c_vendors = conn_vendors.cursor()
+        
+        # Get ALL vendors count
+        c_vendors.execute("SELECT COUNT(*) FROM vendors")
+        total_vendors_result = c_vendors.fetchone()
+        stats['total_vendors'] = total_vendors_result[0] if total_vendors_result else 0
+        
+        # Get PENDING vendors count
+        c_vendors.execute("SELECT COUNT(*) FROM vendors WHERE status = 'pending'")
+        pending_vendors_result = c_vendors.fetchone()
+        stats['pending_vendors'] = pending_vendors_result[0] if pending_vendors_result else 0
+        
+        # Get EQUIPMENT count
+        c_vendors.execute("SELECT COUNT(*) FROM equipment")
+        total_equipment_result = c_vendors.fetchone()
+        stats['total_equipment'] = total_equipment_result[0] if total_equipment_result else 0
+        
+        # Get BOOKINGS count
+        c_vendors.execute("SELECT COUNT(*) FROM bookings")
+        total_bookings_result = c_vendors.fetchone()
+        stats['total_bookings'] = total_bookings_result[0] if total_bookings_result else 0
+        
+        conn_vendors.close()
+        
+        print(f"✅ Stats generated: Farmers={stats.get('total_farmers', 0)}, Vendors={stats.get('total_vendors', 0)}, Equipment={stats.get('total_equipment', 0)}, Bookings={stats.get('total_bookings', 0)}")
+        
+        return jsonify(stats)
+        
+    except Exception as e:
+        print(f"❌ Error generating stats: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 # API endpoint to approve a farmer
 @app.route('/api/admin/farmer/approve/<int:farmer_id>', methods=['POST'])
@@ -1632,7 +3559,262 @@ def api_approve_farmer(farmer_id):
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
+@app.route('/api/admin/reports')
+def api_admin_reports():
+    """Get real reports data from database - SIMPLIFIED VERSION"""
+    if 'admin_id' not in session or session.get('user_type') != 'admin':
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        print("📊 Loading reports data...")
+        
+        # Connect to databases
+        conn_vendors = sqlite3.connect('vendors.db')
+        conn_agri = sqlite3.connect('agriculture.db')
+        
+        cursor_vendors = conn_vendors.cursor()
+        cursor_agri = conn_agri.cursor()
+        
+        # ==================== BASIC COUNTS ====================
+        
+        # Total approved farmers
+        cursor_agri.execute("SELECT COUNT(*) FROM farmers WHERE status = 'approved'")
+        total_farmers = cursor_agri.fetchone()[0] or 0
+        
+        # Total approved vendors
+        cursor_vendors.execute("SELECT COUNT(*) FROM vendors WHERE status = 'approved'")
+        total_vendors = cursor_vendors.fetchone()[0] or 0
+        
+        # Total equipment
+        cursor_vendors.execute("SELECT COUNT(*) FROM equipment")
+        total_equipment = cursor_vendors.fetchone()[0] or 0
+        
+        # Available equipment
+        cursor_vendors.execute("SELECT COUNT(*) FROM equipment WHERE status = 'available'")
+        available_equipment = cursor_vendors.fetchone()[0] or 0
+        
+        # ==================== BOOKINGS DATA ====================
+        
+        # Total bookings
+        cursor_vendors.execute("SELECT COUNT(*) FROM bookings")
+        total_bookings = cursor_vendors.fetchone()[0] or 0
+        
+        # Booking status distribution
+        cursor_vendors.execute("""
+            SELECT status, COUNT(*) as count 
+            FROM bookings 
+            GROUP BY status
+        """)
+        booking_statuses = cursor_vendors.fetchall()
+        
+        # Completed bookings revenue
+        cursor_vendors.execute("SELECT SUM(total_amount) FROM bookings WHERE status = 'completed'")
+        booking_revenue = cursor_vendors.fetchone()[0] or 0
+        
+        # ==================== RENT REQUESTS DATA ====================
+        
+        # Total rent requests
+        cursor_vendors.execute("SELECT COUNT(*) FROM rent_requests")
+        total_rents = cursor_vendors.fetchone()[0] or 0
+        
+        # Rent request status distribution
+        cursor_vendors.execute("""
+            SELECT status, COUNT(*) as count 
+            FROM rent_requests 
+            GROUP BY status
+        """)
+        rent_statuses = cursor_vendors.fetchall()
+        
+        # Completed rent requests revenue
+        cursor_vendors.execute("SELECT SUM(total_amount) FROM rent_requests WHERE status = 'completed'")
+        rent_revenue = cursor_vendors.fetchone()[0] or 0
+        
+        # ==================== TOTAL REVENUE ====================
+        total_revenue = float(booking_revenue) + float(rent_revenue)
+        
+        # ==================== TOTAL ORDERS ====================
+        total_orders = total_bookings + total_rents
+        
+        # ==================== COMBINE STATUSES ====================
+        status_counts = {}
+        for status, count in booking_statuses + rent_statuses:
+            status = status.replace('_', ' ').title()
+            status_counts[status] = status_counts.get(status, 0) + count
+        
+        status_distribution = []
+        status_colors = {
+            'Completed': '#38a169',
+            'Pending': '#d69e2e',
+            'Approved': '#3182ce',
+            'Confirmed': '#3182ce',
+            'Cancelled': '#e53e3e',
+            'Cancellation Requested': '#ed8936'
+        }
+        
+        for status, count in status_counts.items():
+            if count > 0:
+                status_distribution.append({
+                    'status': status,
+                    'count': count,
+                    'color': status_colors.get(status, '#718096')
+                })
+        
+        # ==================== CATEGORY DISTRIBUTION ====================
+        cursor_vendors.execute("""
+            SELECT category, COUNT(*) as count 
+            FROM equipment 
+            GROUP BY category 
+            ORDER BY count DESC
+        """)
+        categories = cursor_vendors.fetchall()
+        
+        category_distribution = []
+        for category, count in categories:
+            if category:
+                category_distribution.append({
+                    'category': category,
+                    'count': count,
+                    'revenue': count * 1000  # Simplified revenue calculation
+                })
+        
+        # ==================== TOP VENDORS ====================
+        cursor_vendors.execute("""
+            SELECT 
+                v.business_name,
+                COUNT(e.id) as equipment_count,
+                COUNT(b.id) as booking_count
+            FROM vendors v
+            LEFT JOIN equipment e ON v.email = e.vendor_email
+            LEFT JOIN bookings b ON e.id = b.equipment_id
+            WHERE v.status = 'approved'
+            GROUP BY v.id
+            ORDER BY equipment_count DESC
+            LIMIT 5
+        """)
+        
+        vendors_data = cursor_vendors.fetchall()
+        top_vendors = []
+        
+        for vendor in vendors_data:
+            name, equipment_count, booking_count = vendor
+            top_vendors.append({
+                'name': name or 'Unknown Vendor',
+                'orders': booking_count or 0,
+                'revenue': (booking_count or 0) * 1000,  # Simplified
+                'rating': 4.5  # Default rating
+            })
+        
+        # ==================== DAILY REVENUE (Last 7 days) ====================
+        revenue_data = []
+        for i in range(6, -1, -1):
+            date = datetime.now().date() - timedelta(days=i)
+            date_str = date.strftime('%Y-%m-%d')
+            
+            cursor_vendors.execute("""
+                SELECT SUM(total_amount) FROM bookings 
+                WHERE DATE(created_date) = ? AND status = 'completed'
+            """, (date_str,))
+            day_revenue = cursor_vendors.fetchone()[0] or 0
+            
+            revenue_data.append({
+                'date': date.strftime('%b %d'),
+                'amount': float(day_revenue)
+            })
+        
+        # ==================== REGISTRATION TREND (Last 7 days) ====================
+        registration_data = []
+        for i in range(6, -1, -1):
+            date = datetime.now().date() - timedelta(days=i)
+            date_str = date.strftime('%Y-%m-%d')
+            
+            # Farmers
+            cursor_agri.execute("""
+                SELECT COUNT(*) FROM farmers 
+                WHERE DATE(registration_date) = ?
+            """, (date_str,))
+            farmers = cursor_agri.fetchone()[0] or 0
+            
+            # Vendors
+            cursor_vendors.execute("""
+                SELECT COUNT(*) FROM vendors 
+                WHERE DATE(registration_date) = ?
+            """, (date_str,))
+            vendors = cursor_vendors.fetchone()[0] or 0
+            
+            registration_data.append({
+                'date': date.strftime('%b %d'),
+                'farmers': farmers,
+                'vendors': vendors
+            })
+        
+        # ==================== CALCULATE CONVERSION RATE ====================
+        # Simple calculation: users who made at least one booking or rent request
+        cursor_vendors.execute("""
+            SELECT COUNT(DISTINCT user_id) FROM (
+                SELECT user_id FROM bookings
+                UNION
+                SELECT user_id FROM rent_requests
+            )
+        """)
+        users_with_orders = cursor_vendors.fetchone()[0] or 0
+        
+        total_users = total_farmers + total_vendors
+        conversion_rate = round((users_with_orders / total_users * 100), 1) if total_users > 0 else 0
+        
+        # ==================== CALCULATE CANCELLATION RATE ====================
+        cancelled_orders = 0
+        for status, count in [('cancelled', count) for status, count in booking_statuses + rent_statuses if status == 'cancelled']:
+            cancelled_orders += count
+        
+        cancellation_rate = round((cancelled_orders / total_orders * 100), 1) if total_orders > 0 else 0
+        
+        # ==================== PREPARE RESPONSE ====================
+        reports_data = {
+            'summary': {
+                'totalRevenue': float(total_revenue),
+                'totalOrders': total_orders,
+                'activeUsers': total_farmers + total_vendors,  # Simplified
+                'conversionRate': conversion_rate,
+                'totalFarmers': total_farmers,
+                'totalVendors': total_vendors,
+                'totalEquipment': total_equipment,
+                'cancellationRate': cancellation_rate
+            },
+            'revenueTrend': revenue_data,
+            'registrationTrend': registration_data,
+            'categoryDistribution': category_distribution,
+            'statusDistribution': status_distribution,
+            'topVendors': top_vendors,
+            'detailedStats': {
+                'farmers': total_farmers,
+                'vendors': total_vendors,
+                'activeThisMonth': total_farmers + total_vendors,  # Simplified
+                'avgOrdersUser': round(total_orders / (total_farmers + total_vendors), 1) if (total_farmers + total_vendors) > 0 else 0,
+                'totalOrders': total_orders,
+                'completedOrders': sum([count for status, count in booking_statuses + rent_statuses if status == 'completed']),
+                'cancelledOrders': cancelled_orders,
+                'avgDuration': 3,  # Default value
+                'totalRevenue': float(total_revenue),
+                'avgOrderValue': round(total_revenue / total_orders, 2) if total_orders > 0 else 0,
+                'platformCommission': round(total_revenue * 0.1, 2),
+                'revenueGrowth': 0,  # Default
+                'availableEquipment': available_equipment,
+                'utilizationRate': round((total_orders / (available_equipment * 30)) * 100, 1) if available_equipment > 0 else 0
+            }
+        }
+        
+        conn_vendors.close()
+        conn_agri.close()
+        
+        print(f"✅ Reports data loaded: {total_farmers} farmers, {total_vendors} vendors, ₹{total_revenue} revenue")
+        
+        return jsonify(reports_data)
+        
+    except Exception as e:
+        print(f"❌ Error in reports API: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'message': 'Failed to load reports data'}), 500
 # API endpoint to reject a farmer
 @app.route('/api/admin/farmer/reject/<int:farmer_id>', methods=['POST'])
 def api_reject_farmer(farmer_id):
@@ -2157,52 +4339,7 @@ def add_equipment():
     except Exception as e:
         print(f"❌ Error adding equipment: {str(e)}")
         return jsonify({'error': str(e)}), 500
-@app.route('/fix-database-columns')
-def fix_database_columns():
-    """Add missing stock columns to equipment table"""
-    try:
-        conn = sqlite3.connect('vendors.db')
-        cursor = conn.cursor()
-        
-        print("🔄 Checking database columns...")
-        
-        # Check current table structure
-        cursor.execute("PRAGMA table_info(equipment)")
-        columns = cursor.fetchall()
-        column_names = [col[1] for col in columns]
-        
-        print("Current columns:", column_names)
-        
-        # Add stock_quantity if missing
-        if 'stock_quantity' not in column_names:
-            cursor.execute("ALTER TABLE equipment ADD COLUMN stock_quantity INTEGER DEFAULT 1")
-            print("✅ Added stock_quantity column")
-        else:
-            print("✅ stock_quantity column already exists")
-        
-        # Add min_stock_threshold if missing
-        if 'min_stock_threshold' not in column_names:
-            cursor.execute("ALTER TABLE equipment ADD COLUMN min_stock_threshold INTEGER DEFAULT 5")
-            print("✅ Added min_stock_threshold column")
-        else:
-            print("✅ min_stock_threshold column already exists")
-        
-        # Update existing records with default values
-        cursor.execute("UPDATE equipment SET stock_quantity = 1 WHERE stock_quantity IS NULL")
-        cursor.execute("UPDATE equipment SET min_stock_threshold = 5 WHERE min_stock_threshold IS NULL")
-        
-        conn.commit()
-        conn.close()
-        
-        return """
-        <h1>✅ Database Fixed Successfully!</h1>
-        <p>Stock columns have been added to the equipment table.</p>
-        <p><a href="/vendordashboard">Go to Vendor Dashboard</a></p>
-        <p>Now try editing equipment again.</p>
-        """
-        
-    except Exception as e:
-        return f"<h1>❌ Error: {str(e)}</h1>"
+
 @app.route('/api/vendor/equipment')
 def get_vendor_equipment():
     """Get all equipment for the logged-in vendor - WITH PROPER STOCK"""
