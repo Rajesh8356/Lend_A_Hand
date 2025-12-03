@@ -210,14 +210,47 @@
                 font-size: 2rem;
             }
         }
+         .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-banner-wrapper,
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover,
+    .goog-text-highlight {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+    }
+    
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+<div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+    <button onclick="window.location.href='/dashboard?lang=en'" style="padding: 5px 10px;">EN</button>
+    <button onclick="window.location.href='/dashboard?lang=kn'" style="padding: 5px 10px;">ಕನ್ನಡ</button>
+</div>
+
     <div class="header">
         <h1>Vendor Login</h1>
         <p>Access your vendor account with Lend A Hand</p>
     </div>
-    
+    <div id="google_translate_element"></div>
     <div class="container">
         <a href="{{ url_for('dashboard') }}" class="back-button">
             <i class="fas fa-arrow-left"></i> Back to Dashboard
@@ -257,6 +290,31 @@
     </div>
     
    <script>
+    function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn',
+        autoDisplay: false
+    }, 'google_translate_element');
+    
+    // Apply saved language
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if(savedLang === 'kn') {
+        setTimeout(() => {
+            var iframe = document.querySelector('.goog-te-menu-frame');
+            if(iframe) {
+                var select = iframe.contentWindow.document.querySelector('.goog-te-menu2-select');
+                if(select) {
+                    select.value = 'kn';
+                    select.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 1000);
+    }
+}
+var script = document.createElement('script');
+script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+document.head.appendChild(script);
    // Toggle password visibility
     const togglePassword = document.querySelector('#togglePassword');
     const password = document.querySelector('#password');
@@ -273,5 +331,6 @@
 
   
 </script>
+<style>.goog-te-banner-frame{display:none!important;}.goog-te-gadget{font-size:0!important;}</style>
 </body> 
 </html>
