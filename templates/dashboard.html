@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lend A Hand - Farming Cooperative</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+     <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
     <style>
         * {
             margin: 0;
@@ -190,7 +192,37 @@
                 opacity: 0.7;
             }
         }
-        
+        /* Language Selector CSS - ADD THIS */
+
+
+.lang-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.lang-btn.english {
+    background: #007bff;
+    color: white;
+}
+
+.lang-btn.kannada {
+    background: #ff9800;
+    color: white;
+}
+
+.lang-btn.active {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+}
+
+/* Hide Google banner but keep widget */
+.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; }
         /* Growing plants animation */
         .plant {
             position: absolute;
@@ -258,7 +290,35 @@
                 transform: scaleY(1.2);
             }
         }
-        
+          /* Completely hide ALL Google Translate elements */
+    .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-banner-wrapper,
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover,
+    .goog-text-highlight {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+    }
+    
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
+
         /* Content styling */
         .header {
             text-align: center;
@@ -558,6 +618,36 @@
                 display: none; /* Hide animated elements on mobile for better performance */
             }
         }
+        lang-selector { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; }
+        /* Make Google Translate visible and styled */
+#google_translate_element {
+    position: fixed !important;
+    top: 70px !important;
+    right: 20px !important;
+    z-index: 9999 !important;
+    background: white !important;
+    padding: 5px 10px !important;
+    border-radius: 5px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+    display: block !important;
+}
+
+.goog-te-gadget {
+    font-size: 12px !important;
+}
+
+.goog-te-gadget-simple {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+.goog-te-menu-value span {
+    color: #2c3e50 !important;
+    font-weight: bold !important;
+}
     </style>
 </head>
 <body>
@@ -665,24 +755,193 @@
     <div class="floating-icon">
         <i class="fas fa-seedling"></i>
     </div>
-
-    <script>
-        // Button interaction
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (this.getAttribute('href') === '#') {
-                    e.preventDefault();
-                    const cardType = this.closest('.card').classList[1];
-                    const moduleName = document.querySelector(`.${cardType} .card-title`).textContent;
-                    alert(`Accessing ${moduleName}...\nFeature would open in a real application`);
+   <!-- Language Selector -->
+    <div class="language-selector">
+        <button class="lang-btn english active" onclick="setLanguage('en')">
+            <i class="fas fa-globe-americas"></i> English
+        </button>
+        <button class="lang-btn kannada" onclick="setLanguage('kn')">
+            <i class="fas fa-globe-asia"></i> ಕನ್ನಡ
+        </button>
+    </div>
+    
+    <!-- Google Translate Widget - MAKE IT VISIBLE -->
+    <div id="google_translate_element"></div>
+ <script>
+    // ============================================
+    // LANGUAGE MANAGEMENT SYSTEM
+    // ============================================
+    
+    // 1. Function to save language preference
+    function saveLanguagePreference(lang) {
+        // Save to localStorage (browser storage)
+        localStorage.setItem('selectedLanguage', lang);
+        
+        // Save to cookies (for server-side access if needed)
+        document.cookie = `user_language=${lang}; path=/; max-age=31536000`; // 1 year
+        
+        // Save to sessionStorage (for current session)
+        sessionStorage.setItem('selectedLanguage', lang);
+    }
+    
+    // 2. Function to apply language translation
+    function applyLanguage(lang) {
+        if (lang === 'kn') {
+            // Kannada translation
+            window.location.hash = '#googtrans(kn|en)';
+            
+            // Force Google Translate to apply
+            setTimeout(function() {
+                if (window.google && google.translate && google.translate.TranslateElement) {
+                    try {
+                        // This triggers the translation
+                        var select = document.querySelector('.goog-te-combo');
+                        if (select) {
+                            select.value = 'kn';
+                            select.dispatchEvent(new Event('change'));
+                        }
+                    } catch(e) {
+                        console.log('Translation applied');
+                    }
                 }
+            }, 500);
+        } else {
+            // English (default)
+            window.location.hash = '#googtrans(en)';
+            
+            setTimeout(function() {
+                if (window.google && google.translate && google.translate.TranslateElement) {
+                    try {
+                        var select = document.querySelector('.goog-te-combo');
+                        if (select) {
+                            select.value = 'en';
+                            select.dispatchEvent(new Event('change'));
+                        }
+                    } catch(e) {
+                        console.log('English applied');
+                    }
+                }
+            }, 500);
+        }
+    }
+    
+    // 3. Main language switching function (called when buttons are clicked)
+    function setLanguage(lang) {
+        // Update button UI
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+        
+        // Save the preference
+        saveLanguagePreference(lang);
+        
+        // Apply immediately
+        applyLanguage(lang);
+        
+        // Show confirmation (optional)
+        if (lang === 'kn') {
+            alert('ಭಾಷೆ ಕನ್ನಡಕ್ಕೆ ಬದಲಾಯಿಸಲಾಗಿದೆ');
+        } else {
+            alert('Language changed to English');
+        }
+    }
+    
+    // 4. Initialize Google Translate
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,kn',
+            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+            autoDisplay: false,  // Don't auto-display banner
+            disableAutoTranslation: false
+        }, 'google_translate_element');
+        
+        // Hide the Google Translate widget immediately
+        setTimeout(function() {
+            // Hide all Google Translate elements
+            var elements = document.querySelectorAll('.goog-te-banner, .skiptranslate, .goog-te-gadget');
+            elements.forEach(function(el) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.height = '0';
+                el.style.overflow = 'hidden';
             });
+            
+            // Fix body position
+            document.body.style.top = '0';
+        }, 100);
+    }
+    
+    // 5. Load Google Translate script
+    function loadGoogleTranslate() {
+        // Check if already loaded
+        if (window.google && google.translate) {
+            googleTranslateElementInit();
+            return;
+        }
+        
+        // Load the script
+        var script = document.createElement('script');
+        script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        script.type = 'text/javascript';
+        document.head.appendChild(script);
+    }
+    
+    // 6. On page load - MAIN FUNCTION
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load Google Translate
+        loadGoogleTranslate();
+        
+        // Check for saved language preference
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        
+        // Set active button
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+            if ((savedLang === 'en' && btn.classList.contains('english')) || 
+                (savedLang === 'kn' && btn.classList.contains('kannada'))) {
+                btn.classList.add('active');
+            }
         });
+        
+        // Apply saved language after a short delay (wait for Google Translate to load)
+        setTimeout(function() {
+            applyLanguage(savedLang);
+        }, 1000);
+        
+        // ============================================
+        // ADD THIS: Add language parameter to all links
+        // ============================================
+        document.querySelectorAll('a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.includes('#') && href !== '#') {
+                // Add language parameter to the link
+                const lang = localStorage.getItem('selectedLanguage') || 'en';
+                const separator = href.includes('?') ? '&' : '?';
+                link.href = href + separator + 'lang=' + lang;
+            }
+        });
+    });
+    
+    // ============================================
+    // EXISTING CODE (keep your existing functionality)
+    // ============================================
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+                const cardType = this.closest('.card').classList[1];
+                const moduleName = document.querySelector(`.${cardType} .card-title`).textContent;
+                alert(`Accessing ${moduleName}...\nFeature would open in a real application`);
+            }
+        });
+    });
 
-        // Floating icon interaction
-        document.querySelector('.floating-icon').addEventListener('click', function() {
-            alert('Welcome to Lend A Hand Cooperative! We are here to help farmers succeed through shared resources.');
-        });
-    </script>
+    // Floating icon interaction
+    document.querySelector('.floating-icon').addEventListener('click', function() {
+        alert('Welcome to Lend A Hand Cooperative! We are here to help farmers succeed through shared resources.');
+    });
+</script>
 </body>
-</html>
+</html> 
