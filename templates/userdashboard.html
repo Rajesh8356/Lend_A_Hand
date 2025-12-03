@@ -36,6 +36,395 @@
             min-height: 100vh;
             display: flex;
         }
+         .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-banner-wrapper,
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover,
+    .goog-text-highlight {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+    }
+    
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
+        /* ================= REVIEW SECTION STYLES ================= */
+
+#reviews-section .reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Review Card Styles */
+.review-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.review-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.review-equipment-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.review-equipment-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.review-equipment-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.review-equipment-img .default-icon {
+    font-size: 1.5rem;
+    color: var(--gray);
+}
+
+.review-equipment-details h4 {
+    margin: 0 0 5px 0;
+    color: var(--dark);
+    font-size: 1.1rem;
+}
+
+.review-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.review-vendor {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.review-date {
+    color: var(--gray);
+    font-size: 0.85rem;
+}
+
+/* Star Rating Styles */
+.star-rating {
+    display: flex;
+    gap: 3px;
+    margin: 5px 0;
+}
+
+.star-rating i {
+    color: #f59e0b;
+    font-size: 1rem;
+}
+
+.review-content {
+    margin-top: 15px;
+}
+
+.review-title {
+    color: var(--primary);
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+}
+
+.review-comment {
+    color: var(--dark);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.review-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gray-light);
+}
+
+/* Review Modal Styles */
+#reviewModal .modal-content {
+    max-width: 700px;
+}
+
+#reviewModal .rating-stars {
+    display: flex;
+    gap: 10px;
+    margin: 15px 0;
+}
+
+#reviewModal .rating-stars i {
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+#reviewModal .rating-stars i:hover {
+    transform: scale(1.1);
+}
+
+/* Selected Order Info Box */
+#selectedOrderInfo {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Order Type Badges */
+.badge-review-booking {
+    background: #bee3f8;
+    color: #2c5282;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-review-rental {
+    background: #c6f6d5;
+    color: #2f855a;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Empty State Styles */
+.no-reviews {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.no-reviews i {
+    font-size: 4rem;
+    color: var(--gray-light);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.no-reviews h3 {
+    color: var(--dark);
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.no-reviews p {
+    color: var(--gray);
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .review-card-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .review-equipment-info {
+        width: 100%;
+    }
+    
+    .review-actions {
+        justify-content: flex-start;
+    }
+    
+    #reviewModal .rating-stars i {
+        font-size: 1.8rem;
+    }
+    
+    #reviewModal .modal-content {
+        width: 95%;
+        margin: 10px;
+    }
+}
+
+@media (max-width: 576px) {
+    .review-equipment-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .review-equipment-img {
+        width: 80px;
+        height: 80px;
+    }
+    
+    #reviewModal .rating-stars i {
+        font-size: 1.5rem;
+    }
+    
+    .review-meta {
+        flex-wrap: wrap;
+    }
+}
+
+/* Star Hover Effects */
+.rating-stars i {
+    transition: all 0.2s ease;
+}
+
+.rating-stars i:hover,
+.rating-stars i.hovered {
+    color: #f59e0b;
+    transform: scale(1.1);
+}
+
+/* Form Validation Styles */
+#reviewForm input:invalid,
+#reviewForm textarea:invalid,
+#reviewForm select:invalid {
+    border-color: #fc8181;
+}
+
+#reviewForm input:valid,
+#reviewForm textarea:valid,
+#reviewForm select:valid {
+    border-color: #68d391;
+}
+
+/* Loading State */
+.review-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Success Message */
+.review-success {
+    background: #c6f6d5;
+    color: #2f855a;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    display: none;
+}
+
+.review-success.show {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+        /* Order Details Modal Styles */
+.order-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.details-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary);
+}
+
+.details-section h4 {
+    color: var(--primary);
+    margin-bottom: 10px;
+    border-bottom: 1px solid var(--gray-light);
+    padding-bottom: 5px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--dark);
+    min-width: 150px;
+}
+
+.detail-value {
+    color: var(--gray);
+    text-align: right;
+    flex: 1;
+}
+
+.status-pending { 
+    color: #856404; 
+    background: #fff3cd; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+}
+
+.status-confirmed { 
+    color: #0c5460; 
+    background: #d1ecf1; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+}
+
+.status-cancelled { 
+    color: #721c24; 
+    background: #f8d7da; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+}
+
+.status-completed { 
+    color: #155724; 
+    background: #d4edda; 
+    padding: 2px 8px; 
+    border-radius: 4px; 
+}
            /* Sidebar Navigation */
         .sidebar {
             width: var(--sidebar-width);
@@ -118,6 +507,27 @@
             width: 20px;
             text-align: center;
         }
+        .cancellation-note {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #c53030;
+}
+
+.cancellation-note i {
+    margin-right: 5px;
+}
+
+.order-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gray-light);
+}
         /* Add these CSS fixes for loan calculator */
 .calculator-form {
     background: #f9f9f9;
@@ -322,7 +732,69 @@
             color: var(--gray);
             font-size: 0.9rem;
         }
-        
+        /* Orders Section Styles */
+.equipment-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.equipment-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.equipment-thumb.no-image {
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #666;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending { background: #fff3cd; color: #856404; }
+.status-confirmed { background: #d1ecf1; color: #0c5460; }
+.status-approved { background: #d4edda; color: #155724; }
+.status-completed { background: #d1ecf1; color: #0c5460; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+.status-rejected { background: #f8d7da; color: #721c24; }
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger { background: #dc3545; color: white; }
+
+/* Order Details Preview */
+.order-details-preview {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.order-details-preview p {
+    margin: 5px 0;
+}
         /* Responsive Design */
         @media (max-width: 992px) {
             .sidebar {
@@ -397,7 +869,69 @@
             font-size: 1.5rem;
             color: var(--dark);
         }
-        
+        /* Orders Section Styles */
+.equipment-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.equipment-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.equipment-thumb.no-image {
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: #666;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-pending { background: #fff3cd; color: #856404; }
+.status-confirmed { background: #d1ecf1; color: #0c5460; }
+.status-approved { background: #d4edda; color: #155724; }
+.status-completed { background: #d1ecf1; color: #0c5460; }
+.status-cancelled { background: #f8d7da; color: #721c24; }
+.status-rejected { background: #f8d7da; color: #721c24; }
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-danger { background: #dc3545; color: white; }
+
+/* Order Details Preview */
+.order-details-preview {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.order-details-preview p {
+    margin: 5px 0;
+}
         /* Items Grid */
         .items-grid {
             display: grid;
@@ -1286,10 +1820,110 @@
 .item-actions {
     margin-top: auto;
 }
+/* Orders Section Styles */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.order-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.order-title {
+    font-size: 1.2rem;
+    color: var(--dark);
+    margin: 0;
+}
+
+.order-type-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badge-booking {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+.badge-rental {
+    background: #c6f6d5;
+    color: #2f855a;
+}
+
+.order-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.order-detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-bottom: 4px;
+}
+
+.detail-value {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+.order-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gray-light);
+}
+
+.cancellation-note {
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #c53030;
+}
+
+.cancellation-note i {
+    margin-right: 5px;
+}
     </style>
 </head>
 <body>
-    <!-- Mobile Menu Button -->
+   
+<!-- Google Translate for this page -->
+<div id="google_translate_element"></div>
+   <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" style="display: none;">
         <i class="fas fa-bars"></i>
     </button>
@@ -1299,21 +1933,7 @@
         <i class="fas fa-check-circle"></i>
         <span id="toastMessage"></span>
     </div>
-<!-- Add to user dashboard HTML -->
-<div class="content-section" id="rent-requests-section">
-    <div class="section-header">
-        <h2>My Rent Requests</h2>
-    </div>
-    
-    <div id="userRentRequestsContainer">
-        <!-- Rent requests will be loaded here -->
-        <div class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">
-            <i class="fas fa-clipboard-list" style="font-size: 3rem; margin-bottom: 15px;"></i>
-            <h3>No Rent Requests</h3>
-            <p>You haven't made any rent requests yet.</p>
-        </div>
-    </div>
-</div>
+
     <!-- Sidebar Navigation -->
     <div class="sidebar" id="sidebar">
         <div class="logo">
@@ -1324,46 +1944,45 @@
             <li><a href="#" class="nav-link active" data-section="dashboard"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
             <li><a href="#" class="nav-link" data-section="browse"><i class="fas fa-search"></i> <span>Browse Equipment</span></a></li>
             <li><a href="#" class="nav-link" data-section="cart"><i class="fas fa-shopping-cart"></i> <span>My Cart</span></a></li>
-           
             <li><a href="#" class="nav-link" data-section="wishlist"><i class="fas fa-heart"></i> <span>Wishlist</span></a></li>
-            <li><a href="#" class="nav-link" data-section="loan-calculator"><i class="fas fa-calculator"></i> <span>Loan Calculator</span></a></li>
+            
             <li><a href="#" class="nav-link" data-section="reviews"><i class="fas fa-star"></i> <span>My Reviews</span></a></li>
+            <li><a href="#" class="nav-link" data-section="orders"><i class="fas fa-clipboard-list"></i> <span>My Orders</span></a></li>
             <li><a href="{{ url_for('logout') }}" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
         </ul>
     </div>
     
     <!-- Main Content -->
-<div class="main-content" id="mainContent">
-    <div class="header">
-        <div class="welcome">
-            <h2 id="welcomeMessage">Welcome, {{ user_name }}! 👋</h2>
-            <p>Find and book equipment for your farming needs</p>
-            {% if user_email %}
-            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">
-                <i class="fas fa-envelope"></i> {{ user_email }}
-                {% if user_phone %}
-                &nbsp; | &nbsp; <i class="fas fa-phone"></i> {{ user_phone }}
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <div class="welcome">
+                <h2 id="welcomeMessage">Welcome, {{ user_name }}! 👋</h2>
+                <p>Find and book equipment for your farming needs</p>
+                {% if user_email %}
+                <p style="color: var(--gray); font-size: 0.9rem; margin-top: 5px;">
+                    <i class="fas fa-envelope"></i> {{ user_email }}
+                    {% if user_phone %}
+                    &nbsp; | &nbsp; <i class="fas fa-phone"></i> {{ user_phone }}
+                    {% endif %}
+                </p>
                 {% endif %}
-            </p>
-            {% endif %}
+            </div>
+            
+            <div class="header-actions">
+                <div class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="notification-btn cart-icon" id="cartIcon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-counter" id="cartCounter" style="display: none;">0</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="User" class="user-img">
+                    <span id="userName">{{ user_name }}</span>
+                </div>
+            </div>
         </div>
-        
-        <div class="header-actions">
-            <div class="notification-btn">
-                <i class="fas fa-bell"></i>
-            </div>
-            <div class="notification-btn cart-icon" id="cartIcon">
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-counter" id="cartCounter" style="display: none;">0</span>
-            </div>
-            <div class="user-profile">
-                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="User" class="user-img">
-                <span id="userName">{{ user_name }}</span>
-            </div>
-        </div>
-    </div>
 
-        
         <!-- Dashboard Section -->
         <div class="content-section active" id="dashboard-section">
             <!-- Stats Cards -->
@@ -1541,18 +2160,12 @@
                             <span>Total:</span>
                             <span id="cartTotal">₹0</span>
                         </div>
-                        
-                        <!-- Place Order Button -->
-                        <button class="btn-place-order" id="placeOrderBtn">
-                            <i class="fas fa-shopping-bag"></i> Place Order
-                        </button>
+                    
                     </div>
                 </div>
             </div>
         </div>
-        
-       
-        
+
         <!-- Wishlist Section -->
         <div class="content-section" id="wishlist-section">
             <div class="section-header">
@@ -1574,31 +2187,160 @@
                 <!-- Loan calculator content would go here -->
             </div>
         </div>
+        <!-- Replace the entire Reviews section in your userdashboard.html -->
+<div class="content-section" id="reviews-section">
+    <div class="section-header">
+        <h2>My Reviews</h2>
+        <button class="btn btn-primary" id="addReviewBtn">
+            <i class="fas fa-plus"></i> Write a Review
+        </button>
+    </div>
+    
+    <div id="reviewsContainer">
+        <div class="no-reviews" style="text-align: center; padding: 40px; color: var(--gray);">
+            <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 15px;"></i>
+            <h3>No Reviews Yet</h3>
+            <p>You haven't written any reviews yet. Share your experience with others!</p>
+        </div>
         
-        <!-- Reviews Section -->
-        <div class="content-section" id="reviews-section">
-            <div class="section-header">
-                <h2>My Reviews</h2>
-                <button class="btn btn-primary" id="addReviewBtn">
-                    <i class="fas fa-plus"></i> Add Review
-                </button>
-            </div>
-            
-            <div id="reviewsContainer">
-                <!-- Reviews will be loaded here -->
-                <div class="no-reviews" style="text-align: center; padding: 40px; color: var(--gray); display: none;">
-                    <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                    <h3>No Reviews Yet</h3>
-                    <p>You haven't written any reviews yet. Share your experience with others!</p>
+        <div class="reviews-list">
+            <!-- Reviews will be dynamically added here -->
+        </div>
+    </div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal" id="reviewModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Write a Review</h3>
+            <button class="close-modal">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+            <form id="reviewForm">
+                <div class="form-group">
+                    <label for="reviewOrder">Select Completed Order *</label>
+                    <select id="reviewOrder" class="form-control" required>
+                        <option value="">-- Select an order to review --</option>
+                        <!-- Options will be populated with completed orders -->
+                    </select>
                 </div>
                 
-                <div class="reviews-list">
-                    <!-- Reviews will be dynamically added here -->
+                <div id="selectedOrderInfo" style="display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4 id="selectedEquipmentName"></h4>
+                    <p><strong>Vendor:</strong> <span id="selectedVendorName"></span></p>
+                    <p><strong>Order Type:</strong> <span id="selectedOrderType"></span></p>
                 </div>
+                
+                <div class="form-group">
+                    <label for="reviewRating">Rating *</label>
+                    <div class="rating-stars" style="display: flex; gap: 5px; margin: 10px 0;">
+                        <i class="fas fa-star" data-rating="1" style="font-size: 1.5rem; color: #e2e8f0; cursor: pointer;"></i>
+                        <i class="fas fa-star" data-rating="2" style="font-size: 1.5rem; color: #e2e8f0; cursor: pointer;"></i>
+                        <i class="fas fa-star" data-rating="3" style="font-size: 1.5rem; color: #e2e8f0; cursor: pointer;"></i>
+                        <i class="fas fa-star" data-rating="4" style="font-size: 1.5rem; color: #e2e8f0; cursor: pointer;"></i>
+                        <i class="fas fa-star" data-rating="5" style="font-size: 1.5rem; color: #e2e8f0; cursor: pointer;"></i>
+                    </div>
+                    <input type="hidden" id="reviewRating" value="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewTitle">Review Title *</label>
+                    <input type="text" id="reviewTitle" class="form-control" placeholder="Great equipment!" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reviewComment">Your Review *</label>
+                    <textarea id="reviewComment" class="form-control" rows="4" placeholder="Share your experience with this equipment..." required></textarea>
+                </div>
+            </form>
+        </div>
+        
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="cancelReviewBtn">Cancel</button>
+            <button class="btn btn-success" id="submitReviewBtn">Submit Review</button>
+        </div>
+    </div>
+</div>
+
+   
+    <!-- Orders Section -->
+    <div class="content-section" id="orders-section">
+        <div class="section-header">
+            <h2>My Orders</h2>
+            <p>Manage your bookings and rental requests</p>
+        </div>
+
+        <!-- Orders Filters -->
+        <div class="search-filter">
+            <div class="filter-dropdown">
+                <select id="orderTypeFilter" class="form-control">
+                    <option value="all">All Types</option>
+                    <option value="booking">Bookings</option>
+                    <option value="rental">Rentals</option>
+                </select>
+            </div>
+            <div class="filter-dropdown">
+                <select id="orderStatusFilter" class="form-control">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="cancellation_requested">Cancellation Requested</option>
+                    <option value="cancelled">Cancelled</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Orders Container -->
+        <div id="ordersContainer">
+            <div class="orders-list" id="ordersList">
+                <!-- Orders will be loaded here dynamically -->
+            </div>
+            <div class="no-data" style="text-align: center; padding: 40px; color: var(--gray); display: none;">
+                <i class="fas fa-clipboard-list" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3>No Orders Found</h3>
+                <p>You haven't made any bookings or rental requests yet.</p>
             </div>
         </div>
     </div>
 
+    <!-- Order Details Modal -->
+    <div class="modal" id="orderDetailsModal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3 id="orderDetailsTitle">Order Details</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="orderDetailsContent">
+                    <!-- Order details will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="closeOrderDetailsModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- Add to user dashboard HTML -->
+        <div class="content-section" id="rent-requests-section">
+            <div class="section-header">
+                <h2>My Rent Requests</h2>
+            </div>
+            
+            <div id="userRentRequestsContainer">
+                <!-- Rent requests will be loaded here -->
+                <div class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">
+                    <i class="fas fa-clipboard-list" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                    <h3>No Rent Requests</h3>
+                    <p>You haven't made any rent requests yet.</p>
+                </div>
+            </div>
+        </div>
+
+    </div> 
    <!-- Booking Modal with Integrated Loan Calculator -->
 <div class="modal" id="bookingModal">
     <div class="modal-content">
@@ -1879,6 +2621,8 @@
         </div>
     </div>
 </div>
+
+
     <!-- Review Modal -->
     <div class="modal" id="reviewModal">
         <div class="modal-content">
@@ -1930,15 +2674,1087 @@
 
     <script>
        
-    // Data storage (in a real app, this would come from API)
-    let equipmentData = [];
-    let userBookings = JSON.parse(localStorage.getItem('userBookings')) || [];
-    let userWishlist = JSON.parse(localStorage.getItem('userWishlist')) || [];
-    let userCart = JSON.parse(localStorage.getItem('userCart')) || [];
-    let userReviews = JSON.parse(localStorage.getItem('userReviews')) || [];
-    let vendorReviews = JSON.parse(localStorage.getItem('vendorReviews')) || [];
+// Data storage (in a real app, this would come from API)
+let equipmentData = [];
+let userBookings = JSON.parse(localStorage.getItem('userBookings')) || [];
+let userWishlist = JSON.parse(localStorage.getItem('userWishlist')) || [];
+let userCart = JSON.parse(localStorage.getItem('userCart')) || [];
+let userReviews = JSON.parse(localStorage.getItem('userReviews')) || [];
+let vendorReviews = JSON.parse(localStorage.getItem('vendorReviews')) || [];
 
-    // Load equipment from database
+// Orders Management
+let currentOrders = [];
+let currentOrderToCancel = null;
+
+// DOM Elements
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+const navLinks = document.querySelectorAll('.nav-link');
+const contentSections = document.querySelectorAll('.content-section');
+const recommendedEquipment = document.getElementById('recommendedEquipment');
+const browseEquipmentGrid = document.getElementById('browseEquipmentGrid');
+const wishlistGrid = document.getElementById('wishlistGrid');
+const upcomingBookingsTable = document.getElementById('upcomingBookingsTable');
+const bookingsTable = document.getElementById('bookingsTable');
+const bookingModal = document.getElementById('bookingModal');
+const closeModalBtn = document.querySelector('.close-modal');
+const cancelBookingBtn = document.getElementById('cancelBookingBtn');
+const confirmBookingBtn = document.getElementById('confirmBookingBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const activeBookingsEl = document.getElementById('activeBookings');
+const pastBookingsEl = document.getElementById('pastBookings');
+const wishlistItemsEl = document.getElementById('wishlistItems');
+const reviewsWrittenEl = document.getElementById('reviewsWritten');
+const toast = document.getElementById('toast');
+const toastMessage = document.getElementById('toastMessage');
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+const priceFilter = document.getElementById('priceFilter');
+const locationFilter = document.getElementById('locationFilter');
+const bookingFilter = document.getElementById('bookingFilter');
+const cartCounter = document.getElementById('cartCounter');
+
+// Initialize the dashboard when the page loads
+document.addEventListener('DOMContentLoaded', initDashboard);
+
+async function initDashboard() {
+    console.log('🚀 Initializing user dashboard...');
+    
+    // Set the user name in the welcome message
+    const userData = {
+        name: "{{ user_name }}",
+        email: "{{ user_email }}",
+        phone: "{{ user_phone }}"
+    };
+    
+    document.getElementById('welcomeMessage').textContent = `Welcome, ${userData.name}!`;
+    document.getElementById('userName').textContent = userData.name;
+    
+    // Load equipment from database first
+    await loadEquipmentFromDB();
+      setupWishlistEvents();
+    
+    // Then load all UI components
+    loadRecommendedEquipment();
+    loadBrowseEquipment();
+    loadUpcomingBookings();
+    loadWishlist();
+    loadCartItems();
+    loadReviews();
+    updateStats();
+    updateCartCounter();
+    
+    // Set active section based on URL hash or default to dashboard
+    const hash = window.location.hash.substring(1) || 'dashboard';
+    showSection(hash);
+    
+    // Set active nav link
+    setActiveNavLink(hash);
+    
+    // Check screen size and toggle mobile menu if needed
+    checkScreenSize();
+    
+    // Set up event listeners for filters
+    if (searchInput) searchInput.addEventListener('input', filterEquipment);
+    if (categoryFilter) categoryFilter.addEventListener('change', filterEquipment);
+    if (priceFilter) priceFilter.addEventListener('change', filterEquipment);
+    if (locationFilter) locationFilter.addEventListener('change', filterEquipment);
+    if (bookingFilter) bookingFilter.addEventListener('change', filterBookings);
+    
+    // Set up rating stars
+    setupRatingStars();
+    
+    // Set up loan calculator event listeners
+    setupLoanCalculator();
+    
+    console.log('✅ User dashboard initialized successfully');
+}
+// Simple event setup for wishlist
+function setupWishlistEvents() {
+    // When clicking on the wishlist nav link
+    document.querySelector('.nav-link[data-section="wishlist"]').addEventListener('click', function() {
+        // Reload wishlist when section is opened
+        setTimeout(() => {
+            loadWishlist();
+        }, 100);
+    });
+}
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn',
+        autoDisplay: false
+    }, 'google_translate_element');
+    
+    // Apply saved language
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if(savedLang === 'kn') {
+        setTimeout(() => {
+            var iframe = document.querySelector('.goog-te-menu-frame');
+            if(iframe) {
+                var select = iframe.contentWindow.document.querySelector('.goog-te-menu2-select');
+                if(select) {
+                    select.value = 'kn';
+                    select.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 1000);
+    }
+}
+var script = document.createElement('script');
+script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+document.head.appendChild(script);
+// ================= ORDERS MANAGEMENT =================
+
+// Load user orders from database
+async function loadUserOrders() {
+    try {
+        const orderTypeFilter = document.getElementById('orderTypeFilter').value;
+        const orderStatusFilter = document.getElementById('orderStatusFilter').value;
+        
+        const ordersContainer = document.getElementById('ordersList');
+        const noDataMsg = document.querySelector('#ordersContainer .no-data');
+        
+        ordersContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: var(--gray);">Loading orders...</p>';
+        
+        // Build query parameters
+        const params = new URLSearchParams();
+        if (orderTypeFilter !== 'all') params.append('type', orderTypeFilter);
+        if (orderStatusFilter !== 'all') params.append('status', orderStatusFilter);
+        
+        const response = await fetch(`/api/user/orders?${params}`);
+        const orders = await response.json();
+        
+        console.log('📦 Orders loaded:', orders);
+        
+        ordersContainer.innerHTML = '';
+        
+        if (!orders || orders.length === 0 || orders.error) {
+            noDataMsg.style.display = 'block';
+            return;
+        }
+        
+        noDataMsg.style.display = 'none';
+        
+        orders.forEach(order => {
+            const orderCard = createOrderCard(order);
+            ordersContainer.appendChild(orderCard);
+        });
+        
+        // Setup event listeners after loading orders
+        setupOrderEventListeners();
+        
+    } catch (error) {
+        console.error('❌ Error loading orders:', error);
+        const ordersContainer = document.getElementById('ordersList');
+        ordersContainer.innerHTML = '<p style="text-align: center; padding: 20px; color: var(--accent);">Error loading orders</p>';
+    }
+}
+// FIXED: Create order card with proper data handling
+function createOrderCard(order) {
+    const card = document.createElement('div');
+    card.className = 'order-card';
+    card.dataset.id = order.id;
+    card.dataset.type = order.order_type;
+    
+    const statusClass = getOrderStatusClass(order.status);
+    const typeClass = order.order_type === 'booking' ? 'badge-booking' : 'badge-rental';
+    const typeText = order.order_type === 'booking' ? 'Booking' : 'Rental';
+    
+    // Safely handle undefined values
+    const vendorName = order.vendor_name || 'Vendor';
+    const userName = order.user_name || 'User';
+    const userPhone = order.user_phone || 'Not provided';
+    const userEmail = order.user_email || 'Not provided';
+    
+    let actionButtons = '';
+    let cancellationNote = '';
+    
+    // Show cancel button only for orders that can be cancelled
+    if (order.can_cancel && !order.is_cancellation_requested) {
+        actionButtons = `
+            <button class="btn btn-danger btn-sm cancel-order-btn" 
+                    data-id="${order.id}" 
+                    data-type="${order.order_type}">
+                <i class="fas fa-times"></i> Request Cancellation
+            </button>
+        `;
+    }
+    
+    // Show cancellation requested status
+    if (order.is_cancellation_requested) {
+        actionButtons = `
+            <span class="item-badge badge-maintenance">
+                <i class="fas fa-clock"></i> Cancellation Pending
+            </span>
+        `;
+        
+        const requestDate = order.cancellation_requested_date ? 
+            new Date(order.cancellation_requested_date).toLocaleDateString('en-IN') : 'Recently';
+            
+        cancellationNote = `
+            <div class="cancellation-note">
+                <i class="fas fa-clock"></i>
+                <strong>Cancellation requested</strong> - waiting for vendor approval
+                ${order.cancellation_reason ? `<br><strong>Your reason:</strong> ${order.cancellation_reason}` : ''}
+                <br><small>Requested on: ${requestDate}</small>
+            </div>
+        `;
+    }
+    
+    // Show cancellation details if already cancelled
+    if (order.status === 'cancelled') {
+        cancellationNote = `
+            <div class="cancellation-note approved">
+                <i class="fas fa-check-circle"></i>
+                <strong>Cancellation approved by vendor</strong>
+                ${order.cancellation_reason ? `<br><strong>Your reason:</strong> ${order.cancellation_reason}` : ''}
+            </div>
+        `;
+    }
+    
+    card.innerHTML = `
+        <div class="order-header">
+            <h3 class="order-title">${order.equipment_name}</h3>
+            <div>
+                <span class="order-type-badge ${typeClass}">${typeText}</span>
+                <span class="item-badge ${statusClass}">${getOrderStatusText(order.status)}</span>
+            </div>
+        </div>
+        
+        <div class="order-details">
+            <div class="order-detail-item">
+                <span class="detail-label">Vendor</span>
+                <span class="detail-value">${vendorName}</span>
+            </div>
+            
+            <div class="order-detail-item">
+                <span class="detail-label">Period</span>
+                <span class="detail-value">
+                    ${order.start_date ? `${formatDisplayDate(order.start_date)} to ${formatDisplayDate(order.end_date)}` : 'Instant Booking'}
+                </span>
+            </div>
+            
+            <div class="order-detail-item">
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">${order.duration || 1} days</span>
+            </div>
+            
+            <div class="order-detail-item">
+                <span class="detail-label">Total Amount</span>
+                <span class="detail-value">₹${order.total_amount}</span>
+            </div>
+            
+            <div class="order-detail-item">
+                <span class="detail-label">Order Date</span>
+                <span class="detail-value">${formatDisplayDate(order.created_date)}</span>
+            </div>
+        </div>
+        
+        <div class="order-actions">
+            ${actionButtons}
+            <button class="btn btn-primary btn-sm view-order-details" 
+                    data-id="${order.id}" 
+                    data-type="${order.order_type}"
+                    data-vendor-name="${vendorName}"
+                    data-vendor-email="${order.vendor_email || ''}"
+                    data-user-name="${userName}"
+                    data-user-email="${userEmail}"
+                    data-user-phone="${userPhone}">
+                <i class="fas fa-eye"></i> View Details
+            </button>
+        </div>
+        
+        ${cancellationNote}
+    `;
+    
+    return card;
+}
+
+// ================= REVIEW FUNCTIONS =================
+
+async function loadReviews() {
+    try {
+        const response = await fetch('/api/user/reviews');
+        const reviews = await response.json();
+        
+        const reviewsContainer = document.querySelector('.reviews-list');
+        const noReviewsMsg = document.querySelector('.no-reviews');
+        
+        if (!reviewsContainer) return;
+        
+        reviewsContainer.innerHTML = '';
+        
+        if (!reviews || reviews.length === 0 || reviews.error) {
+            if (noReviewsMsg) noReviewsMsg.style.display = 'block';
+            return;
+        }
+        
+        if (noReviewsMsg) noReviewsMsg.style.display = 'none';
+        
+        reviews.forEach(review => {
+            const reviewElement = document.createElement('div');
+            reviewElement.className = 'card';
+            reviewElement.style.marginBottom = '15px';
+            reviewElement.style.padding = '20px';
+            
+            // Create stars based on rating
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+                starsHtml += `<i class="fas fa-star" style="color: ${i <= review.rating ? '#f59e0b' : '#e2e8f0'};"></i>`;
+            }
+            
+            // Format date
+            const reviewDate = new Date(review.created_date).toLocaleDateString('en-IN', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            
+            // Order type badge
+            const orderTypeBadge = review.order_type === 'booking' 
+                ? '<span class="order-type-badge badge-booking" style="margin-left: 10px;">Booking</span>'
+                : '<span class="order-type-badge badge-rental" style="margin-left: 10px;">Rental</span>';
+            
+            reviewElement.innerHTML = `
+                <div style="display: flex; gap: 15px;">
+                    <div style="width: 80px; height: 80px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                        ${review.equipment_image ? 
+                            `<img src="${review.equipment_image}" alt="${review.equipment_name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` :
+                            `<i class="fas fa-tractor" style="font-size: 2rem; color: var(--gray);"></i>`
+                        }
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <div>
+                                <h3 style="margin-bottom: 5px; color: var(--dark);">${review.equipment_name}</h3>
+                                <div style="margin-bottom: 8px;">
+                                    ${starsHtml}
+                                    ${orderTypeBadge}
+                                    <span style="margin-left: 10px; color: var(--gray); font-size: 0.9rem;">${reviewDate}</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-danger btn-sm delete-review-btn" data-id="${review.id}">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                        <div style="margin-bottom: 8px; color: var(--gray); font-size: 0.9rem;">
+                            <i class="fas fa-user"></i> ${review.vendor_name}
+                        </div>
+                        <h4 style="margin-bottom: 8px; color: var(--primary);">${review.title}</h4>
+                        <p style="color: var(--dark); line-height: 1.5;">${review.comment}</p>
+                    </div>
+                </div>
+            `;
+            
+            reviewsContainer.appendChild(reviewElement);
+        });
+        
+        // Add event listeners to delete buttons
+        document.querySelectorAll('.delete-review-btn').forEach(btn => {
+            btn.addEventListener('click', () => deleteReview(btn.dataset.id));
+        });
+        
+    } catch (error) {
+        console.error('Error loading reviews:', error);
+    }
+}
+
+function showReviewModal() {
+    const reviewModal = document.getElementById('reviewModal');
+    const reviewOrderSelect = document.getElementById('reviewOrder');
+    
+    // Clear existing options
+    reviewOrderSelect.innerHTML = '<option value="">-- Select an order to review --</option>';
+    
+    // Fetch completed orders
+    fetch('/api/user/completed-orders')
+        .then(response => response.json())
+        .then(orders => {
+            if (orders.error) {
+                showToast('Error loading completed orders', 'error');
+                return;
+            }
+            
+            if (orders.length === 0) {
+                reviewOrderSelect.innerHTML = '<option value="">No completed orders available for review</option>';
+                showToast('No completed orders available for review', 'info');
+                return;
+            }
+            
+            // Add options for each completed order
+            orders.forEach(order => {
+                const option = document.createElement('option');
+                option.value = JSON.stringify({
+                    order_id: order.order_id,
+                    order_type: order.order_type,
+                    equipment_id: order.equipment_id,
+                    equipment_name: order.equipment_name,
+                    vendor_email: order.vendor_email,
+                    vendor_name: order.vendor_name
+                });
+                option.textContent = `${order.equipment_name} (${order.order_type === 'booking' ? 'Booking' : 'Rental'}) - ${new Date(order.created_date).toLocaleDateString()}`;
+                reviewOrderSelect.appendChild(option);
+            });
+            
+            // Reset form
+            document.getElementById('reviewForm').reset();
+            document.getElementById('reviewRating').value = 0;
+            document.getElementById('selectedOrderInfo').style.display = 'none';
+            
+            // Reset stars
+            document.querySelectorAll('.rating-stars i').forEach(star => {
+                star.style.color = '#e2e8f0';
+            });
+            
+            // Show modal
+            reviewModal.style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('Error loading completed orders:', error);
+            showToast('Error loading completed orders', 'error');
+        });
+}
+
+// Event listener for order selection
+document.getElementById('reviewOrder').addEventListener('change', function() {
+    const selectedOrderInfo = document.getElementById('selectedOrderInfo');
+    
+    if (this.value) {
+        const orderData = JSON.parse(this.value);
+        document.getElementById('selectedEquipmentName').textContent = orderData.equipment_name;
+        document.getElementById('selectedVendorName').textContent = orderData.vendor_name;
+        document.getElementById('selectedOrderType').textContent = orderData.order_type === 'booking' ? 'Booking' : 'Rental';
+        selectedOrderInfo.style.display = 'block';
+    } else {
+        selectedOrderInfo.style.display = 'none';
+    }
+});
+
+async function submitReview() {
+    const reviewOrderSelect = document.getElementById('reviewOrder');
+    const rating = document.getElementById('reviewRating').value;
+    const title = document.getElementById('reviewTitle').value;
+    const comment = document.getElementById('reviewComment').value;
+    
+    if (!reviewOrderSelect.value) {
+        showToast('Please select an order to review', 'error');
+        return;
+    }
+    
+    if (rating == 0) {
+        showToast('Please provide a rating', 'error');
+        return;
+    }
+    
+    if (!title.trim() || !comment.trim()) {
+        showToast('Please provide a title and comment for your review', 'error');
+        return;
+    }
+    
+    const orderData = JSON.parse(reviewOrderSelect.value);
+    
+    const reviewData = {
+        order_id: orderData.order_id,
+        order_type: orderData.order_type,
+        equipment_id: orderData.equipment_id,
+        equipment_name: orderData.equipment_name,
+        vendor_email: orderData.vendor_email,
+        vendor_name: orderData.vendor_name,
+        rating: parseInt(rating),
+        title: title,
+        comment: comment
+    };
+    
+    try {
+        const response = await fetch('/api/user/reviews/submit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(reviewData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            showToast('Review submitted successfully!');
+            document.getElementById('reviewModal').style.display = 'none';
+            
+            // Reload reviews
+            loadReviews();
+            updateStats();
+        } else {
+            showToast(result.error || 'Error submitting review', 'error');
+        }
+    } catch (error) {
+        console.error('Error submitting review:', error);
+        showToast('Error submitting review', 'error');
+    }
+}
+
+async function deleteReview(reviewId) {
+    if (!confirm('Are you sure you want to delete this review?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/api/user/reviews/${reviewId}/delete`, {
+            method: 'POST'
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            showToast('Review deleted successfully');
+            loadReviews();
+            updateStats();
+        } else {
+            showToast(result.error || 'Error deleting review', 'error');
+        }
+    } catch (error) {
+        console.error('Error deleting review:', error);
+        showToast('Error deleting review', 'error');
+    }
+}
+
+async function updateStats() {
+    try {
+        const response = await fetch('/api/user/reviews');
+        const reviews = await response.json();
+        
+        if (reviews && !reviews.error) {
+            const reviewsWrittenEl = document.getElementById('reviewsWritten');
+            if (reviewsWrittenEl) {
+                reviewsWrittenEl.textContent = reviews.length;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating review stats:', error);
+    }
+}
+
+// Setup rating stars
+function setupRatingStars() {
+    const ratingStars = document.querySelectorAll('.rating-stars i');
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            document.getElementById('reviewRating').value = rating;
+            
+            // Update star colors
+            ratingStars.forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#f59e0b';
+                } else {
+                    s.style.color = '#e2e8f0';
+                }
+            });
+        });
+        
+        // Add hover effect
+        star.addEventListener('mouseover', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            ratingStars.forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#f59e0b';
+                } else {
+                    s.style.color = '#e2e8f0';
+                }
+            });
+        });
+    });
+}
+
+// Event listeners for review modal
+document.getElementById('addReviewBtn').addEventListener('click', showReviewModal);
+document.getElementById('submitReviewBtn').addEventListener('click', submitReview);
+document.getElementById('cancelReviewBtn').addEventListener('click', function() {
+    document.getElementById('reviewModal').style.display = 'none';
+});
+
+// Close modal when clicking outside
+document.getElementById('reviewModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// Close modal with escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.getElementById('reviewModal').style.display = 'none';
+    }
+});
+// FIXED: Display order details in modal with proper data
+function displayOrderDetailsModal(orderDetails) {
+    const modal = document.getElementById('orderDetailsModal');
+    const title = document.getElementById('orderDetailsTitle');
+    const content = document.getElementById('orderDetailsContent');
+    
+    title.textContent = `Order Details - #${orderDetails.id}`;
+    
+    // Safely handle undefined values
+    const userName = orderDetails.user_name || 'Not provided';
+    const userEmail = orderDetails.user_email || 'Not provided';
+    const userPhone = orderDetails.user_phone || 'Not provided';
+    const vendorEmail = orderDetails.vendor_email || 'Not provided';
+    const vendorName = orderDetails.vendor_name || 'Not provided';
+    
+    content.innerHTML = `
+        <div class="order-details-container">
+            <div class="details-section">
+                <h4>Equipment Information</h4>
+                <div class="detail-row">
+                    <span class="detail-label">Equipment:</span>
+                    <span class="detail-value">${orderDetails.equipment_name || 'N/A'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Order Type:</span>
+                    <span class="detail-value">${orderDetails.order_type || 'N/A'}</span>
+                </div>
+                ${orderDetails.notes ? `
+                <div class="detail-row">
+                    <span class="detail-label">Notes:</span>
+                    <span class="detail-value">${orderDetails.notes}</span>
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="details-section">
+                <h4>Order Information</h4>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value status-${orderDetails.status}">${getOrderStatusText(orderDetails.status)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Amount:</span>
+                    <span class="detail-value">₹${orderDetails.total_amount || '0'}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Order Date:</span>
+                    <span class="detail-value">${formatDisplayDate(orderDetails.created_date)}</span>
+                </div>
+                ${orderDetails.start_date ? `
+                <div class="detail-row">
+                    <span class="detail-label">Rental Period:</span>
+                    <span class="detail-value">${formatDisplayDate(orderDetails.start_date)} to ${formatDisplayDate(orderDetails.end_date)}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value">${orderDetails.duration || 1} days</span>
+                </div>
+                ` : ''}
+            </div>
+            
+            <div class="details-section">
+                <h4>Vendor Information</h4>
+                <div class="detail-row">
+                    <span class="detail-label">Vendor:</span>
+                    <span class="detail-value">${vendorName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${vendorEmail}</span>
+                </div>
+            </div>
+            
+            <div class="details-section">
+                <h4>User Information</h4>
+                <div class="detail-row">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">${userName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${userEmail}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">${userPhone}</span>
+                </div>
+            </div>
+            
+            ${orderDetails.cancellation_requested_date ? `
+            <div class="details-section">
+                <h4>Cancellation Information</h4>
+                <div class="detail-row">
+                    <span class="detail-label">Cancellation Status:</span>
+                    <span class="detail-value">${orderDetails.status === 'cancellation_requested' ? 'Pending Approval' : 'Cancelled'}</span>
+                </div>
+                ${orderDetails.cancellation_reason ? `
+                <div class="detail-row">
+                    <span class="detail-label">Cancellation Reason:</span>
+                    <span class="detail-value">${orderDetails.cancellation_reason}</span>
+                </div>
+                ` : ''}
+                <div class="detail-row">
+                    <span class="detail-label">Requested Date:</span>
+                    <span class="detail-value">${formatDisplayDate(orderDetails.cancellation_requested_date)}</span>
+                </div>
+            </div>
+            ` : ''}
+        </div>
+        
+        <style>
+            .order-details-container {
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+            }
+            .details-section {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                border-left: 4px solid var(--primary);
+            }
+            .details-section h4 {
+                color: var(--primary);
+                margin-bottom: 10px;
+                border-bottom: 1px solid var(--gray-light);
+                padding-bottom: 5px;
+            }
+            .detail-row {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 8px;
+                padding-bottom: 5px;
+                border-bottom: 1px solid #e9ecef;
+            }
+            .detail-row:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+            .detail-label {
+                font-weight: 600;
+                color: var(--dark);
+                min-width: 150px;
+            }
+            .detail-value {
+                color: var(--gray);
+                text-align: right;
+                flex: 1;
+            }
+            .status-pending { color: #856404; background: #fff3cd; padding: 2px 8px; border-radius: 4px; }
+            .status-confirmed { color: #0c5460; background: #d1ecf1; padding: 2px 8px; border-radius: 4px; }
+            .status-cancelled { color: #721c24; background: #f8d7da; padding: 2px 8px; border-radius: 4px; }
+            .status-completed { color: #155724; background: #d4edda; padding: 2px 8px; border-radius: 4px; }
+        </style>
+    `;
+    
+    modal.style.display = 'flex';
+}
+
+function closeOrderDetailsModal() {
+    const modal = document.getElementById('orderDetailsModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function formatDisplayDate(dateString) {
+    if (!dateString) return 'N/A';
+    try {
+        return new Date(dateString).toLocaleDateString('en-IN', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric'
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return 'Invalid Date';
+    }
+}
+
+// Helper functions
+function getOrderStatusClass(status) {
+    const statusClasses = {
+        'pending': 'status-pending',
+        'confirmed': 'status-confirmed',
+        'cancellation_requested': 'status-pending',
+        'cancelled': 'status-cancelled',
+        'completed': 'status-completed'
+    };
+    return statusClasses[status] || 'status-pending';
+}
+
+function getOrderStatusText(status) {
+    const statusTexts = {
+        'pending': 'Pending',
+        'confirmed': 'Confirmed',
+        'cancellation_requested': 'Cancellation Requested',
+        'cancelled': 'Cancelled',
+        'completed': 'Completed'
+    };
+    return statusTexts[status] || status;
+}
+
+// FIXED: Proper event delegation setup
+function setupOrderEventListeners() {
+    console.log("🔧 Setting up order event listeners...");
+    
+    // Remove any existing event listeners to prevent duplicates
+    document.removeEventListener('click', handleOrderButtonClick);
+    
+    // Add the event listener
+    document.addEventListener('click', handleOrderButtonClick);
+}
+
+// FIXED: Handle all order button clicks
+function handleOrderButtonClick(e) {
+    // Handle Cancel Order buttons
+    const cancelBtn = e.target.closest('.cancel-order-btn');
+    if (cancelBtn) {
+        console.log('✅ Cancel order button clicked!');
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const orderId = cancelBtn.getAttribute('data-id');
+        const orderType = cancelBtn.getAttribute('data-type');
+        
+        console.log(`📝 Order details - ID: ${orderId}, Type: ${orderType}`);
+        
+        if (orderId && orderType) {
+            requestCancelOrder(orderType, orderId, cancelBtn);
+        } else {
+            console.error('❌ Missing order ID or type');
+            showToast('Error: Missing order information', 'error');
+        }
+        return;
+    }
+    
+    // Handle View Details buttons
+    const viewDetailsBtn = e.target.closest('.view-order-details');
+    if (viewDetailsBtn) {
+        console.log('✅ View details button clicked!');
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const orderId = viewDetailsBtn.getAttribute('data-id');
+        const orderType = viewDetailsBtn.getAttribute('data-type');
+        
+        if (orderId && orderType) {
+            viewOrderDetails(orderId, orderType);
+        }
+        return;
+    }
+}
+// Enhanced cancellation request function with detailed error logging
+function requestCancellation(orderId, orderType) {
+    const cancellationReason = prompt('Please provide a reason for cancellation:');
+    
+    if (!cancellationReason) {
+        showToast('Cancellation reason is required', 'error');
+        return;
+    }
+    
+    if (!confirm('Are you sure you want to request cancellation for this order?')) {
+        return;
+    }
+    
+    console.log(`🔄 Requesting cancellation for ${orderType} #${orderId}`, {
+        order_id: orderId,
+        order_type: orderType,
+        cancellation_reason: cancellationReason,
+        user_id: sessionStorage.getItem('user_id') // Check if user is logged in
+    });
+    
+    fetch('/api/user/order/request-cancel', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            order_id: parseInt(orderId), // Ensure it's a number
+            order_type: orderType,
+            cancellation_reason: cancellationReason
+        })
+    })
+    .then(response => {
+        console.log('📨 Response status:', response.status, response.statusText);
+        
+        if (!response.ok) {
+            // Try to get detailed error message
+            return response.text().then(text => {
+                console.error('❌ Server response text:', text);
+                let errorMsg = 'Network error';
+                try {
+                    const errorData = JSON.parse(text);
+                    errorMsg = errorData.error || text;
+                } catch (e) {
+                    errorMsg = text || 'Unknown error';
+                }
+                throw new Error(errorMsg);
+            });
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log('✅ Cancellation request success:', result);
+        if (result.success) {
+            showToast(result.message || 'Cancellation request submitted successfully!');
+            // Reload orders to update status
+            if (typeof loadUserOrders === 'function') {
+                loadUserOrders();
+            }
+        } else {
+            showToast(result.error || 'Error submitting cancellation request', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Cancellation request error details:', {
+            error: error.message,
+            orderId: orderId,
+            orderType: orderType,
+            timestamp: new Date().toISOString()
+        });
+        showToast('Error: ' + error.message, 'error');
+    });
+}
+// SIMPLE: Request cancellation with order details
+async function requestCancelOrder(orderType, orderId, button) {
+    console.log(`🔄 Requesting cancellation for ${orderType} #${orderId}`);
+    
+    if (!confirm('Are you sure you want to request cancellation? The vendor will need to approve your cancellation request.')) {
+        return;
+    }
+    
+    const cancellationReason = prompt('Please provide a reason for cancellation:', '');
+    
+    // If user clicks cancel on the prompt, don't proceed
+    if (cancellationReason === null) {
+        return;
+    }
+    
+    // If empty reason, use default
+    const finalReason = cancellationReason.trim() || 'No reason provided';
+    
+    // Show loading state
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    button.disabled = true;
+    
+    try {
+        console.log(`📡 Calling cancellation API for ${orderType} #${orderId}`);
+        
+        const response = await fetch('/api/user/order/request-cancel', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                order_id: parseInt(orderId),
+                order_type: orderType,
+                cancellation_reason: finalReason
+            })
+        });
+        
+        const result = await response.json();
+        console.log('📦 API Response:', result);
+        
+        if (response.ok && result.success) {
+            showToast('✅ Cancellation request submitted! Waiting for vendor approval.');
+            console.log('✅ Cancellation stored with order details');
+            
+            // Reload orders to show updated status
+            loadUserOrders();
+        } else {
+            const errorMsg = result.error || 'Error submitting cancellation request';
+            console.error('❌ Cancellation error:', errorMsg);
+            showToast(errorMsg, 'error');
+        }
+    } catch (error) {
+        console.error('❌ Network error:', error);
+        showToast('Network error: ' + error.message, 'error');
+    } finally {
+        // Restore button state
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }
+}
+
+// FIXED: View order details function with proper data passing
+async function viewOrderDetails(orderId, orderType) {
+    console.log(`👀 Viewing details for ${orderType} #${orderId}`);
+    
+    try {
+        showToast('Loading order details...');
+        
+        const response = await fetch(`/api/user/order/${orderId}?type=${orderType}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const orderDetails = await response.json();
+        
+        if (orderDetails.error) {
+            throw new Error(orderDetails.error);
+        }
+        
+        // Ensure all required fields are present
+        const completeOrderDetails = {
+            ...orderDetails,
+            user_name: orderDetails.user_name || 'User',
+            user_email: orderDetails.user_email || 'Not provided',
+            user_phone: orderDetails.user_phone || 'Not provided',
+            vendor_name: orderDetails.vendor_name || 'Vendor',
+            vendor_email: orderDetails.vendor_email || 'Not provided'
+        };
+        
+        displayOrderDetailsModal(completeOrderDetails);
+        
+    } catch (error) {
+        console.error('❌ Error fetching order details:', error);
+        showToast('Error loading order details: ' + error.message, 'error');
+    }
+}
+
+// Order Management JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize orders when section is shown
+    const ordersSection = document.getElementById('orders-section');
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.target.classList.contains('active')) {
+                loadUserOrders();
+            }
+        });
+    });
+    
+    observer.observe(ordersSection, { attributes: true, attributeFilter: ['class'] });
+    
+    // Filter event listeners
+    document.getElementById('orderTypeFilter').addEventListener('change', loadUserOrders);
+    document.getElementById('orderStatusFilter').addEventListener('change', loadUserOrders);
+    
+    // Close modal when clicking outside
+    document.getElementById('orderDetailsModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeOrderDetailsModal();
+        }
+    });
+    
+    // Close modal with escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeOrderDetailsModal();
+        }
+    });
+});
+
+// Add filter event listeners
+document.getElementById('orderTypeFilter')?.addEventListener('change', loadUserOrders);
+document.getElementById('orderStatusFilter')?.addEventListener('change', loadUserOrders);
+
+// Initialize orders when section is shown
+function showOrdersSection() {
+    loadUserOrders();
+}
+
+// ================= EQUIPMENT MANAGEMENT =================
+
 // Load equipment from database - FIXED VERSION
 async function loadEquipmentFromDB() {
     try {
@@ -1951,14 +3767,6 @@ async function loadEquipmentFromDB() {
             
             // Filter only available equipment for users but KEEP ALL DATA including stock
             equipmentData = equipmentData.filter(item => item.status === 'available');
-            
-            // Debug: Check stock quantities
-            console.log('📦 Equipment stock quantities:', equipmentData.map(item => ({
-                id: item.id,
-                name: item.name,
-                stock_quantity: item.stock_quantity,
-                min_stock_threshold: item.min_stock_threshold
-            })));
             
             // Store in localStorage for offline use
             localStorage.setItem('equipmentData', JSON.stringify(equipmentData));
@@ -1979,626 +3787,48 @@ async function loadEquipmentFromDB() {
         return false;
     }
 }
-    // DOM Elements
-    const sidebar = document.getElementById('sidebar');
-    const mainContent = document.getElementById('mainContent');
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const contentSections = document.querySelectorAll('.content-section');
-    const recommendedEquipment = document.getElementById('recommendedEquipment');
-    const browseEquipmentGrid = document.getElementById('browseEquipmentGrid');
-    const wishlistGrid = document.getElementById('wishlistGrid');
-    const upcomingBookingsTable = document.getElementById('upcomingBookingsTable');
-    const bookingsTable = document.getElementById('bookingsTable');
-    const bookingModal = document.getElementById('bookingModal');
-    const closeModalBtn = document.querySelector('.close-modal');
-    const cancelBookingBtn = document.getElementById('cancelBookingBtn');
-    const confirmBookingBtn = document.getElementById('confirmBookingBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const activeBookingsEl = document.getElementById('activeBookings');
-    const pastBookingsEl = document.getElementById('pastBookings');
-    const wishlistItemsEl = document.getElementById('wishlistItems');
-    const reviewsWrittenEl = document.getElementById('reviewsWritten');
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    const searchInput = document.getElementById('searchInput');
-    const categoryFilter = document.getElementById('categoryFilter');
-    const priceFilter = document.getElementById('priceFilter');
-    const locationFilter = document.getElementById('locationFilter');
-    const bookingFilter = document.getElementById('bookingFilter');
-    const cartCounter = document.getElementById('cartCounter');
 
-    // Initialize the dashboard when the page loads
-    document.addEventListener('DOMContentLoaded', initDashboard);
-
-    async function initDashboard() {
-        console.log('🚀 Initializing user dashboard...');
-        
-        // Set the user name in the welcome message
-        const userData = {
-            name: "{{ user_name }}",
-            email: "{{ user_email }}",
-            phone: "{{ user_phone }}"
-        };
-        
-        document.getElementById('welcomeMessage').textContent = `Welcome, ${userData.name}!`;
-        document.getElementById('userName').textContent = userData.name;
-        
-        // Load equipment from database first
-        await loadEquipmentFromDB();
-        
-        // Then load all UI components
-        loadRecommendedEquipment();
-        loadBrowseEquipment();
-        loadUpcomingBookings();
-        loadAllBookings();
-        loadWishlist();
-        loadCartItems();
-        loadReviews();
-        updateStats();
-        updateCartCounter();
-        
-        // Set active section based on URL hash or default to dashboard
-        const hash = window.location.hash.substring(1) || 'dashboard';
-        showSection(hash);
-        
-        // Set active nav link
-        setActiveNavLink(hash);
-        
-        // Check screen size and toggle mobile menu if needed
-        checkScreenSize();
-        
-        // Set up event listeners for filters
-        if (searchInput) searchInput.addEventListener('input', filterEquipment);
-        if (categoryFilter) categoryFilter.addEventListener('change', filterEquipment);
-        if (priceFilter) priceFilter.addEventListener('change', filterEquipment);
-        if (locationFilter) locationFilter.addEventListener('change', filterEquipment);
-        if (bookingFilter) bookingFilter.addEventListener('change', filterBookings);
-        
-        // Set up rating stars
-        setupRatingStars();
-        
-        // Set up loan calculator event listeners
-        setupLoanCalculator();
-        
-        console.log('✅ User dashboard initialized successfully');
-    }
-
-    // Navigation functions
-    function showSection(sectionId) {
-        // Hide all sections
-        contentSections.forEach(section => {
-            section.classList.remove('active');
-        });
-        
-        // Show the requested section
-        const section = document.getElementById(`${sectionId}-section`);
-        if (section) {
-            section.classList.add('active');
-        }
-    }
-
-    function setActiveNavLink(sectionId) {
-        // Remove active class from all links
-        navLinks.forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // Add active class to the clicked link
-        const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-    }
-// Add to user dashboard JavaScript
-function loadUserRentRequests() {
-    fetch('/api/user/rent-requests')
-        .then(response => response.json())
-        .then(requests => {
-            const container = document.getElementById('userRentRequestsContainer');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            
-            if (requests.length === 0) {
-                container.innerHTML = '<p class="no-data">No rent requests found.</p>';
-                return;
-            }
-            
-            requests.forEach(request => {
-                const requestCard = createUserRentRequestCard(request);
-                container.appendChild(requestCard);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading user rent requests:', error);
-        });
-}
-
-function createUserRentRequestCard(request) {
-    const card = document.createElement('div');
-    card.className = 'card';
-    card.style.marginBottom = '15px';
-    card.style.padding = '20px';
+// Equipment display functions
+function loadRecommendedEquipment() {
+    if (!recommendedEquipment) return;
     
-    const today = new Date();
-    const endDate = new Date(request.end_date);
-    const isOverdue = endDate < today;
-    const canReturn = request.status === 'approved' && isOverdue;
-    const isReturnPending = request.status === 'return_pending';
-    const isReturned = request.status === 'returned';
+    recommendedEquipment.innerHTML = '';
     
-    let actionButton = '';
+    // Show only available items as recommended
+    const availableItems = equipmentData.filter(item => item.status === 'available');
     
-    if (canReturn || isReturnPending) {
-        actionButton = `
-            <button class="btn btn-warning return-equipment-btn" data-id="${request.id}">
-                <i class="fas fa-undo"></i> Return Equipment
-            </button>
-        `;
-    } else if (isReturned) {
-        actionButton = `
-            <span class="item-badge badge-maintenance">
-                <i class="fas fa-clock"></i> Waiting for Vendor Approval
-            </span>
-        `;
-    }
-    
-    card.innerHTML = `
-        <div class="request-header">
-            <h3 style="margin: 0;">${request.equipment_name}</h3>
-            <span class="item-badge ${getStatusClass(request.status)}">${getStatusText(request.status)}</span>
-        </div>
-        
-        <div class="request-details">
-            <div><strong>Vendor:</strong> ${request.vendor_name}</div>
-            <div><strong>Rental Period:</strong> ${request.start_date} to ${request.end_date}</div>
-            <div><strong>Total Amount:</strong> ₹${request.total_amount}</div>
-            <div><strong>Status:</strong> ${getStatusText(request.status)}</div>
-            ${isOverdue ? '<div style="color: var(--accent);"><strong>⚠️ Rental period ended</strong></div>' : ''}
-        </div>
-        
-        <div class="request-actions">
-            ${actionButton}
-        </div>
-    `;
-    
-    // Add event listener for return button
-    const returnBtn = card.querySelector('.return-equipment-btn');
-    if (returnBtn) {
-        returnBtn.addEventListener('click', () => submitEquipmentReturn(request.id));
-    }
-    
-    return card;
-}
-
-function getStatusClass(status) {
-    const statusClasses = {
-        'pending': 'badge-maintenance',
-        'approved': 'badge-available',
-        'return_pending': 'badge-maintenance',
-        'returned': 'badge-maintenance',
-        'completed': 'badge-available',
-        'rejected': 'badge-unavailable'
-    };
-    return statusClasses[status] || 'badge-maintenance';
-}
-
-function getStatusText(status) {
-    const statusTexts = {
-        'pending': 'Pending Approval',
-        'approved': 'Active Rental',
-        'return_pending': 'Pending Return',
-        'returned': 'Returned - Awaiting Approval',
-        'completed': 'Completed',
-        'rejected': 'Rejected'
-    };
-    return statusTexts[status] || status;
-}
-
-async function submitEquipmentReturn(requestId) {
-    if (!confirm('Are you sure you want to mark this equipment as returned?')) {
+    if (availableItems.length === 0) {
+        recommendedEquipment.innerHTML = '<p class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">No equipment available at the moment.</p>';
         return;
     }
     
-    try {
-        const response = await fetch(`/api/user/rent-request/${requestId}/return`, {
-            method: 'POST'
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok && result.success) {
-            showToast('Equipment return submitted! Waiting for vendor approval.');
-            loadUserRentRequests(); // Reload the list
-        } else {
-            showToast(result.error || 'Error submitting return', 'error');
-        }
-    } catch (error) {
-        console.error('Error submitting equipment return:', error);
-        showToast('Error submitting return', 'error');
-    }
-}
-// When displaying equipment in user dashboard
-function displayEquipmentItem(item) {
-    let imageUrl = item.image_url;
+    // Show up to 4 recommended items
+    const recommendedItems = availableItems.slice(0, 4);
     
-    // If image URL starts with /static/, convert it for user access
-    if (imageUrl && imageUrl.startsWith('/static/')) {
-        imageUrl = imageUrl.replace('/static/', '/');
-    }
-    
-    return `
-        <div class="equipment-card">
-            <div class="equipment-image">
-                ${imageUrl ? 
-                    `<img src="${imageUrl}" alt="${item.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : 
-                    ''
-                }
-                <div class="image-placeholder" style="${imageUrl ? 'display:none;' : ''}">
-                    <i class="fas fa-tractor"></i>
-                </div>
-            </div>
-            <div class="equipment-info">
-                <h3>${item.name}</h3>
-                <p>${item.description || 'No description'}</p>
-                <div class="price">₹${item.price}/${item.price_unit}</div>
-                <div class="location">📍 ${item.location}</div>
-                <div class="vendor">👤 ${item.vendor_name}</div>
-                <button class="btn btn-primary rent-btn" data-id="${item.id}">
-                    Rent Now
-                </button>
-            </div>
-        </div>
-    `;
-}
-   // Fix the setupLoanCalculator function
-function setupLoanCalculator() {
-    console.log('⚙️ Setting up loan calculator...');
-    
-    const calculatorOption = document.getElementById('calculatorOption');
-    if (calculatorOption) {
-        calculatorOption.addEventListener('change', function() {
-            console.log('Calculator option changed to:', this.value);
-            handleCalculatorOptionChange(this.value);
-        });
-    } else {
-        console.error('❌ calculatorOption element not found');
-    }
-    
-    // Add event listeners for loan calculator inputs
-    const loanInputs = [
-        'modalEquipmentLifespan',
-        'modalDownPayment',
-        'modalInterestRate',
-        'modalLoanTerm'
-    ];
-    
-    loanInputs.forEach(inputId => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.addEventListener('input', function() {
-                updateLoanCalculatorValues();
-                // Auto-calculate when inputs change if calculator is active
-                if (document.getElementById('calculatorOption').value === 'calculator') {
-                    calculateLoanPayment();
-                }
-            });
-        } else {
-            console.warn(`⚠️ Input element not found: ${inputId}`);
-        }
+    recommendedItems.forEach(item => {
+        const equipmentCard = createEquipmentCard(item, true);
+        recommendedEquipment.appendChild(equipmentCard);
     });
-    
-    // Calculate button
-    const calculateBtn = document.getElementById('modalCalculateBtn');
-    if (calculateBtn) {
-        calculateBtn.addEventListener('click', calculateLoanPayment);
-    } else {
-        console.error('❌ Calculate button not found');
-    }
-    
-    // Download button
-    const downloadBtn = document.getElementById('modalDownloadBtn');
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', downloadPaymentSchedule);
-    } else {
-        console.error('❌ Download button not found');
-    }
-    
-    console.log('✅ Loan calculator setup complete');
 }
 
-   // ✅ ADD THIS FUNCTION: Initialize loan calculator with equipment data
-function initializeLoanCalculator(equipment) {
-    if (!equipment) return;
+function loadBrowseEquipment() {
+    if (!browseEquipmentGrid) return;
     
-    // Set equipment details - use purchase price if available, otherwise estimate
-    const purchasePrice = equipment.purchasePrice || (equipment.price * 100); // Convert daily rate to estimated purchase price
+    browseEquipmentGrid.innerHTML = '';
     
-    const equipmentNameInput = document.getElementById('modalEquipmentName');
-    const equipmentPriceInput = document.getElementById('modalEquipmentPrice');
+    const availableItems = equipmentData.filter(item => item.status === 'available');
     
-    if (equipmentNameInput) equipmentNameInput.value = equipment.name;
-    if (equipmentPriceInput) equipmentPriceInput.value = purchasePrice;
-    
-    console.log('💰 Calculator initialized with:', {
-        name: equipment.name,
-        price: equipment.price,
-        purchasePrice: purchasePrice
-    });
-    
-    // Update displayed values immediately
-    updateLoanCalculatorValues();
-}
-// ✅ UPDATE THIS FUNCTION: Handle calculator option change
-function handleCalculatorOptionChange(optionValue) {
-    const loanCalculator = document.getElementById('loanCalculator');
-    const calculatorResults = document.getElementById('modalCalculatorResults');
-    const scheduleContainer = document.getElementById('modalScheduleContainer');
-    
-    console.log('🔄 Handling calculator option change:', optionValue);
-    
-    if (optionValue === 'calculator') {
-        // Show calculator sections
-        if (loanCalculator) {
-            loanCalculator.style.display = 'block';
-            console.log('✅ Showing loan calculator');
-        }
-        if (calculatorResults) {
-            calculatorResults.style.display = 'block';
-            console.log('✅ Showing calculator results');
-        }
-        
-        // Calculate and display EMI immediately when calculator is shown
-        calculateLoanPayment();
-    } else {
-        // Hide calculator sections
-        if (loanCalculator) {
-            loanCalculator.style.display = 'none';
-            console.log('❌ Hiding loan calculator');
-        }
-        if (calculatorResults) {
-            calculatorResults.style.display = 'none';
-            console.log('❌ Hiding calculator results');
-        }
-        if (scheduleContainer) {
-            scheduleContainer.style.display = 'none';
-            console.log('❌ Hiding schedule container');
-        }
-    }
-}
-function updateLoanCalculatorValues() {
-    const equipmentPriceInput = document.getElementById('modalEquipmentPrice');
-    const downPaymentInput = document.getElementById('modalDownPayment');
-    const lifespanInput = document.getElementById('modalEquipmentLifespan');
-    const interestRateInput = document.getElementById('modalInterestRate');
-    const loanTermInput = document.getElementById('modalLoanTerm');
-    
-    if (!equipmentPriceInput || !downPaymentInput || !lifespanInput || !interestRateInput || !loanTermInput) {
-        console.error('❌ One or more calculator inputs not found');
+    if (availableItems.length === 0) {
+        browseEquipmentGrid.innerHTML = '<p class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">No equipment available at the moment.</p>';
         return;
     }
     
-    const equipmentPrice = parseFloat(equipmentPriceInput.value) || 0;
-    const downPaymentPercent = parseFloat(downPaymentInput.value) || 0;
-    const lifespan = parseInt(lifespanInput.value) || 10;
-    const interestRate = parseFloat(interestRateInput.value) || 8.5;
-    const loanTerm = parseInt(loanTermInput.value) || 5;
-    
-    console.log('🔄 Updating calculator values:', { 
-        equipmentPrice, 
-        downPaymentPercent, 
-        lifespan, 
-        interestRate, 
-        loanTerm 
+    availableItems.forEach(item => {
+        const equipmentCard = createEquipmentCard(item, false);
+        browseEquipmentGrid.appendChild(equipmentCard);
     });
-    
-    // Update displayed values
-    updateDisplayValue('modalEquipmentPriceValue', `₹${equipmentPrice.toLocaleString()}`);
-    updateDisplayValue('modalEquipmentLifespanValue', `${lifespan} years`);
-    updateDisplayValue('modalDownPaymentValue', `${downPaymentPercent}%`);
-    updateDisplayValue('modalInterestRateValue', `${interestRate}%`);
-    updateDisplayValue('modalLoanTermValue', `${loanTerm} years`);
-    
-    // Calculate down payment amount
-    const downPaymentAmount = (equipmentPrice * downPaymentPercent) / 100;
-    updateDisplayValue('modalDownPaymentAmount', `Down Payment Amount: ₹${downPaymentAmount.toLocaleString()}`);
-    
-    // Calculate loan amount
-    const loanAmount = equipmentPrice - downPaymentAmount;
-    updateDisplayValue('modalLoanAmountValue', `Loan Amount: ₹${loanAmount.toLocaleString()}`);
-}
- function updateDisplayValue(elementId, value) {
-    const element = document.getElementById(elementId);
-    if (element) {
-        element.textContent = value;
-    } else {
-        console.warn(`⚠️ Display element not found: ${elementId}`);
-    }
-}
- function calculateLoanPayment() {
-    console.log('🧮 Calculating loan payment...');
-    
-    const equipmentPrice = parseFloat(document.getElementById('modalEquipmentPrice').value) || 0;
-    const downPaymentPercent = parseFloat(document.getElementById('modalDownPayment').value) || 0;
-    const interestRate = parseFloat(document.getElementById('modalInterestRate').value) || 8.5;
-    const loanTerm = parseInt(document.getElementById('modalLoanTerm').value) || 5;
-    
-    console.log('Input values:', { equipmentPrice, downPaymentPercent, interestRate, loanTerm });
-    
-    // Validate inputs
-    if (equipmentPrice <= 0) {
-        console.error('Invalid equipment price:', equipmentPrice);
-        showToast('Please enter a valid equipment price', 'error');
-        return;
-    }
-    
-    const downPaymentAmount = (equipmentPrice * downPaymentPercent) / 100;
-    const loanAmount = equipmentPrice - downPaymentAmount;
-    
-    if (loanAmount <= 0) {
-        console.error('Loan amount is zero or negative');
-        showToast('Down payment is too high. Loan amount must be positive.', 'error');
-        return;
-    }
-    
-    const monthlyInterestRate = (interestRate / 100) / 12;
-    const numberOfPayments = loanTerm * 12;
-    
-    console.log('Calculation values:', { 
-        downPaymentAmount, 
-        loanAmount, 
-        monthlyInterestRate, 
-        numberOfPayments 
-    });
-    
-    // Calculate EMI using the formula: EMI = P × r × (1 + r)^n / ((1 + r)^n - 1)
-    const emi = loanAmount * monthlyInterestRate * 
-                Math.pow(1 + monthlyInterestRate, numberOfPayments) / 
-                (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-    
-    const totalPayment = emi * numberOfPayments;
-    const totalInterest = totalPayment - loanAmount;
-    
-    console.log('Results:', { emi, totalPayment, totalInterest });
-    
-    // Update results display
-    document.getElementById('modalEmiValue').textContent = `₹${Math.round(emi).toLocaleString()}`;
-    document.getElementById('modalTotalInterestValue').textContent = `₹${Math.round(totalInterest).toLocaleString()}`;
-    document.getElementById('modalTotalPaymentValue').textContent = `₹${Math.round(totalPayment).toLocaleString()}`;
-    
-    // Generate payment schedule
-    generatePaymentSchedule(loanAmount, monthlyInterestRate, numberOfPayments, emi);
-    
-    // Show schedule container
-    document.getElementById('modalScheduleContainer').style.display = 'block';
-    
-    console.log('✅ EMI calculation completed');
 }
 
-    function generatePaymentSchedule(loanAmount, monthlyInterestRate, numberOfPayments, emi) {
-        const scheduleBody = document.getElementById('modalScheduleBody');
-        scheduleBody.innerHTML = '';
-        
-        let outstandingBalance = loanAmount;
-        
-        for (let month = 1; month <= Math.min(12, numberOfPayments); month++) {
-            const interestPayment = outstandingBalance * monthlyInterestRate;
-            const principalPayment = emi - interestPayment;
-            const beginningBalance = outstandingBalance;
-            
-            outstandingBalance -= principalPayment;
-            
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${month}</td>
-                <td>₹${Math.round(beginningBalance).toLocaleString()}</td>
-                <td>₹${Math.round(emi).toLocaleString()}</td>
-                <td>₹${Math.round(principalPayment).toLocaleString()}</td>
-                <td>₹${Math.round(interestPayment).toLocaleString()}</td>
-                <td>₹${Math.round(outstandingBalance).toLocaleString()}</td>
-            `;
-            scheduleBody.appendChild(row);
-        }
-    }
-
-    function downloadPaymentSchedule() {
-        const equipmentName = document.getElementById('modalEquipmentName').value;
-        const equipmentPrice = parseFloat(document.getElementById('modalEquipmentPrice').value) || 0;
-        const downPaymentPercent = parseFloat(document.getElementById('modalDownPayment').value) || 0;
-        const interestRate = parseFloat(document.getElementById('modalInterestRate').value) || 8.5;
-        const loanTerm = parseInt(document.getElementById('modalLoanTerm').value) || 5;
-        
-        const downPaymentAmount = (equipmentPrice * downPaymentPercent) / 100;
-        const loanAmount = equipmentPrice - downPaymentAmount;
-        const monthlyInterestRate = (interestRate / 100) / 12;
-        const numberOfPayments = loanTerm * 12;
-        
-        const emi = loanAmount * monthlyInterestRate * 
-                    Math.pow(1 + monthlyInterestRate, numberOfPayments) / 
-                    (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
-        
-        // Create CSV content
-        let csvContent = "Payment Schedule for " + equipmentName + "\n";
-        csvContent += "Equipment Price: ₹" + equipmentPrice.toLocaleString() + "\n";
-        csvContent += "Down Payment: ₹" + downPaymentAmount.toLocaleString() + " (" + downPaymentPercent + "%)\n";
-        csvContent += "Loan Amount: ₹" + loanAmount.toLocaleString() + "\n";
-        csvContent += "Interest Rate: " + interestRate + "%\n";
-        csvContent += "Loan Term: " + loanTerm + " years\n";
-        csvContent += "Monthly EMI: ₹" + Math.round(emi).toLocaleString() + "\n\n";
-        
-        csvContent += "Month,Beginning Balance,EMI,Principal,Interest,Outstanding Balance\n";
-        
-        let outstandingBalance = loanAmount;
-        
-        for (let month = 1; month <= numberOfPayments; month++) {
-            const interestPayment = outstandingBalance * monthlyInterestRate;
-            const principalPayment = emi - interestPayment;
-            const beginningBalance = outstandingBalance;
-            
-            outstandingBalance -= principalPayment;
-            
-            csvContent += month + ",₹" + Math.round(beginningBalance) + ",₹" + Math.round(emi) + 
-                         ",₹" + Math.round(principalPayment) + ",₹" + Math.round(interestPayment) + 
-                         ",₹" + Math.round(outstandingBalance) + "\n";
-        }
-        
-        // Create and download file
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.setAttribute('hidden', '');
-        a.setAttribute('href', url);
-        a.setAttribute('download', 'payment_schedule_' + equipmentName.replace(/\s+/g, '_') + '.csv');
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        showToast('Payment schedule downloaded successfully!');
-    }
-
-    // Equipment display functions
-    function loadRecommendedEquipment() {
-        if (!recommendedEquipment) return;
-        
-        recommendedEquipment.innerHTML = '';
-        
-        // Show only available items as recommended
-        const availableItems = equipmentData.filter(item => item.status === 'available');
-        
-        if (availableItems.length === 0) {
-            recommendedEquipment.innerHTML = '<p class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">No equipment available at the moment.</p>';
-            return;
-        }
-        
-        // Show up to 4 recommended items
-        const recommendedItems = availableItems.slice(0, 4);
-        
-        recommendedItems.forEach(item => {
-            const equipmentCard = createEquipmentCard(item, true);
-            recommendedEquipment.appendChild(equipmentCard);
-        });
-    }
-
-    function loadBrowseEquipment() {
-        if (!browseEquipmentGrid) return;
-        
-        browseEquipmentGrid.innerHTML = '';
-        
-        const availableItems = equipmentData.filter(item => item.status === 'available');
-        
-        if (availableItems.length === 0) {
-            browseEquipmentGrid.innerHTML = '<p class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">No equipment available at the moment.</p>';
-            return;
-        }
-        
-        availableItems.forEach(item => {
-            const equipmentCard = createEquipmentCard(item, false);
-            browseEquipmentGrid.appendChild(equipmentCard);
-        });
-    }
-
-// In user dashboard JavaScript, update the createEquipmentCard function
 function createEquipmentCard(item, isRecommended) {
     const card = document.createElement('div');
     card.className = 'item-card';
@@ -2610,8 +3840,6 @@ function createEquipmentCard(item, isRecommended) {
     // Use ACTUAL stock data from the database
     const stockQuantity = item.stock_quantity || 0;
     const minStockThreshold = item.min_stock_threshold || 5;
-    
-    console.log(`🔍 Equipment ${item.id} - Stock: ${stockQuantity}, Threshold: ${minStockThreshold}`);
     
     let stockBadge = '';
     let isAvailable = true;
@@ -2685,8 +3913,8 @@ function createEquipmentCard(item, isRecommended) {
                     <i class="fas fa-handshake"></i> ${isAvailable ? 'Rent' : 'Unavailable'}
                 </button>
                 <button class="btn ${isInWishlist ? 'btn-danger' : 'btn-primary'} btn-sm wishlist-btn" data-id="${item.id}">
-                    <i class="fas ${isInWishlist ? 'fa-heart' : 'fa-heart'}"></i> ${isInWishlist ? 'Saved' : 'Save'}
-                </button>
+    <i class="fas ${isInWishlist ? 'fa-heart-broken' : 'fa-heart'}"></i> ${isInWishlist ? 'Unsave' : 'Save'}
+</button>
                 <button class="btn ${isInCart ? 'btn-success' : 'btn-primary'} btn-sm cart-btn" data-id="${item.id}" ${!isAvailable ? 'disabled' : ''}>
                     <i class="fas ${isInCart ? 'fa-shopping-cart' : 'fa-cart-plus'}"></i> ${isInCart ? 'In Cart' : 'Add to Cart'}
                 </button>
@@ -2707,36 +3935,7 @@ function createEquipmentCard(item, isRecommended) {
     
     return card;
 }
-// Debug function to check equipment data
-function debugEquipmentData() {
-    console.log('🔍 DEBUG: Checking equipment data...');
-    equipmentData.forEach(item => {
-        console.log(`Equipment: ${item.name} (ID: ${item.id})`, {
-            stock_quantity: item.stock_quantity,
-            min_stock_threshold: item.min_stock_threshold,
-            status: item.status,
-            price: item.price
-        });
-    });
-}
 
-// Call this after loading equipment
-async function initDashboard() {
-    console.log('🚀 Initializing user dashboard...');
-    
-    // Your existing initialization code...
-    
-    // Load equipment from database first
-    await loadEquipmentFromDB();
-    
-    // DEBUG: Check what data we're getting
-    debugEquipmentData();
-    
-    // Then load all UI components
-    loadRecommendedEquipment();
-    loadBrowseEquipment();
-    // ... rest of your code
-}
 // Update the equipment loading to include vendor search
 function filterEquipment() {
     const searchText = searchInput.value.toLowerCase();
@@ -2786,6 +3985,9 @@ function filterEquipment() {
         browseEquipmentGrid.appendChild(equipmentCard);
     });
 }
+
+// ================= BOOKING MODAL FUNCTIONS =================
+
 // Add this function - Open Booking Modal
 function openBookingModal(equipmentId) {
     const equipment = equipmentData.find(item => item.id == equipmentId);
@@ -2814,7 +4016,7 @@ function openBookingModal(equipmentId) {
     document.getElementById('serviceFee').textContent = serviceFee.toLocaleString();
     document.getElementById('bookingTotal').textContent = totalAmount.toLocaleString();
     
-    // ✅ FIXED: Initialize loan calculator with equipment data
+    // Initialize loan calculator with equipment data
     initializeLoanCalculator(equipment);
     
     // Reset loan calculator to default state
@@ -2827,25 +4029,6 @@ function openBookingModal(equipmentId) {
     bookingModal.style.display = 'flex';
 }
 
-// Add this function to reset loan calculator
-function resetLoanCalculator() {
-    // Reset calculator option to "No Financing"
-    document.getElementById('calculatorOption').value = 'none';
-    
-    // Hide loan calculator sections
-    document.getElementById('loanCalculator').style.display = 'none';
-    document.getElementById('modalCalculatorResults').style.display = 'none';
-    document.getElementById('modalScheduleContainer').style.display = 'none';
-    
-    // Reset form values
-    document.getElementById('modalEquipmentLifespan').value = '10';
-    document.getElementById('modalDownPayment').value = '20';
-    document.getElementById('modalInterestRate').value = '8.5';
-    document.getElementById('modalLoanTerm').value = '5';
-    
-    // Update displayed values
-    updateLoanCalculatorValues();
-}
 // Add this function - Confirm Booking
 async function confirmBooking() {
     const equipmentId = parseInt(document.getElementById('equipmentId').value);
@@ -2900,62 +4083,63 @@ async function confirmBooking() {
         showToast('Error submitting booking', 'error');
     }
 }
-    // ================= RENT FUNCTIONALITY =================
 
-    // Rent functionality for user dashboard
-    function openRentModal(equipmentId) {
-        // Get equipment details from your existing equipmentData
-        const equipment = equipmentData.find(item => item.id == equipmentId);
-        if (!equipment) {
-            alert('Equipment not found!');
-            return;
-        }
-        
-        document.getElementById('rentEquipmentId').value = equipment.id;
-        document.getElementById('rentEquipmentName').textContent = equipment.name;
-        document.getElementById('rentEquipmentDescription').textContent = equipment.description;
-        document.getElementById('rentEquipmentPrice').textContent = equipment.price;
-        document.getElementById('rentEquipmentVendor').textContent = equipment.owner;
-        document.getElementById('rentDailyPrice').textContent = equipment.price;
-        
-        // Set minimum dates
-        const today = new Date().toISOString().split('T')[0];
-        document.getElementById('rentStartDate').min = today;
-        document.getElementById('rentEndDate').min = today;
-        
-        // Reset form
-        document.getElementById('rentStartDate').value = '';
-        document.getElementById('rentEndDate').value = '';
-        document.getElementById('rentPurpose').value = '';
-        updateRentPricing();
-        
-        document.getElementById('rentModal').style.display = 'flex';
+// ================= RENT FUNCTIONALITY =================
+
+// Rent functionality for user dashboard
+function openRentModal(equipmentId) {
+    // Get equipment details from your existing equipmentData
+    const equipment = equipmentData.find(item => item.id == equipmentId);
+    if (!equipment) {
+        alert('Equipment not found!');
+        return;
     }
+    
+    document.getElementById('rentEquipmentId').value = equipment.id;
+    document.getElementById('rentEquipmentName').textContent = equipment.name;
+    document.getElementById('rentEquipmentDescription').textContent = equipment.description;
+    document.getElementById('rentEquipmentPrice').textContent = equipment.price;
+    document.getElementById('rentEquipmentVendor').textContent = equipment.owner;
+    document.getElementById('rentDailyPrice').textContent = equipment.price;
+    
+    // Set minimum dates
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('rentStartDate').min = today;
+    document.getElementById('rentEndDate').min = today;
+    
+    // Reset form
+    document.getElementById('rentStartDate').value = '';
+    document.getElementById('rentEndDate').value = '';
+    document.getElementById('rentPurpose').value = '';
+    updateRentPricing();
+    
+    document.getElementById('rentModal').style.display = 'flex';
+}
 
-    function updateRentPricing() {
-        const startDate = document.getElementById('rentStartDate').value;
-        const endDate = document.getElementById('rentEndDate').value;
-        const dailyPrice = parseFloat(document.getElementById('rentDailyPrice').textContent) || 0;
+function updateRentPricing() {
+    const startDate = document.getElementById('rentStartDate').value;
+    const endDate = document.getElementById('rentEndDate').value;
+    const dailyPrice = parseFloat(document.getElementById('rentDailyPrice').textContent) || 0;
+    
+    if (startDate && endDate) {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
         
-        if (startDate && endDate) {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-            const daysDiff = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+        if (daysDiff > 0) {
+            const baseTotal = dailyPrice * daysDiff;
+            const serviceFee = baseTotal * 0.1;
+            const totalAmount = baseTotal + serviceFee;
             
-            if (daysDiff > 0) {
-                const baseTotal = dailyPrice * daysDiff;
-                const serviceFee = baseTotal * 0.1;
-                const totalAmount = baseTotal + serviceFee;
-                
-                document.getElementById('rentDaysCount').textContent = daysDiff;
-                document.getElementById('rentBaseTotal').textContent = baseTotal.toFixed(2);
-                document.getElementById('rentServiceFee').textContent = serviceFee.toFixed(2);
-                document.getElementById('rentTotalAmount').textContent = totalAmount.toFixed(2);
-            }
+            document.getElementById('rentDaysCount').textContent = daysDiff;
+            document.getElementById('rentBaseTotal').textContent = baseTotal.toFixed(2);
+            document.getElementById('rentServiceFee').textContent = serviceFee.toFixed(2);
+            document.getElementById('rentTotalAmount').textContent = totalAmount.toFixed(2);
         }
     }
+}
 
-  // Update the submitRentRequest function in user dashboard
+// Update the submitRentRequest function in user dashboard
 function submitRentRequest() {
     const equipmentId = document.getElementById('rentEquipmentId').value;
     const startDate = document.getElementById('rentStartDate').value;
@@ -3023,439 +4207,268 @@ function submitRentRequest() {
     });
 }
 
-    // Cart functions
-    function toggleCart(equipmentId) {
-        const equipment = equipmentData.find(item => item.id === equipmentId);
-        if (!equipment) return;
+// ================= CART FUNCTIONS =================
+
+function toggleCart(equipmentId) {
+    const equipment = equipmentData.find(item => item.id === equipmentId);
+    if (!equipment) return;
+    
+    const existingIndex = userCart.findIndex(item => item.id === equipmentId);
+    
+    if (existingIndex !== -1) {
+        // Remove from cart
+        userCart.splice(existingIndex, 1);
+        showToast('Removed from cart');
+    } else {
+        // Add to cart
+        userCart.push({
+            ...equipment,
+            quantity: 1,
+            selectedDates: null
+        });
+        showToast('Added to cart');
+    }
+    
+    localStorage.setItem('userCart', JSON.stringify(userCart));
+    updateCartCounter();
+    
+    // Update UI
+    loadRecommendedEquipment();
+    loadBrowseEquipment();
+    loadWishlist();
+}
+
+function updateCartCounter() {
+    const cartItemsCount = userCart.length;
+    
+    // Update the cart counter in the header
+    if (cartCounter) {
+        cartCounter.textContent = cartItemsCount;
+        cartCounter.style.display = cartItemsCount > 0 ? 'flex' : 'none';
+    }
+}
+
+function loadCartItems() {
+    const cartContainer = document.querySelector('.cart-items-list');
+    const noDataMsg = document.querySelector('#cartItemsContainer .no-data');
+    const cartSummary = document.getElementById('cartSummary');
+    
+    cartContainer.innerHTML = '';
+    
+    if (userCart.length === 0) {
+        noDataMsg.style.display = 'block';
+        cartSummary.style.display = 'none';
+        return;
+    }
+    
+    noDataMsg.style.display = 'none';
+    cartSummary.style.display = 'block';
+    
+    let subtotal = 0;
+    
+    userCart.forEach(item => {
+        const cartItem = document.createElement('div');
+        cartItem.className = 'card';
+        cartItem.style.marginBottom = '15px';
+        cartItem.style.padding = '15px';
         
-        const existingIndex = userCart.findIndex(item => item.id === equipmentId);
+        cartItem.innerHTML = `
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <img src="${item.image_url || 'https://images.unsplash.com/photo-1611251432623-4c6c5f90c68c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'}" alt="${item.name}" style="width: 100px; height: 80px; object-fit: cover; border-radius: 8px;">
+                <div style="flex: 1;">
+                    <h3 style="margin-bottom: 5px;">${item.name}</h3>
+                    <p style="color: var(--gray); margin-bottom: 10px;">${item.description}</p>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><strong>₹${item.price.toLocaleString()} / ${item.price_unit}</strong></span>
+                        <span>${item.location} • ${item.owner}</span>
+                    </div>
+                </div>
+                <button class="btn btn-danger btn-sm remove-cart-item" data-id="${item.id}">
+                    <i class="fas fa-trash"></i> Remove
+                </button>
+            </div>
+        `;
         
-        if (existingIndex !== -1) {
-            // Remove from cart
-            userCart.splice(existingIndex, 1);
-            showToast('Removed from cart');
-        } else {
-            // Add to cart
-            userCart.push({
-                ...equipment,
-                quantity: 1,
-                selectedDates: null
-            });
-            showToast('Added to cart');
-        }
-        
+        cartContainer.appendChild(cartItem);
+        subtotal += item.price;
+    });
+    
+    // Calculate totals
+    const serviceFee = Math.round(subtotal * 0.1);
+    const total = subtotal + serviceFee;
+    
+    document.getElementById('cartSubtotal').textContent = `₹${subtotal.toLocaleString()}`;
+    document.getElementById('cartServiceFee').textContent = `₹${serviceFee.toLocaleString()}`;
+    document.getElementById('cartTotal').textContent = `₹${total.toLocaleString()}`;
+    
+    // Add event listeners to remove buttons
+    document.querySelectorAll('.remove-cart-item').forEach(btn => {
+        btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
+    });
+}
+
+function removeFromCart(equipmentId) {
+    const itemIndex = userCart.findIndex(item => item.id === parseInt(equipmentId));
+    if (itemIndex !== -1) {
+        userCart.splice(itemIndex, 1);
         localStorage.setItem('userCart', JSON.stringify(userCart));
-        updateCartCounter();
         
-        // Update UI
+        loadCartItems();
+        updateCartCounter();
         loadRecommendedEquipment();
         loadBrowseEquipment();
-        loadWishlist();
+        
+        showToast('Item removed from cart');
     }
+}
 
-    function updateCartCounter() {
-        const cartItemsCount = userCart.length;
-        
-        // Update the cart counter in the header
-        if (cartCounter) {
-            cartCounter.textContent = cartItemsCount;
-            cartCounter.style.display = cartItemsCount > 0 ? 'flex' : 'none';
-        }
+// ================= WISHLIST FUNCTIONS =================
+
+function loadWishlist() {
+    if (!wishlistGrid) return;
+    
+    console.log('Loading wishlist with', userWishlist.length, 'items');
+    
+    wishlistGrid.innerHTML = '';
+    
+    if (userWishlist.length === 0) {
+        wishlistGrid.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--gray); width: 100%;">
+                <i class="fas fa-heart" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3>Your wishlist is empty</h3>
+                <p>Save equipment by clicking the heart icon</p>
+            </div>
+        `;
+        return;
     }
-
-    function loadCartItems() {
-        const cartContainer = document.querySelector('.cart-items-list');
-        const noDataMsg = document.querySelector('#cartItemsContainer .no-data');
-        const cartSummary = document.getElementById('cartSummary');
+    
+    // Show each wishlist item
+    userWishlist.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.dataset.id = item.id;
         
-        cartContainer.innerHTML = '';
-        
-        if (userCart.length === 0) {
-            noDataMsg.style.display = 'block';
-            cartSummary.style.display = 'none';
-            return;
-        }
-        
-        noDataMsg.style.display = 'none';
-        cartSummary.style.display = 'block';
-        
-        let subtotal = 0;
-        
-        userCart.forEach(item => {
-            const cartItem = document.createElement('div');
-            cartItem.className = 'card';
-            cartItem.style.marginBottom = '15px';
-            cartItem.style.padding = '15px';
-            
-            cartItem.innerHTML = `
-                <div style="display: flex; gap: 15px; align-items: center;">
-                    <img src="${item.image_url || 'https://images.unsplash.com/photo-1611251432623-4c6c5f90c68c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80'}" alt="${item.name}" style="width: 100px; height: 80px; object-fit: cover; border-radius: 8px;">
-                    <div style="flex: 1;">
-                        <h3 style="margin-bottom: 5px;">${item.name}</h3>
-                        <p style="color: var(--gray); margin-bottom: 10px;">${item.description}</p>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span><strong>₹${item.price.toLocaleString()} / ${item.price_unit}</strong></span>
-                            <span>${item.location} • ${item.owner}</span>
-                        </div>
-                    </div>
-                    <button class="btn btn-danger btn-sm remove-cart-item" data-id="${item.id}">
+        card.innerHTML = `
+            <div class="item-img">
+                ${item.image_url ? `<img src="${item.image_url}" alt="${item.name}">` : 
+                  `<div class="default-icon"><i class="fas fa-tractor"></i></div>`}
+                <span class="item-badge badge-available">Wishlist</span>
+            </div>
+            <div class="item-info">
+                <h3>${item.name}</h3>
+                <p>${item.description || 'No description'}</p>
+                
+                <div class="item-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${item.location}</span>
+                    <span><i class="fas fa-user"></i> ${item.vendor_name}</span>
+                </div>
+                
+                <div class="item-price">₹${item.price || '0'} / day</div>
+                
+                <div class="item-actions">
+                    <button class="btn btn-primary btn-sm book-btn">
+                        <i class="fas fa-calendar-check"></i> Book
+                    </button>
+                    <button class="btn btn-danger btn-sm remove-wishlist-btn" data-id="${item.id}">
                         <i class="fas fa-trash"></i> Remove
                     </button>
                 </div>
-            `;
-            
-            cartContainer.appendChild(cartItem);
-            subtotal += item.price;
-        });
+            </div>
+        `;
         
-        // Calculate totals
-        const serviceFee = Math.round(subtotal * 0.1);
-        const total = subtotal + serviceFee;
-        
-        document.getElementById('cartSubtotal').textContent = `₹${subtotal.toLocaleString()}`;
-        document.getElementById('cartServiceFee').textContent = `₹${serviceFee.toLocaleString()}`;
-        document.getElementById('cartTotal').textContent = `₹${total.toLocaleString()}`;
-        
-        // Add event listeners to remove buttons
-        document.querySelectorAll('.remove-cart-item').forEach(btn => {
-            btn.addEventListener('click', () => removeFromCart(btn.dataset.id));
-        });
-    }
-
-    function removeFromCart(equipmentId) {
-        const itemIndex = userCart.findIndex(item => item.id === parseInt(equipmentId));
-        if (itemIndex !== -1) {
-            userCart.splice(itemIndex, 1);
-            localStorage.setItem('userCart', JSON.stringify(userCart));
-            
-            loadCartItems();
-            updateCartCounter();
-            loadRecommendedEquipment();
-            loadBrowseEquipment();
-            
-            showToast('Item removed from cart');
-        }
-    }
-
-    // Wishlist functions
-    function loadWishlist() {
-        if (!wishlistGrid) return;
-        
-        wishlistGrid.innerHTML = '';
-        
-        if (userWishlist.length === 0) {
-            wishlistGrid.innerHTML = '<p class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">Your wishlist is empty.</p>';
-            return;
+        // Add click event to the REMOVE button
+        const removeBtn = card.querySelector('.remove-wishlist-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Remove button clicked for:', this.dataset.id);
+                toggleWishlist(this.dataset.id);
+            });
         }
         
-        userWishlist.forEach(item => {
-            const equipmentCard = createEquipmentCard(item, false);
-            wishlistGrid.appendChild(equipmentCard);
-        });
-    }
-
-    function toggleWishlist(equipmentId) {
-        const equipment = equipmentData.find(item => item.id === equipmentId);
-        if (!equipment) return;
-        
-        const existingIndex = userWishlist.findIndex(item => item.id === equipmentId);
-        
-        if (existingIndex !== -1) {
-            // Remove from wishlist
-            userWishlist.splice(existingIndex, 1);
-            showToast('Removed from wishlist');
-        } else {
-            // Add to wishlist
-            userWishlist.push(equipment);
-            showToast('Added to wishlist');
+        // Add click event to the BOOK button
+        const bookBtn = card.querySelector('.book-btn');
+        if (bookBtn) {
+            bookBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                openBookingModal(item.id);
+            });
         }
         
+        wishlistGrid.appendChild(card);
+    });
+}
+
+function toggleWishlist(equipmentId) {
+    console.log('Removing item ID:', equipmentId);
+    
+    // Parse ID to number
+    equipmentId = parseInt(equipmentId);
+    
+    // Find the equipment in equipmentData
+    const equipment = equipmentData.find(item => item.id === equipmentId);
+    if (!equipment) {
+        console.error('Equipment not found:', equipmentId);
+        return;
+    }
+    
+    // Check if already in wishlist
+    const itemIndex = userWishlist.findIndex(item => item.id === equipmentId);
+    
+    if (itemIndex !== -1) {
+        // REMOVE from wishlist
+        const removedItem = userWishlist.splice(itemIndex, 1)[0];
+        console.log('Removed from wishlist:', removedItem.name);
+        
+        // Save to localStorage
         localStorage.setItem('userWishlist', JSON.stringify(userWishlist));
         
-        // Update UI
-        loadRecommendedEquipment();
-        loadBrowseEquipment();
+        // Show success message
+        showToast(`Removed "${removedItem.name}" from wishlist`);
+        
+        // RELOAD the wishlist section
         loadWishlist();
+        
+        // Update the wishlist button in other sections
+        updateWishlistButtons();
+        
+        // Update stats
+        updateStats();
+    } else {
+        // ADD to wishlist (if clicked from other sections)
+        userWishlist.push(equipment);
+        localStorage.setItem('userWishlist', JSON.stringify(userWishlist));
+        showToast(`Added "${equipment.name}" to wishlist`);
+        updateWishlistButtons();
         updateStats();
     }
-
-    // Booking functions
-// Review functions
-async function loadReviews() {
-    try {
-        const response = await fetch('/api/user/reviews');
-        const reviews = await response.json();
-        
-        const reviewsContainer = document.querySelector('.reviews-list');
-        const noReviewsMsg = document.querySelector('.no-reviews');
-        
-        if (!reviewsContainer) return;
-        
-        reviewsContainer.innerHTML = '';
-        
-        if (!reviews || reviews.length === 0 || reviews.error) {
-            if (noReviewsMsg) noReviewsMsg.style.display = 'block';
-            return;
-        }
-        
-        if (noReviewsMsg) noReviewsMsg.style.display = 'none';
-        
-        reviews.forEach(review => {
-            const reviewElement = document.createElement('div');
-            reviewElement.className = 'card';
-            reviewElement.style.marginBottom = '15px';
-            reviewElement.style.padding = '20px';
+}
+// Simple function to update wishlist buttons
+function updateWishlistButtons() {
+    // Update Save/Unsave buttons in browse section
+    document.querySelectorAll('.wishlist-btn').forEach(button => {
+        const card = button.closest('.item-card');
+        if (card) {
+            const equipmentId = parseInt(card.dataset.id);
+            const isInWishlist = userWishlist.some(item => item.id === equipmentId);
             
-            // Create stars based on rating
-            let starsHtml = '';
-            for (let i = 1; i <= 5; i++) {
-                starsHtml += `<i class="fas fa-star" style="color: ${i <= review.rating ? '#f59e0b' : '#e2e8f0'};"></i>`;
+            if (isInWishlist) {
+                button.innerHTML = '<i class="fas fa-heart-broken"></i> Unsave';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-danger');
+            } else {
+                button.innerHTML = '<i class="fas fa-heart"></i> Save';
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-primary');
             }
-            
-            // Format date
-            const reviewDate = new Date(review.created_date).toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-            
-            reviewElement.innerHTML = `
-                <div style="display: flex; gap: 15px;">
-                    <div style="width: 80px; height: 80px; background: #f5f5f5; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
-                        ${review.equipment_image ? 
-                            `<img src="${review.equipment_image}" alt="${review.equipment_name}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">` :
-                            `<i class="fas fa-tractor" style="font-size: 2rem; color: var(--gray);"></i>`
-                        }
-                    </div>
-                    <div style="flex: 1;">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                            <div>
-                                <h3 style="margin-bottom: 5px; color: var(--dark);">${review.equipment_name}</h3>
-                                <div style="margin-bottom: 8px;">
-                                    ${starsHtml}
-                                    <span style="margin-left: 10px; color: var(--gray); font-size: 0.9rem;">${reviewDate}</span>
-                                </div>
-                            </div>
-                            <button class="btn btn-danger btn-sm delete-review-btn" data-id="${review.id}">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </div>
-                        <h4 style="margin-bottom: 8px; color: var(--primary);">${review.title}</h4>
-                        <p style="color: var(--dark); line-height: 1.5;">${review.comment}</p>
-                    </div>
-                </div>
-            `;
-            
-            reviewsContainer.appendChild(reviewElement);
-        });
-        
-        // Add event listeners to delete buttons
-        document.querySelectorAll('.delete-review-btn').forEach(btn => {
-            btn.addEventListener('click', () => deleteReview(btn.dataset.id));
-        });
-        
-    } catch (error) {
-        console.error('Error loading reviews:', error);
-    }
-}
-
-async function openReviewModal() {
-    try {
-        const response = await fetch('/api/user/completed-bookings');
-        const bookings = await response.json();
-        
-        const reviewEquipment = document.getElementById('reviewEquipment');
-        
-        // Clear previous options
-        reviewEquipment.innerHTML = '<option value="">-- Select Equipment --</option>';
-        
-        if (!bookings || bookings.error || bookings.length === 0) {
-            showNoBookingsMessage();
-            return;
         }
-        
-        // Add options for each completed booking
-        bookings.forEach(booking => {
-            const option = document.createElement('option');
-            option.value = booking.id;
-            option.textContent = `${booking.equipment_name} - Booked on ${new Date(booking.booking_date).toLocaleDateString('en-IN')}`;
-            option.dataset.equipmentId = booking.equipment_id;
-            option.dataset.equipmentName = booking.equipment_name;
-            option.dataset.vendorName = booking.vendor_name;
-            reviewEquipment.appendChild(option);
-        });
-        
-        // Enable form and show modal
-        enableReviewForm();
-        document.getElementById('reviewModal').style.display = 'flex';
-        
-    } catch (error) {
-        console.error('Error opening review modal:', error);
-        showNoBookingsMessage();
-    }
-}
-
-function showNoBookingsMessage() {
-    // Create or update message element
-    let messageElement = document.querySelector('.no-bookings-message');
-    if (!messageElement) {
-        messageElement = document.createElement('div');
-        messageElement.className = 'no-bookings-message';
-        messageElement.style.textAlign = 'center';
-        messageElement.style.padding = '30px 20px';
-        messageElement.style.color = 'var(--gray)';
-        
-        const modalBody = document.querySelector('#reviewModal .modal-body');
-        modalBody.insertBefore(messageElement, modalBody.firstChild);
-    }
-    
-    messageElement.innerHTML = `
-        <i class="fas fa-calendar-check" style="font-size: 3rem; margin-bottom: 15px; color: var(--gray-light);"></i>
-        <h4 style="margin-bottom: 10px; color: var(--dark);">No Completed Bookings</h4>
-        <p>You need to complete a booking before you can write a review.</p>
-        <p style="margin-top: 10px; font-size: 0.9rem;">Once you complete a booking, it will appear here for review.</p>
-    `;
-    
-    disableReviewForm();
-    document.getElementById('reviewModal').style.display = 'flex';
-}
-
-function enableReviewForm() {
-    document.querySelectorAll('#reviewForm select, #reviewForm input, #reviewForm textarea, .rating-stars i')
-        .forEach(element => {
-            element.style.opacity = '1';
-            element.disabled = false;
-        });
-    
-    document.getElementById('submitReviewBtn').style.display = 'block';
-    
-    // Remove message if it exists
-    const messageElement = document.querySelector('.no-bookings-message');
-    if (messageElement) {
-        messageElement.remove();
-    }
-    
-    // Reset form
-    document.getElementById('reviewForm').reset();
-    document.querySelectorAll('.rating-stars i').forEach(star => {
-        star.style.color = '#e2e8f0';
     });
-    document.getElementById('reviewRating').value = '0';
 }
 
-function disableReviewForm() {
-    document.querySelectorAll('#reviewForm select, #reviewForm input, #reviewForm textarea, .rating-stars i')
-        .forEach(element => {
-            element.style.opacity = '0.5';
-            element.disabled = true;
-        });
-    
-    document.getElementById('submitReviewBtn').style.display = 'none';
-}
+// ================= REVIEW FUNCTIONS =================
 
-async function submitReview() {
-    const bookingId = parseInt(document.getElementById('reviewEquipment').value);
-    const rating = parseInt(document.getElementById('reviewRating').value);
-    const title = document.getElementById('reviewTitle').value.trim();
-    const comment = document.getElementById('reviewComment').value.trim();
-    
-    if (!bookingId || !rating || !title || !comment) {
-        showToast('Please fill in all required fields', 'error');
-        return;
-    }
-    
-    if (rating < 1 || rating > 5) {
-        showToast('Please select a rating between 1 and 5 stars', 'error');
-        return;
-    }
-    
-    // Get selected booking details
-    const selectedOption = document.getElementById('reviewEquipment').options[document.getElementById('reviewEquipment').selectedIndex];
-    
-    try {
-        // First, get equipment details from the booking
-        const bookingResponse = await fetch(`/api/user/booking/${bookingId}`);
-        const booking = await bookingResponse.json();
-        
-        if (!booking || booking.error) {
-            showToast('Error fetching booking details', 'error');
-            return;
-        }
-        
-        const reviewData = {
-            equipment_id: booking.equipment_id,
-            equipment_name: booking.equipment_name,
-            vendor_email: booking.vendor_email,
-            rating: rating,
-            title: title,
-            comment: comment,
-            booking_id: bookingId
-        };
-        
-        const response = await fetch('/api/reviews/submit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(reviewData)
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok && result.success) {
-            showToast('Review submitted successfully!');
-            document.getElementById('reviewModal').style.display = 'none';
-            
-            // Reload reviews
-            loadReviews();
-            updateStats();
-            
-            // Refresh equipment data to show updated ratings
-            await loadEquipmentFromDB();
-            loadRecommendedEquipment();
-            loadBrowseEquipment();
-            
-        } else {
-            showToast(result.error || 'Error submitting review', 'error');
-        }
-        
-    } catch (error) {
-        console.error('Error submitting review:', error);
-        showToast('Error submitting review', 'error');
-    }
-}
-
-async function deleteReview(reviewId) {
-    if (!confirm('Are you sure you want to delete this review? This action cannot be undone.')) {
-        return;
-    }
-    
-    try {
-        const response = await fetch(`/api/reviews/delete/${reviewId}`, {
-            method: 'POST'
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok && result.success) {
-            showToast('Review deleted successfully!');
-            loadReviews();
-            updateStats();
-            
-            // Refresh equipment data to show updated ratings
-            await loadEquipmentFromDB();
-            loadRecommendedEquipment();
-            loadBrowseEquipment();
-            
-        } else {
-            showToast(result.error || 'Error deleting review', 'error');
-        }
-        
-    } catch (error) {
-        console.error('Error deleting review:', error);
-        showToast('Error deleting review', 'error');
-    }
-}
 
 // Update stats to show actual review count
 async function updateStats() {
@@ -3481,153 +4494,416 @@ async function updateStats() {
     
     wishlistItemsEl.textContent = userWishlist.length;
 }
-    // Utility functions
+
+// ================= UTILITY FUNCTIONS =================
+
+function showSection(sectionId) {
+    // Hide all sections
+    contentSections.forEach(section => {
+        section.classList.remove('active');
+    });
     
-
-    function formatDate(dateString) {
-        const options = { day: 'numeric', month: 'short', year: 'numeric' };
-        return new Date(dateString).toLocaleDateString('en-IN', options);
+    // Show the requested section
+    const section = document.getElementById(`${sectionId}-section`);
+    if (section) {
+        section.classList.add('active');
     }
+}
 
-    function checkScreenSize() {
-        if (window.innerWidth <= 576) {
-            mobileMenuBtn.style.display = 'block';
-            sidebar.classList.remove('active');
-        } else {
-            mobileMenuBtn.style.display = 'none';
-            sidebar.classList.add('active');
-        }
-    }
-
-    function showToast(message) {
-        toastMessage.textContent = message;
-        toast.classList.add('show');
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // Event Listeners
+function setActiveNavLink(sectionId) {
+    // Remove active class from all links
     navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const section = link.dataset.section;
-            showSection(section);
-            setActiveNavLink(section);
-            
-            // Update URL hash
-            window.location.hash = section;
-            
-            // Close sidebar on mobile after selection
-            if (window.innerWidth <= 576) {
-                sidebar.classList.remove('active');
-            }
-        });
+        link.classList.remove('active');
     });
+    
+    // Add active class to the clicked link
+    const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+    if (activeLink) {
+        activeLink.classList.add('active');
+    }
+}
 
-    closeModalBtn.addEventListener('click', () => {
-        bookingModal.style.display = 'none';
-    });
+function formatDate(dateString) {
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    return new Date(dateString).toLocaleDateString('en-IN', options);
+}
 
-    cancelBookingBtn.addEventListener('click', () => {
-        bookingModal.style.display = 'none';
+function checkScreenSize() {
+    if (window.innerWidth <= 576) {
+        mobileMenuBtn.style.display = 'block';
+        sidebar.classList.remove('active');
+    } else {
+        mobileMenuBtn.style.display = 'none';
+        sidebar.classList.add('active');
+    }
+}
+
+// Toast notification function
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    if (!toast || !toastMessage) {
+        console.log('Toast:', message, type);
+        return;
+    }
+    
+    // Set message and style based on type
+    toastMessage.textContent = message;
+    
+    if (type === 'error') {
+        toast.style.backgroundColor = 'var(--accent)';
+    } else {
+        toast.style.backgroundColor = 'var(--secondary)';
+    }
+    
+    // Show toast
+    toast.classList.add('show');
+    
+    // Hide after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// ================= EVENT LISTENERS =================
+
+navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = link.dataset.section;
+        showSection(section);
+        setActiveNavLink(section);
+        
+        // Update URL hash
+        window.location.hash = section;
+        
+        // Close sidebar on mobile after selection
+        if (window.innerWidth <= 576) {
+            sidebar.classList.remove('active');
+        }
     });
+});
+
+closeModalBtn.addEventListener('click', () => {
+    bookingModal.style.display = 'none';
+});
+
+cancelBookingBtn.addEventListener('click', () => {
+    bookingModal.style.display = 'none';
+});
+
 // FIX THIS EVENT LISTENER
 confirmBookingBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    confirmBooking(); // Remove the date validation
+    confirmBooking();
 });
 
-    logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (confirm('Are you sure you want to logout?')) {
-            // Redirect to Flask logout route
-            window.location.href = "/logout";
-        }
-    });
-
-    mobileMenuBtn.addEventListener('click', () => {
-        sidebar.classList.toggle('active');
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === bookingModal) {
-            bookingModal.style.display = 'none';
-        }
-    });
-
-    window.addEventListener('resize', checkScreenSize);
-
-    // Cart icon click event
-    document.getElementById('cartIcon').addEventListener('click', () => {
-        showSection('cart');
-        setActiveNavLink('cart');
-        loadCartItems();
-    });
-
-    // Review modal event listeners
-    document.getElementById('addReviewBtn').addEventListener('click', openReviewModal);
-    document.getElementById('cancelReviewBtn').addEventListener('click', () => {
-        document.getElementById('reviewModal').style.display = 'none';
-    });
-    document.getElementById('submitReviewBtn').addEventListener('click', submitReview);
-    document.querySelector('#reviewModal .close-modal').addEventListener('click', () => {
-        document.getElementById('reviewModal').style.display = 'none';
-    });
-
-    // Place Order Button functionality
-    const placeOrderBtn = document.getElementById('placeOrderBtn');
-
-    placeOrderBtn.addEventListener('click', function() {
-        // Check if user is logged in
-        const isLoggedIn = false; // Change this based on your actual authentication check
-        
-        if (!isLoggedIn) {
-            // Show confirmation dialog for login/registration
-            if (confirm('You need to login or register to place an order. Would you like to login?')) {
-                // Redirect to login page
-                window.location.href = "{{ url_for('farmer_login') }}";
-            } else {
-                // Redirect to registration page
-                window.location.href = "{{ url_for('userreg') }}";
-            }
-        } else {
-            // User is logged in, proceed with order placement
-            placeOrder();
-        }
-    });
-
-    function placeOrder() {
-        // Your existing order placement logic here
-        if (userCart.length === 0) {
-            showToast('Your cart is empty');
-            return;
-        }
-        
-        // Calculate total
-        let subtotal = 0;
-        userCart.forEach(item => {
-            subtotal += item.price;
-        });
-        const serviceFee = Math.round(subtotal * 0.1);
-        const total = subtotal + serviceFee;
-        
-        // Create order (this is just a demo - in real app, you'd send to backend)
-        const orderId = 'ORD' + Date.now();
-        
-        // Show success message
-        showToast(`Order placed successfully! Order ID: ${orderId}`);
-        
-        // Clear cart
-        userCart = [];
-        localStorage.setItem('userCart', JSON.stringify(userCart));
-        updateCartCounter();
-        loadCartItems();
+logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (confirm('Are you sure you want to logout?')) {
+        // Redirect to Flask logout route
+        window.location.href = "/logout";
     }
+});
 
-    // Booking table functions
-    // In user dashboard, update loadUpcomingBookings function
+mobileMenuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+});
+
+window.addEventListener('click', (e) => {
+    if (e.target === bookingModal) {
+        bookingModal.style.display = 'none';
+    }
+});
+
+window.addEventListener('resize', checkScreenSize);
+
+// Cart icon click event
+document.getElementById('cartIcon').addEventListener('click', () => {
+    showSection('cart');
+    setActiveNavLink('cart');
+    loadCartItems();
+});
+
+// Rent modal event listeners
+document.getElementById('rentStartDate').addEventListener('change', updateRentPricing);
+document.getElementById('rentEndDate').addEventListener('change', updateRentPricing);
+document.getElementById('submitRentRequestBtn').addEventListener('click', submitRentRequest);
+document.getElementById('cancelRentBtn').addEventListener('click', function() {
+    document.getElementById('rentModal').style.display = 'none';
+});
+
+// Auto-refresh equipment data every 30 seconds
+setInterval(async () => {
+    console.log('🔄 Auto-refreshing equipment data...');
+    await loadEquipmentFromDB();
+    loadRecommendedEquipment();
+    loadBrowseEquipment();
+}, 30000);
+
+// ================= LOAN CALCULATOR FUNCTIONS =================
+
+function setupLoanCalculator() {
+    console.log('⚙️ Setting up loan calculator...');
+    
+    const calculatorOption = document.getElementById('calculatorOption');
+    if (calculatorOption) {
+        calculatorOption.addEventListener('change', function() {
+            console.log('Calculator option changed to:', this.value);
+            handleCalculatorOptionChange(this.value);
+        });
+    }
+    
+    // Add event listeners for loan calculator inputs
+    const loanInputs = [
+        'modalEquipmentLifespan',
+        'modalDownPayment',
+        'modalInterestRate',
+        'modalLoanTerm'
+    ];
+    
+    loanInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', function() {
+                updateLoanCalculatorValues();
+                if (document.getElementById('calculatorOption').value === 'calculator') {
+                    calculateLoanPayment();
+                }
+            });
+        }
+    });
+    
+    // Calculate button
+    const calculateBtn = document.getElementById('modalCalculateBtn');
+    if (calculateBtn) {
+        calculateBtn.addEventListener('click', calculateLoanPayment);
+    }
+    
+    // Download button
+    const downloadBtn = document.getElementById('modalDownloadBtn');
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', downloadPaymentSchedule);
+    }
+    
+    console.log('✅ Loan calculator setup complete');
+}
+
+function initializeLoanCalculator(equipment) {
+    if (!equipment) return;
+    
+    // Set equipment details
+    const purchasePrice = equipment.purchasePrice || (equipment.price * 100);
+    
+    const equipmentNameInput = document.getElementById('modalEquipmentName');
+    const equipmentPriceInput = document.getElementById('modalEquipmentPrice');
+    
+    if (equipmentNameInput) equipmentNameInput.value = equipment.name;
+    if (equipmentPriceInput) equipmentPriceInput.value = purchasePrice;
+    
+    console.log('💰 Calculator initialized with:', {
+        name: equipment.name,
+        price: equipment.price,
+        purchasePrice: purchasePrice
+    });
+    
+    // Update displayed values immediately
+    updateLoanCalculatorValues();
+}
+
+function handleCalculatorOptionChange(optionValue) {
+    const loanCalculator = document.getElementById('loanCalculator');
+    const calculatorResults = document.getElementById('modalCalculatorResults');
+    const scheduleContainer = document.getElementById('modalScheduleContainer');
+    
+    console.log('🔄 Handling calculator option change:', optionValue);
+    
+    if (optionValue === 'calculator') {
+        // Show calculator sections
+        if (loanCalculator) loanCalculator.style.display = 'block';
+        if (calculatorResults) calculatorResults.style.display = 'block';
+        
+        // Calculate and display EMI immediately when calculator is shown
+        calculateLoanPayment();
+    } else {
+        // Hide calculator sections
+        if (loanCalculator) loanCalculator.style.display = 'none';
+        if (calculatorResults) calculatorResults.style.display = 'none';
+        if (scheduleContainer) scheduleContainer.style.display = 'none';
+    }
+}
+
+function updateLoanCalculatorValues() {
+    const equipmentPriceInput = document.getElementById('modalEquipmentPrice');
+    const downPaymentInput = document.getElementById('modalDownPayment');
+    const lifespanInput = document.getElementById('modalEquipmentLifespan');
+    const interestRateInput = document.getElementById('modalInterestRate');
+    const loanTermInput = document.getElementById('modalLoanTerm');
+    
+    if (!equipmentPriceInput || !downPaymentInput || !lifespanInput || !interestRateInput || !loanTermInput) {
+        return;
+    }
+    
+    const equipmentPrice = parseFloat(equipmentPriceInput.value) || 0;
+    const downPaymentPercent = parseFloat(downPaymentInput.value) || 0;
+    const lifespan = parseInt(lifespanInput.value) || 10;
+    const interestRate = parseFloat(interestRateInput.value) || 8.5;
+    const loanTerm = parseInt(loanTermInput.value) || 5;
+    
+    // Update displayed values
+    updateDisplayValue('modalEquipmentPriceValue', `₹${equipmentPrice.toLocaleString()}`);
+    updateDisplayValue('modalEquipmentLifespanValue', `${lifespan} years`);
+    updateDisplayValue('modalDownPaymentValue', `${downPaymentPercent}%`);
+    updateDisplayValue('modalInterestRateValue', `${interestRate}%`);
+    updateDisplayValue('modalLoanTermValue', `${loanTerm} years`);
+    
+    // Calculate down payment amount
+    const downPaymentAmount = (equipmentPrice * downPaymentPercent) / 100;
+    updateDisplayValue('modalDownPaymentAmount', `Down Payment Amount: ₹${downPaymentAmount.toLocaleString()}`);
+    
+    // Calculate loan amount
+    const loanAmount = equipmentPrice - downPaymentAmount;
+    updateDisplayValue('modalLoanAmountValue', `Loan Amount: ₹${loanAmount.toLocaleString()}`);
+}
+
+function updateDisplayValue(elementId, value) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function calculateLoanPayment() {
+    console.log('🧮 Calculating loan payment...');
+    
+    const equipmentPrice = parseFloat(document.getElementById('modalEquipmentPrice').value) || 0;
+    const downPaymentPercent = parseFloat(document.getElementById('modalDownPayment').value) || 0;
+    const interestRate = parseFloat(document.getElementById('modalInterestRate').value) || 8.5;
+    const loanTerm = parseInt(document.getElementById('modalLoanTerm').value) || 5;
+    
+    // Validate inputs
+    if (equipmentPrice <= 0) {
+        showToast('Please enter a valid equipment price', 'error');
+        return;
+    }
+    
+    const downPaymentAmount = (equipmentPrice * downPaymentPercent) / 100;
+    const loanAmount = equipmentPrice - downPaymentAmount;
+    
+    if (loanAmount <= 0) {
+        showToast('Down payment is too high. Loan amount must be positive.', 'error');
+        return;
+    }
+    
+    const monthlyInterestRate = (interestRate / 100) / 12;
+    const numberOfPayments = loanTerm * 12;
+    
+    // Calculate EMI using the formula: EMI = P × r × (1 + r)^n / ((1 + r)^n - 1)
+    const emi = loanAmount * monthlyInterestRate * 
+                Math.pow(1 + monthlyInterestRate, numberOfPayments) / 
+                (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+    
+    const totalPayment = emi * numberOfPayments;
+    const totalInterest = totalPayment - loanAmount;
+    
+    // Update results display
+    document.getElementById('modalEmiValue').textContent = `₹${Math.round(emi).toLocaleString()}`;
+    document.getElementById('modalTotalInterestValue').textContent = `₹${Math.round(totalInterest).toLocaleString()}`;
+    document.getElementById('modalTotalPaymentValue').textContent = `₹${Math.round(totalPayment).toLocaleString()}`;
+    
+    // Generate payment schedule
+    generatePaymentSchedule(loanAmount, monthlyInterestRate, numberOfPayments, emi);
+    
+    // Show schedule container
+    document.getElementById('modalScheduleContainer').style.display = 'block';
+    
+    console.log('✅ EMI calculation completed');
+}
+
+function generatePaymentSchedule(loanAmount, monthlyInterestRate, numberOfPayments, emi) {
+    const scheduleBody = document.getElementById('modalScheduleBody');
+    scheduleBody.innerHTML = '';
+    
+    let outstandingBalance = loanAmount;
+    
+    for (let month = 1; month <= Math.min(12, numberOfPayments); month++) {
+        const interestPayment = outstandingBalance * monthlyInterestRate;
+        const principalPayment = emi - interestPayment;
+        const beginningBalance = outstandingBalance;
+        
+        outstandingBalance -= principalPayment;
+        
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${month}</td>
+            <td>₹${Math.round(beginningBalance).toLocaleString()}</td>
+            <td>₹${Math.round(emi).toLocaleString()}</td>
+            <td>₹${Math.round(principalPayment).toLocaleString()}</td>
+            <td>₹${Math.round(interestPayment).toLocaleString()}</td>
+            <td>₹${Math.round(outstandingBalance).toLocaleString()}</td>
+        `;
+        scheduleBody.appendChild(row);
+    }
+}
+
+function downloadPaymentSchedule() {
+    const equipmentName = document.getElementById('modalEquipmentName').value;
+    const equipmentPrice = parseFloat(document.getElementById('modalEquipmentPrice').value) || 0;
+    const downPaymentPercent = parseFloat(document.getElementById('modalDownPayment').value) || 0;
+    const interestRate = parseFloat(document.getElementById('modalInterestRate').value) || 8.5;
+    const loanTerm = parseInt(document.getElementById('modalLoanTerm').value) || 5;
+    
+    const downPaymentAmount = (equipmentPrice * downPaymentPercent) / 100;
+    const loanAmount = equipmentPrice - downPaymentAmount;
+    const monthlyInterestRate = (interestRate / 100) / 12;
+    const numberOfPayments = loanTerm * 12;
+    
+    const emi = loanAmount * monthlyInterestRate * 
+                Math.pow(1 + monthlyInterestRate, numberOfPayments) / 
+                (Math.pow(1 + monthlyInterestRate, numberOfPayments) - 1);
+    
+    // Create CSV content
+    let csvContent = "Payment Schedule for " + equipmentName + "\n";
+    csvContent += "Equipment Price: ₹" + equipmentPrice.toLocaleString() + "\n";
+    csvContent += "Down Payment: ₹" + downPaymentAmount.toLocaleString() + " (" + downPaymentPercent + "%)\n";
+    csvContent += "Loan Amount: ₹" + loanAmount.toLocaleString() + "\n";
+    csvContent += "Interest Rate: " + interestRate + "%\n";
+    csvContent += "Loan Term: " + loanTerm + " years\n";
+    csvContent += "Monthly EMI: ₹" + Math.round(emi).toLocaleString() + "\n\n";
+    
+    csvContent += "Month,Beginning Balance,EMI,Principal,Interest,Outstanding Balance\n";
+    
+    let outstandingBalance = loanAmount;
+    
+    for (let month = 1; month <= numberOfPayments; month++) {
+        const interestPayment = outstandingBalance * monthlyInterestRate;
+        const principalPayment = emi - interestPayment;
+        const beginningBalance = outstandingBalance;
+        
+        outstandingBalance -= principalPayment;
+        
+        csvContent += month + ",₹" + Math.round(beginningBalance) + ",₹" + Math.round(emi) + 
+                     ",₹" + Math.round(principalPayment) + ",₹" + Math.round(interestPayment) + 
+                     ",₹" + Math.round(outstandingBalance) + "\n";
+    }
+    
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.setAttribute('hidden', '');
+    a.setAttribute('href', url);
+    a.setAttribute('download', 'payment_schedule_' + equipmentName.replace(/\s+/g, '_') + '.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    
+    showToast('Payment schedule downloaded successfully!');
+}
+
+// ================= BOOKING TABLE FUNCTIONS =================
+
 function loadUpcomingBookings() {
     fetch('/api/user/bookings')
         .then(response => response.json())
@@ -3667,174 +4943,72 @@ function loadUpcomingBookings() {
             console.error('Error loading bookings:', error);
         });
 }
-// In vendor dashboard JavaScript, update the loadAllBookings function
-function loadAllBookings() {
-    fetch('/api/vendor/bookings')
-        .then(response => response.json())
-        .then(bookings => {
-            const tableBody = document.getElementById('bookingsTable');
-            tableBody.innerHTML = '';
+
+function filterBookings() {
+    const statusFilter = bookingFilter.value;
+    
+    const filteredBookings = statusFilter === 'all' 
+        ? userBookings 
+        : userBookings.filter(booking => booking.status === statusFilter);
+    
+    bookingsTable.innerHTML = '';
+    
+    if (filteredBookings.length === 0) {
+        bookingsTable.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--gray);">No bookings match your filter.</td></tr>';
+        return;
+    }
+    
+    filteredBookings.forEach(booking => {
+        const row = document.createElement('tr');
+        
+        const statusClass = 
+            booking.status === 'confirmed' ? 'badge-available' : 
+            booking.status === 'active' ? 'badge-maintenance' : 
+            booking.status === 'completed' ? 'badge-available' : 
+            booking.status === 'cancelled' ? 'badge-unavailable' : '';
+        
+        row.innerHTML = `
+            <td>#${booking.id}</td>
+            <td>${booking.equipmentName}</td>
+            <td>${booking.owner}</td>
+            <td>${formatDate(booking.startDate)} to ${formatDate(booking.endDate)}</td>
+            <td>₹${booking.total.toLocaleString()}</td>
+            <td><span class="item-badge ${statusClass}">${booking.status}</span></td>
+            <td>
+                <button class="btn btn-primary btn-sm view-booking-btn" data-id="${booking.id}">View</button>
+                ${booking.status === 'confirmed' ? 
+                    `<button class="btn btn-danger btn-sm cancel-booking-btn" data-id="${booking.id}">Cancel</button>` : ''}
+                ${booking.status === 'completed' ? 
+                    `<button class="btn btn-success btn-sm review-btn" data-id="${booking.id}">Review</button>` : ''}
+            </td>
+        `;
+        
+        bookingsTable.appendChild(row);
+    });
+}
+
+// ================= SETUP RATING STARS =================
+
+function setupRatingStars() {
+    const ratingStars = document.querySelectorAll('.rating-stars i');
+    ratingStars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            document.getElementById('reviewRating').value = rating;
             
-            if (bookings.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="7" style="text-align: center; padding: 20px; color: var(--gray);">
-                            No bookings found
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            bookings.forEach(booking => {
-                const row = document.createElement('tr');
-                
-                const statusClass = 
-                    booking.status === 'confirmed' ? 'badge-available' : 
-                    booking.status === 'pending' ? 'badge-maintenance' : 
-                    booking.status === 'completed' ? 'badge-available' : 'badge-unavailable';
-                
-                row.innerHTML = `
-                    <td>#${booking.id}</td>
-                    <td>${booking.user_name}</td>
-                    <td>${booking.equipment_name}</td>
-                    <td>Instant Booking</td>
-                    <td>₹${booking.total_amount}</td>
-                    <td><span class="item-badge ${statusClass}">${booking.status}</span></td>
-                    <td>
-                        <button class="btn btn-primary btn-sm view-booking" data-id="${booking.id}">
-                            <i class="fas fa-eye"></i> View
-                        </button>
-                        ${booking.status === 'pending' ? `
-                        <button class="btn btn-success btn-sm confirm-booking" data-id="${booking.id}">
-                            <i class="fas fa-check"></i> Confirm
-                        </button>
-                        ` : ''}
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
+            // Update star colors
+            ratingStars.forEach((s, index) => {
+                if (index < rating) {
+                    s.style.color = '#f59e0b';
+                } else {
+                    s.style.color = '#e2e8f0';
+                }
             });
-            
-            // Add event listeners for booking actions
-            addBookingEventListeners();
-        })
-        .catch(error => {
-            console.error('Error loading bookings:', error);
-            document.getElementById('bookingsTable').innerHTML = `
-                <tr>
-                    <td colspan="7" style="text-align: center; padding: 20px; color: var(--accent);">
-                        Error loading bookings
-                    </td>
-                </tr>
-            `;
-        });
-}
-
-function addBookingEventListeners() {
-    // Confirm booking
-    document.querySelectorAll('.confirm-booking').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const bookingId = this.getAttribute('data-id');
-            updateBookingStatus(bookingId, 'confirmed');
         });
     });
 }
-
-async function updateBookingStatus(bookingId, status) {
-    try {
-        const response = await fetch(`/api/vendor/booking/${bookingId}/update`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status: status })
-        });
-        
-        if (response.ok) {
-            showToast(`Booking ${status} successfully`);
-            loadAllBookings(); // Reload bookings
-        } else {
-            showToast('Error updating booking', 'error');
-        }
-    } catch (error) {
-        console.error('Error updating booking:', error);
-        showToast('Error updating booking', 'error');
-    }
-}
-
-    function filterBookings() {
-        const statusFilter = bookingFilter.value;
-        
-        const filteredBookings = statusFilter === 'all' 
-            ? userBookings 
-            : userBookings.filter(booking => booking.status === statusFilter);
-        
-        bookingsTable.innerHTML = '';
-        
-        if (filteredBookings.length === 0) {
-            bookingsTable.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--gray);">No bookings match your filter.</td></tr>';
-            return;
-        }
-        
-        filteredBookings.forEach(booking => {
-            const row = document.createElement('tr');
-            
-            const statusClass = 
-                booking.status === 'confirmed' ? 'badge-available' : 
-                booking.status === 'active' ? 'badge-maintenance' : 
-                booking.status === 'completed' ? 'badge-available' : 
-                booking.status === 'cancelled' ? 'badge-unavailable' : '';
-            
-            row.innerHTML = `
-                <td>#${booking.id}</td>
-                <td>${booking.equipmentName}</td>
-                <td>${booking.owner}</td>
-                <td>${formatDate(booking.startDate)} to ${formatDate(booking.endDate)}</td>
-                <td>₹${booking.total.toLocaleString()}</td>
-                <td><span class="item-badge ${statusClass}">${booking.status}</span></td>
-                <td>
-                    <button class="btn btn-primary btn-sm view-booking-btn" data-id="${booking.id}">View</button>
-                    ${booking.status === 'confirmed' ? 
-                        `<button class="btn btn-danger btn-sm cancel-booking-btn" data-id="${booking.id}">Cancel</button>` : ''}
-                    ${booking.status === 'completed' ? 
-                        `<button class="btn btn-success btn-sm review-btn" data-id="${booking.id}">Review</button>` : ''}
-                </td>
-            `;
-            
-            bookingsTable.appendChild(row);
-        });
-        
-        // Add event listeners to booking action buttons
-        document.querySelectorAll('.view-booking-btn').forEach(btn => {
-            btn.addEventListener('click', () => viewBooking(btn.dataset.id));
-        });
-        
-        document.querySelectorAll('.cancel-booking-btn').forEach(btn => {
-            btn.addEventListener('click', () => cancelBooking(btn.dataset.id));
-        });
-        
-        document.querySelectorAll('.review-btn').forEach(btn => {
-            btn.addEventListener('click', () => openReviewModal());
-        });
-    }
-
-    // Rent modal event listeners
-    document.getElementById('rentStartDate').addEventListener('change', updateRentPricing);
-    document.getElementById('rentEndDate').addEventListener('change', updateRentPricing);
-    document.getElementById('submitRentRequestBtn').addEventListener('click', submitRentRequest);
-    document.getElementById('cancelRentBtn').addEventListener('click', function() {
-        document.getElementById('rentModal').style.display = 'none';
-    });
-
-    // Auto-refresh equipment data every 30 seconds
-    setInterval(async () => {
-        console.log('🔄 Auto-refreshing equipment data...');
-        await loadEquipmentFromDB();
-        loadRecommendedEquipment();
-        loadBrowseEquipment();
-    }, 30000);
 
 </script>
+<style>.goog-te-banner-frame{display:none!important;}.goog-te-gadget{font-size:0!important;}</style>
 </body>
 </html>
