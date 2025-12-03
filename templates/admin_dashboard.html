@@ -33,7 +33,54 @@
             color: var(--dark);
             min-height: 100vh;
         }
-        
+         .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-banner-wrapper,
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover,
+    .goog-text-highlight {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+    }
+    /* Document Status Badges */
+.document-verified {
+    background: #c6f6d5;
+    color: #2f855a;
+}
+
+.document-rejected {
+    background: #fed7d7;
+    color: #c53030;
+}
+
+.document-pending {
+    background: #feebcb;
+    color: #b45309;
+}
+
+/* Small buttons for document actions */
+.btn-doc-action {
+    padding: 3px 8px;
+    font-size: 0.75rem;
+    margin-right: 5px;
+}
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
         /* Admin Header */
         .admin-header {
             background: white;
@@ -124,7 +171,49 @@
             width: 20px;
             text-align: center;
         }
-        
+        /* Broadcast specific styles */
+.broadcast-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.message-status {
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-sent {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.status-failed {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.preview-box {
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+}
+
+.preview-box h4 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
         /* Main Content */
         .admin-content {
             flex: 1;
@@ -542,6 +631,9 @@
     </style>
 </head>
 <body>
+   
+<!-- Google Translate for this page -->
+<div id="google_translate_element"></div>
     <!-- Admin Header -->
     <div class="admin-header">
         <h1><i class="fas fa-hands-helping"></i> Admin Dashboard</h1>
@@ -571,8 +663,10 @@
             
                 <li><a href="#" class="nav-link" data-section="equipment"><i class="fas fa-tractor"></i> <span>Equipment</span></a></li>
                 <li><a href="#" class="nav-link" data-section="bookings"><i class="fas fa-calendar-alt"></i> <span>Bookings</span></a></li>
+                <li><a href="#" class="nav-link" data-section="broadcast"><i class="fas fa-bullhorn"></i> <span>Broadcast</span></a></li>
+    
                 <li><a href="#" class="nav-link" data-section="reports"><i class="fas fa-chart-bar"></i> <span>Reports</span></a></li>
-                <li><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+          
             </ul>
         </div>
         
@@ -727,51 +821,162 @@
                     </table>
                 </div>
             </div>
-            
-            <!-- Vendors Section -->
-            <div class="content-section" id="vendors-section">
-                <div class="section-header">
-                    <h2>Vendor Management</h2>
+        <!-- In the vendors-section of your HTML -->
+<div class="content-section" id="vendors-section">
+    <div class="section-header">
+        <h2>Vendor Management</h2>
+        <p>Includes document verification</p>
+    </div>
+    
+    <div class="search-filter">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="vendorSearch" placeholder="Search vendors...">
+        </div>
+        
+        <div class="filter-dropdown">
+            <select id="vendorStatusFilter" class="form-control">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+        
+        <div class="filter-dropdown">
+            <select id="vendorDocFilter" class="form-control">
+                <option value="all">All Documents</option>
+                <option value="verified">Verified</option>
+                <option value="pending">Pending Verification</option>
+                <option value="rejected">Rejected</option>
+            </select>
+        </div>
+    </div>
+    
+    <div style="overflow-x: auto;">
+        <table class="data-table">
+              <thead>
+        <tr>
+            <th>ID</th>
+            <th>Business Name</th>
+            <th>Contact Person</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Service Type</th>
+            <th>Document</th> <!-- Keep this -->
+            <th>Doc Status</th> <!-- Keep this -->
+            <th>Registration Date</th>
+            <th>Account Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody id="vendorsTable">
+        <!-- Vendors will be loaded here -->
+    </tbody>
+</table>
+    </div>
+</div>
+            <!-- Broadcast Messages Section -->
+<div class="content-section" id="broadcast-section">
+    <div class="section-header">
+        <h2>Broadcast Messages</h2>
+        <p>Send announcements to all registered farmers</p>
+    </div>
+    
+    <div class="card">
+        <div class="section-header">
+            <h3><i class="fas fa-bullhorn"></i> Send New Announcement</h3>
+        </div>
+        
+        <div class="broadcast-form" style="padding: 20px;">
+            <div class="stat-card" style="margin-bottom: 20px; background-color: #e3f2fd;">
+                <div class="stat-info">
+                    <h3 id="totalUsers">0</h3>
+                    <p>Total Registered Farmers</p>
                 </div>
-                
-                <div class="search-filter">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" id="vendorSearch" placeholder="Search vendors...">
-                    </div>
-                    
-                    <div class="filter-dropdown">
-                        <select id="vendorStatusFilter" class="form-control">
-                            <option value="all">All Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div>
-                </div>
-                
-                <div style="overflow-x: auto;">
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Business Name</th>
-                                <th>Contact Person</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Service Type</th>
-                                <th>Registration Date</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="vendorsTable">
-                            <!-- Vendors will be loaded here -->
-                        </tbody>
-                    </table>
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
                 </div>
             </div>
             
+            <form id="broadcastForm">
+                <div style="margin-bottom: 15px;">
+                    <label for="messageTitle" style="display: block; margin-bottom: 5px; font-weight: 500;">Message Title *</label>
+                    <input type="text" id="messageTitle" class="form-control" 
+                           placeholder="Enter message title" required
+                           style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <label for="messageContent" style="display: block; margin-bottom: 5px; font-weight: 500;">Message Content *</label>
+                    <textarea id="messageContent" class="form-control" 
+                              rows="6" placeholder="Enter your announcement message..." required
+                              style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;"></textarea>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label for="messageType" style="display: block; margin-bottom: 5px; font-weight: 500;">Message Type</label>
+                    <select id="messageType" class="form-control" style="width: 100%; padding: 10px;">
+                        <option value="announcement">General Announcement</option>
+                        <option value="new_equipment">New Equipment Available</option>
+                        <option value="promotion">Special Promotion</option>
+                        <option value="maintenance">System Maintenance</option>
+                        <option value="emergency">Emergency Alert</option>
+                    </select>
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary" id="sendBroadcastBtn" style="flex: 1;">
+                        <i class="fas fa-paper-plane"></i> Send Broadcast Message
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="previewMessageBtn" style="flex: 1;">
+                        <i class="fas fa-eye"></i> Preview Message
+                    </button>
+                </div>
+                
+                <div id="messagePreview" style="display: none; margin-top: 20px; padding: 15px; background-color: #f5f5f5; border-radius: 5px;">
+                    <h4 style="margin-bottom: 10px;">Message Preview:</h4>
+                    <div id="previewContent"></div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Recent Broadcasts History -->
+    <div class="card" style="margin-top: 30px;">
+        <div class="section-header">
+            <h3><i class="fas fa-history"></i> Broadcast History</h3>
+        </div>
+        
+        <div style="padding: 20px;">
+            <div class="search-filter">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="broadcastSearch" placeholder="Search broadcast history...">
+                </div>
+            </div>
+            
+            <div style="overflow-x: auto; margin-top: 15px;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Recipients</th>
+                            <th>Status</th>
+                            <th>Sent Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="broadcastHistory">
+                        <!-- History will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
           <!-- Equipment Section -->
 <div class="content-section" id="equipment-section">
     <div class="section-header">
@@ -920,22 +1125,336 @@
         </div>
     </div>
 </div>
-            <div class="content-section" id="reports-section">
-                <div class="section-header">
-                    <h2>Reports & Analytics</h2>
-                </div>
-                <p>Reports and analytics content will go here.</p>
+            
+    <!-- Reports Section -->
+<div class="content-section" id="reports-section">
+    <div class="section-header">
+        <h2><i class="fas fa-chart-bar"></i> Platform Analytics & Reports</h2>
+        <p>Comprehensive overview of platform performance and statistics</p>
+    </div>
+    
+    <!-- Date Range Filter -->
+    <div class="search-filter" style="margin-bottom: 30px;">
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div>
+                <label for="reportPeriod" style="font-weight: 500; margin-bottom: 5px; display: block;">Time Period</label>
+                <select id="reportPeriod" class="form-control" style="width: 200px;">
+                    <option value="last_7_days">Last 7 Days</option>
+                    <option value="last_30_days" selected>Last 30 Days</option>
+                    <option value="last_90_days">Last 90 Days</option>
+                    <option value="this_month">This Month</option>
+                    <option value="last_month">Last Month</option>
+                    <option value="this_year">This Year</option>
+                    <option value="all_time">All Time</option>
+                </select>
             </div>
             
-            <div class="content-section" id="settings-section">
-                <div class="section-header">
-                    <h2>Admin Settings</h2>
+            <button class="btn btn-primary" id="generateReportBtn" style="margin-top: 24px;">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
+            
+            <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                <span id="lastUpdated" style="color: var(--gray); font-size: 0.9rem;">
+                    Last updated: Loading...
+                </span>
+                <div id="dataLoading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Loading data...
                 </div>
-                <p>Admin settings content will go here.</p>
             </div>
         </div>
     </div>
     
+    <!-- Summary Stats Cards -->
+    <div class="stats-grid" style="margin-bottom: 30px;">
+        <div class="stat-card">
+            <div class="stat-icon blue">
+                <i class="fas fa-rupee-sign"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="totalRevenue">₹0</h3>
+                <p>Total Revenue</p>
+                <small id="revenueGrowth" style="font-size: 0.8rem;">
+                    <i class="fas fa-chart-line"></i> <span id="growthValue">0%</span> growth
+                </small>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon green">
+                <i class="fas fa-shopping-cart"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="totalOrders">0</h3>
+                <p>Total Orders</p>
+                <small id="orderStats" style="font-size: 0.8rem;">
+                    <span id="completedOrders">0</span> completed • <span id="cancelledOrders">0</span> cancelled
+                </small>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon orange">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="activeUsers">0</h3>
+                <p>Active Users</p>
+                <small id="userStats" style="font-size: 0.8rem;">
+                    <span id="totalFarmers">0</span> farmers • <span id="totalVendors">0</span> vendors
+                </small>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon red">
+                <i class="fas fa-percentage"></i>
+            </div>
+            <div class="stat-info">
+                <h3 id="conversionRate">0%</h3>
+                <p>Conversion Rate</p>
+                <small id="cancellationRate" style="font-size: 0.8rem;">
+                    Cancellation: <span id="cancelRate">0%</span>
+                </small>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(500px, 1fr)); gap: 25px; margin-bottom: 30px;">
+        <!-- Revenue Chart -->
+        <div class="card" style="padding: 20px;">
+            <div class="section-header" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h3><i class="fas fa-rupee-sign"></i> Revenue Trend (Last 30 Days)</h3>
+            </div>
+            <div style="height: 300px;">
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div id="revenueChartEmpty" style="display: none; height: 300px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                <div style="text-align: center;">
+                    <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                    <p>No revenue data available for this period</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Registration Growth Chart -->
+        <div class="card" style="padding: 20px;">
+            <div class="section-header" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h3><i class="fas fa-user-plus"></i> User Registration Trend</h3>
+            </div>
+            <div style="height: 300px;">
+                <canvas id="registrationChart"></canvas>
+            </div>
+            <div id="registrationChartEmpty" style="display: none; height: 300px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                <div style="text-align: center;">
+                    <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 10px;"></i>
+                    <p>No registration data available for this period</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Secondary Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 30px;">
+        <!-- Category Distribution -->
+        <div class="card" style="padding: 20px;">
+            <div class="section-header" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h3><i class="fas fa-tags"></i> Equipment Category Distribution</h3>
+            </div>
+            <div style="height: 250px;">
+                <canvas id="categoryChart"></canvas>
+            </div>
+            <div id="categoryChartEmpty" style="display: none; height: 250px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                <div style="text-align: center;">
+                    <i class="fas fa-tractor" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>No equipment categories found</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Distribution -->
+        <div class="card" style="padding: 20px;">
+            <div class="section-header" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h3><i class="fas fa-tasks"></i> Order Status Distribution</h3>
+            </div>
+            <div style="height: 250px;">
+                <canvas id="statusChart"></canvas>
+            </div>
+            <div id="statusChartEmpty" style="display: none; height: 250px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                <div style="text-align: center;">
+                    <i class="fas fa-clipboard-list" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>No order data available</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Vendors -->
+        <div class="card" style="padding: 20px;">
+            <div class="section-header" style="margin-bottom: 20px; padding-bottom: 10px;">
+                <h3><i class="fas fa-crown"></i> Top Performing Vendors</h3>
+            </div>
+            <div style="height: 250px; overflow-y: auto;">
+                <table class="data-table" style="font-size: 0.9rem;">
+                    <thead>
+                        <tr>
+                            <th>Vendor</th>
+                            <th>Orders</th>
+                            <th>Revenue</th>
+                            <th>Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topVendorsTable">
+                        <tr><td colspan="4" style="text-align: center; padding: 20px; color: var(--gray);">
+                            <i class="fas fa-spinner fa-spin"></i> Loading vendor data...
+                        </td></tr>
+                    </tbody>
+                </table>
+                <div id="topVendorsEmpty" style="display: none; text-align: center; padding: 20px; color: var(--gray);">
+                    <i class="fas fa-store-slash" style="font-size: 2rem; margin-bottom: 10px;"></i>
+                    <p>No vendor performance data available</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Statistics -->
+    <div class="card" style="padding: 20px;">
+        <div class="section-header" style="margin-bottom: 20px;">
+            <h3><i class="fas fa-chart-pie"></i> Detailed Platform Statistics</h3>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+            <!-- User Statistics -->
+            <div>
+                <h4 style="margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--primary-light); padding-bottom: 5px;">
+                    <i class="fas fa-users"></i> User Statistics
+                </h4>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-user-tie"></i> Total Farmers:</span>
+                        <strong id="statsFarmers">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-store"></i> Total Vendors:</span>
+                        <strong id="statsVendors">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-user-check"></i> Active This Month:</span>
+                        <strong id="activeThisMonth">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><i class="fas fa-chart-line"></i> Avg. Orders per User:</span>
+                        <strong id="avgOrdersUser">0.0</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Statistics -->
+            <div>
+                <h4 style="margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--primary-light); padding-bottom: 5px;">
+                    <i class="fas fa-shopping-cart"></i> Order Statistics
+                </h4>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-clipboard-list"></i> Total Orders:</span>
+                        <strong id="statsOrders">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-check-circle" style="color: var(--secondary);"></i> Completed:</span>
+                        <strong id="statsCompleted">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-times-circle" style="color: var(--accent);"></i> Cancelled:</span>
+                        <strong id="statsCancelled">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><i class="fas fa-calendar-alt"></i> Avg. Duration:</span>
+                        <strong id="statsAvgDuration">0 days</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Financial Statistics -->
+            <div>
+                <h4 style="margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--primary-light); padding-bottom: 5px;">
+                    <i class="fas fa-money-bill-wave"></i> Financial Statistics
+                </h4>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-rupee-sign"></i> Total Revenue:</span>
+                        <strong id="statsRevenue">₹0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-calculator"></i> Avg. Order Value:</span>
+                        <strong id="statsAvgOrderValue">₹0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-hand-holding-usd"></i> Platform Commission:</span>
+                        <strong id="statsCommission">₹0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><i class="fas fa-chart-line"></i> Revenue Growth:</span>
+                        <strong id="statsRevenueGrowth" style="color: var(--secondary);">0%</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Equipment Statistics -->
+            <div>
+                <h4 style="margin-bottom: 15px; color: var(--primary); border-bottom: 2px solid var(--primary-light); padding-bottom: 5px;">
+                    <i class="fas fa-tractor"></i> Equipment Statistics
+                </h4>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-list"></i> Total Equipment:</span>
+                        <strong id="statsTotalEquipment">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-check" style="color: var(--secondary);"></i> Available:</span>
+                        <strong id="statsAvailableEquipment">0</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span><i class="fas fa-percentage"></i> Utilization Rate:</span>
+                        <strong id="statsUtilization">0%</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span><i class="fas fa-boxes"></i> Categories:</span>
+                        <strong id="statsCategories">0</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Add these styles to your existing CSS */
+#dataLoading {
+    color: var(--primary);
+    font-size: 0.9rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 100%;
+}
+
+.no-data-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--gray);
+    text-align: center;
+}
+
+.no-data-message i {
+    font-size: 3rem;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+</style>
     <!-- Farmer Detail Modal -->
     <div class="modal" id="farmerModal">
         <div class="modal-content">
@@ -1008,6 +1527,648 @@ const equipmentSearch = document.getElementById('equipmentSearch');
 const equipmentStatusFilter = document.getElementById('equipmentStatusFilter');
 const equipmentCategoryFilter = document.getElementById('equipmentCategoryFilter');
 
+// Add this to your Global data storage
+let broadcastHistory = [];
+
+// Add to your existing DOM Elements section
+const broadcastHistoryTable = document.getElementById('broadcastHistory');
+const broadcastForm = document.getElementById('broadcastForm');
+const sendBroadcastBtn = document.getElementById('sendBroadcastBtn');
+const previewMessageBtn = document.getElementById('previewMessageBtn');
+const messagePreview = document.getElementById('messagePreview');
+const previewContent = document.getElementById('previewContent');
+// Global variables for charts
+let revenueChart = null;
+let registrationChart = null;
+let categoryChart = null;
+let statusChart = null;
+let reportsData = null;
+
+// DOM Elements for reports
+const generateReportBtn = document.getElementById('generateReportBtn');
+const reportPeriod = document.getElementById('reportPeriod');
+const lastUpdated = document.getElementById('lastUpdated');
+const dataLoading = document.getElementById('dataLoading');
+
+// Show loading state
+function showLoading(show) {
+    if (dataLoading) {
+        dataLoading.style.display = show ? 'block' : 'none';
+    }
+    if (generateReportBtn) {
+        generateReportBtn.disabled = show;
+        if (show) {
+            generateReportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+        } else {
+            generateReportBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
+        }
+    }
+}
+
+// Format currency
+function formatCurrency(amount) {
+    if (!amount) return '₹0';
+    if (amount >= 10000000) {
+        return '₹' + (amount / 10000000).toFixed(1) + 'Cr';
+    } else if (amount >= 100000) {
+        return '₹' + (amount / 100000).toFixed(1) + 'L';
+    } else if (amount >= 1000) {
+        return '₹' + (amount / 1000).toFixed(1) + 'K';
+    }
+    return '₹' + Math.round(amount).toLocaleString('en-IN');
+}
+
+// Update last updated time
+function updateLastUpdated() {
+    if (lastUpdated) {
+        const now = new Date();
+        lastUpdated.textContent = `Last updated: ${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+    }
+}
+
+// Load reports data
+async function loadReports() {
+    try {
+        showLoading(true);
+        
+        const period = reportPeriod.value;
+        console.log(`📊 Loading reports for period: ${period}`);
+        
+        const response = await fetch(`/api/admin/reports?period=${period}`);
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('📊 Reports data received:', data);
+        
+        if (data.error) {
+            if (data.error === 'Unauthorized') {
+                showNotification('Session expired. Please log in again.', 'error');
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('admin_login') }}";
+                }, 2000);
+            } else {
+                showNotification('Error: ' + data.error, 'error');
+            }
+            return;
+        }
+        
+        reportsData = data;
+        renderReports();
+        
+    } catch (error) {
+        console.error('❌ Error loading reports:', error);
+        showNotification('Failed to load reports data. Check console for details.', 'error');
+        
+        // Try debug endpoint
+        try {
+            const debugResponse = await fetch('/api/admin/debug-data');
+            const debugData = await debugResponse.json();
+            console.log('🔍 Debug data:', debugData);
+        } catch (debugError) {
+            console.error('Debug error:', debugError);
+        }
+    } finally {
+        showLoading(false);
+        updateLastUpdated();
+    }
+}
+
+// Render reports data
+function renderReports() {
+    if (!reportsData) {
+        console.error('No reports data available');
+        showNotification('No reports data available', 'error');
+        return;
+    }
+    
+    console.log('📊 Rendering reports with data:', reportsData);
+    
+    const summary = reportsData.summary || {};
+    const detailed = reportsData.detailedStats || {};
+    
+    // Update summary cards
+    document.getElementById('totalRevenue').textContent = formatCurrency(summary.totalRevenue || 0);
+    document.getElementById('totalOrders').textContent = (summary.totalOrders || 0).toLocaleString();
+    document.getElementById('activeUsers').textContent = (summary.activeUsers || 0).toLocaleString();
+    document.getElementById('conversionRate').textContent = (summary.conversionRate || 0) + '%';
+    
+    // Update summary details
+    document.getElementById('growthValue').textContent = (detailed.revenueGrowth || 0) + '%';
+    document.getElementById('completedOrders').textContent = detailed.completedOrders || 0;
+    document.getElementById('cancelledOrders').textContent = detailed.cancelledOrders || 0;
+    document.getElementById('totalFarmers').textContent = summary.totalFarmers || 0;
+    document.getElementById('totalVendors').textContent = summary.totalVendors || 0;
+    document.getElementById('cancelRate').textContent = (summary.cancellationRate || 0) + '%';
+    
+    // Update detailed statistics
+    document.getElementById('statsFarmers').textContent = detailed.farmers || 0;
+    document.getElementById('statsVendors').textContent = detailed.vendors || 0;
+    document.getElementById('activeThisMonth').textContent = detailed.activeThisMonth || 0;
+    document.getElementById('avgOrdersUser').textContent = (detailed.avgOrdersUser || 0).toFixed(1);
+    document.getElementById('statsOrders').textContent = detailed.totalOrders || 0;
+    document.getElementById('statsCompleted').textContent = detailed.completedOrders || 0;
+    document.getElementById('statsCancelled').textContent = detailed.cancelledOrders || 0;
+    document.getElementById('statsAvgDuration').textContent = (detailed.avgDuration || 0) + ' days';
+    document.getElementById('statsRevenue').textContent = formatCurrency(detailed.totalRevenue || 0);
+    document.getElementById('statsAvgOrderValue').textContent = formatCurrency(detailed.avgOrderValue || 0);
+    document.getElementById('statsCommission').textContent = formatCurrency(detailed.platformCommission || 0);
+    document.getElementById('statsRevenueGrowth').textContent = (detailed.revenueGrowth || 0) + '%';
+    document.getElementById('statsTotalEquipment').textContent = summary.totalEquipment || 0;
+    document.getElementById('statsAvailableEquipment').textContent = detailed.availableEquipment || 0;
+    document.getElementById('statsUtilization').textContent = (detailed.utilizationRate || 0) + '%';
+    document.getElementById('statsCategories').textContent = (reportsData.categoryDistribution || []).length;
+    
+    // Update top vendors table
+    updateTopVendors();
+    
+    // Render charts
+    renderCharts();
+}
+
+// Update top vendors table
+function updateTopVendors() {
+    const table = document.getElementById('topVendorsTable');
+    const emptyDiv = document.getElementById('topVendorsEmpty');
+    const vendors = reportsData.topVendors || [];
+    
+    console.log('👥 Top vendors data:', vendors);
+    
+    if (!vendors || vendors.length === 0) {
+        table.style.display = 'none';
+        emptyDiv.style.display = 'block';
+        return;
+    }
+    
+    table.style.display = '';
+    emptyDiv.style.display = 'none';
+    
+    table.innerHTML = vendors.map((vendor, index) => `
+        <tr>
+            <td>
+                <strong>${index + 1}.</strong> ${vendor.name || 'Unknown Vendor'}
+                ${vendor.rating > 0 ? `<br><small>${'★'.repeat(Math.floor(vendor.rating))}${vendor.rating.toFixed(1)}</small>` : ''}
+            </td>
+            <td><span class="badge" style="background: #e3f2fd; color: #1976d2; padding: 3px 8px; border-radius: 12px;">${vendor.orders || 0}</span></td>
+            <td><strong>${formatCurrency(vendor.revenue || 0)}</strong></td>
+            <td>
+                ${vendor.rating > 0 ? `
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <span style="color: #ffb300;">${'★'.repeat(Math.floor(vendor.rating))}</span>
+                    <span>${vendor.rating.toFixed(1)}</span>
+                </div>
+                ` : 'No ratings'}
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Render all charts
+function renderCharts() {
+    renderRevenueChart();
+    renderRegistrationChart();
+    renderCategoryChart();
+    renderStatusChart();
+}
+
+// Render revenue chart
+function renderRevenueChart() {
+    const ctx = document.getElementById('revenueChart');
+    const emptyDiv = document.getElementById('revenueChartEmpty');
+    const revenueData = reportsData.revenueTrend || [];
+    
+    console.log('💰 Revenue data:', revenueData);
+    
+    // Check if we have valid data
+    const hasData = revenueData.length > 0 && revenueData.some(r => r.amount > 0);
+    
+    if (!hasData) {
+        if (revenueChart) revenueChart.destroy();
+        ctx.style.display = 'none';
+        emptyDiv.style.display = 'flex';
+        return;
+    }
+    
+    ctx.style.display = 'block';
+    emptyDiv.style.display = 'none';
+    
+    if (revenueChart) revenueChart.destroy();
+    
+    // Create chart
+    revenueChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: revenueData.map(r => r.date),
+            datasets: [{
+                label: 'Daily Revenue (₹)',
+                data: revenueData.map(r => r.amount),
+                borderColor: '#4299e1',
+                backgroundColor: 'rgba(66, 153, 225, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '₹' + value.toLocaleString('en-IN');
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Render registration chart
+function renderRegistrationChart() {
+    const ctx = document.getElementById('registrationChart');
+    const emptyDiv = document.getElementById('registrationChartEmpty');
+    const regData = reportsData.registrationTrend || [];
+    
+    console.log('📈 Registration data:', regData);
+    
+    if (!regData || regData.length === 0) {
+        if (registrationChart) registrationChart.destroy();
+        ctx.style.display = 'none';
+        emptyDiv.style.display = 'flex';
+        return;
+    }
+    
+    ctx.style.display = 'block';
+    emptyDiv.style.display = 'none';
+    
+    if (registrationChart) registrationChart.destroy();
+    
+    registrationChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: regData.map(r => r.date),
+            datasets: [
+                {
+                    label: 'Farmers',
+                    data: regData.map(r => r.farmers || 0),
+                    backgroundColor: 'rgba(56, 161, 105, 0.7)'
+                },
+                {
+                    label: 'Vendors',
+                    data: regData.map(r => r.vendors || 0),
+                    backgroundColor: 'rgba(49, 130, 206, 0.7)'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+}
+
+// Render category chart
+function renderCategoryChart() {
+    const ctx = document.getElementById('categoryChart');
+    const emptyDiv = document.getElementById('categoryChartEmpty');
+    const categories = reportsData.categoryDistribution || [];
+    
+    console.log('🏷️ Category data:', categories);
+    
+    if (!categories || categories.length === 0) {
+        if (categoryChart) categoryChart.destroy();
+        ctx.style.display = 'none';
+        emptyDiv.style.display = 'flex';
+        return;
+    }
+    
+    ctx.style.display = 'block';
+    emptyDiv.style.display = 'none';
+    
+    if (categoryChart) categoryChart.destroy();
+    
+    // Prepare colors
+    const colors = [
+        '#4299e1', '#38a169', '#d69e2e', '#ed8936', '#9f7aea',
+        '#f687b3', '#4fd1c7', '#fc8181', '#68d391', '#d6bcfa'
+    ];
+    
+    categoryChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: categories.map(c => c.category || 'Unknown'),
+            datasets: [{
+                data: categories.map(c => c.count || 0),
+                backgroundColor: colors.slice(0, categories.length),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+}
+
+// Render status chart
+function renderStatusChart() {
+    const ctx = document.getElementById('statusChart');
+    const emptyDiv = document.getElementById('statusChartEmpty');
+    const statuses = reportsData.statusDistribution || [];
+    
+    console.log('📊 Status data:', statuses);
+    
+    if (!statuses || statuses.length === 0) {
+        if (statusChart) statusChart.destroy();
+        ctx.style.display = 'none';
+        emptyDiv.style.display = 'flex';
+        return;
+    }
+    
+    ctx.style.display = 'block';
+    emptyDiv.style.display = 'none';
+    
+    if (statusChart) statusChart.destroy();
+    
+    statusChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: statuses.map(s => s.status),
+            datasets: [{
+                data: statuses.map(s => s.count || 0),
+                backgroundColor: statuses.map(s => s.color || '#718096'),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right'
+                }
+            }
+        }
+    });
+}
+
+// Initialize reports when section is shown
+function showSection(sectionId) {
+    // ... existing code ...
+    
+    if (sectionId === 'reports') {
+        console.log('📊 Showing reports section');
+        loadReports();
+    }
+}
+
+// Add event listeners when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    if (generateReportBtn) {
+        generateReportBtn.addEventListener('click', loadReports);
+        console.log('✅ Added click listener to generate button');
+    }
+    
+    if (reportPeriod) {
+        reportPeriod.addEventListener('change', loadReports);
+        console.log('✅ Added change listener to period selector');
+    }
+    
+    // Auto-refresh every 2 minutes
+    setInterval(() => {
+        if (document.getElementById('reports-section') && 
+            document.getElementById('reports-section').classList.contains('active')) {
+            console.log('🔄 Auto-refreshing reports...');
+            loadReports();
+        }
+    }, 120000); // 2 minutes
+});
+// Add to your existing showSection function
+function showSection(sectionId) {
+    // ... existing code ...
+    
+    if (sectionId === 'broadcast') {
+        loadBroadcastStats();
+        loadBroadcastHistory();
+    }
+}
+async function loadBroadcastStats() {
+    try {
+        // Load the same stats that dashboard uses
+        const statsData = await fetchData('/api/admin/stats');
+        console.log("📊 Broadcast stats received:", statsData);
+        
+        if (statsData) {
+            // Show TOTAL FARMERS (all statuses) - same as dashboard
+            const totalFarmers = statsData.total_farmers || 0;
+            document.getElementById('totalUsers').textContent = totalFarmers;
+            
+            // Also update the text to be clear
+            const statInfoElement = document.querySelector('#broadcast-section .stat-info p');
+            if (statInfoElement) {
+                statInfoElement.textContent = `Total Registered Farmers (All Statuses)`;
+            }
+            
+            console.log(`📱 Broadcast: Showing ${totalFarmers} total farmers (all statuses)`);
+        } else {
+            document.getElementById('totalUsers').textContent = '0';
+        }
+    } catch (error) {
+        console.error('Error loading broadcast stats:', error);
+        document.getElementById('totalUsers').textContent = 'Error';
+    }
+}
+
+
+async function loadBroadcastHistory() {
+    try {
+        broadcastHistory = await fetchData('/api/admin/broadcast-history');
+        
+        if (broadcastHistory && broadcastHistory.error) {
+            if (broadcastHistory.error === 'Unauthorized') {
+                showNotification('Session expired. Please log in again.', 'error');
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('admin_login') }}";
+                }, 2000);
+            }
+            return;
+        }
+        
+        renderBroadcastHistory();
+    } catch (error) {
+        console.error('Error loading broadcast history:', error);
+    }
+}
+
+function renderBroadcastHistory() {
+    broadcastHistoryTable.innerHTML = '';
+    
+    if (!broadcastHistory || broadcastHistory.length === 0) {
+        broadcastHistoryTable.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 20px; color: var(--gray);">
+                    No broadcast history found.
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    broadcastHistory.forEach(broadcast => {
+        const row = document.createElement('tr');
+        
+        const statusClass = 
+            broadcast.status === 'sent' ? 'status-sent' : 
+            broadcast.status === 'failed' ? 'status-failed' : 
+            'status-pending';
+        
+        row.innerHTML = `
+            <td>#${broadcast.id}</td>
+            <td>${broadcast.title}</td>
+            <td>${broadcast.type}</td>
+            <td>${broadcast.recipients_count || 0} farmers</td>
+            <td><span class="message-status ${statusClass}">${broadcast.status}</span></td>
+            <td>${formatDate(broadcast.sent_date)}</td>
+            <td>
+                <button class="btn btn-primary btn-sm view-broadcast-btn" data-id="${broadcast.id}">View</button>
+            </td>
+        `;
+        
+        broadcastHistoryTable.appendChild(row);
+    });
+    
+    // Add event listeners to view buttons
+    document.querySelectorAll('.view-broadcast-btn').forEach(btn => {
+        btn.addEventListener('click', () => viewBroadcastDetails(btn.dataset.id));
+    });
+}
+
+// Preview message functionality
+previewMessageBtn.addEventListener('click', () => {
+    const title = document.getElementById('messageTitle').value;
+    const content = document.getElementById('messageContent').value;
+    const type = document.getElementById('messageType').value;
+    
+    if (!title || !content) {
+        showNotification('Please enter title and content to preview', 'error');
+        return;
+    }
+    
+    previewContent.innerHTML = `
+        <h5>${title}</h5>
+        <p style="color: #666; margin-bottom: 10px; font-style: italic;">Type: ${type}</p>
+        <div style="background: white; padding: 15px; border-radius: 5px; border: 1px solid #eee;">
+            ${content.replace(/\n/g, '<br>')}
+        </div>
+        <p style="margin-top: 10px; color: #888; font-size: 0.9em;">
+            This message will be sent to all registered farmers.
+        </p>
+    `;
+    
+    messagePreview.style.display = 'block';
+});
+
+// Send broadcast message
+broadcastForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById('messageTitle').value;
+    const content = document.getElementById('messageContent').value;
+    const type = document.getElementById('messageType').value;
+    
+    if (!title || !content) {
+        showNotification('Please enter both title and content', 'error');
+        return;
+    }
+    
+    // Confirm before sending
+    const confirmed = confirm(`Are you sure you want to send this broadcast to all farmers?
+    
+Title: ${title}
+Type: ${type}
+
+This will send an SMS to all registered farmers.`);
+    
+    if (!confirmed) {
+        return;
+    }
+    
+    // Disable send button while processing
+    const originalBtnText = sendBroadcastBtn.innerHTML;
+    sendBroadcastBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    sendBroadcastBtn.disabled = true;
+    
+    try {
+        const result = await postData('/api/admin/broadcast', {
+            title: title,
+            content: content,
+            type: type
+        });
+        
+        if (result && result.success) {
+            showNotification(result.message || 'Broadcast sent successfully!', 'success');
+            
+            // Clear form
+            broadcastForm.reset();
+            messagePreview.style.display = 'none';
+            
+            // Refresh history
+            loadBroadcastHistory();
+        } else {
+            showNotification(result.error || 'Failed to send broadcast', 'error');
+        }
+    } catch (error) {
+        console.error('Error sending broadcast:', error);
+        showNotification('Error sending broadcast', 'error');
+    } finally {
+        // Re-enable send button
+        sendBroadcastBtn.innerHTML = originalBtnText;
+        sendBroadcastBtn.disabled = false;
+    }
+});
+
+// Add to your existing initDashboard function
+function initDashboard() {
+    // ... existing code ...
+    
+    // Add broadcast event listeners if elements exist
+    if (previewMessageBtn) {
+        previewMessageBtn.addEventListener('click', handlePreviewMessage);
+    }
+    
+    if (broadcastForm) {
+        broadcastForm.addEventListener('submit', handleBroadcastSubmit);
+    }
+}
 // Equipment management functions
 async function loadEquipment() {
     const statusFilter = equipmentStatusFilter.value;
@@ -1698,55 +2859,103 @@ setInterval(() => {
         }
         
         function renderVendorsTable() {
-            vendorsTable.innerHTML = '';
-            
-            if (!vendorsData || vendorsData.length === 0) {
-                vendorsTable.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 20px; color: var(--gray);">No vendors found.</td></tr>';
-                return;
-            }
-            
-            vendorsData.forEach(vendor => {
-                const row = document.createElement('tr');
-                
-                const statusClass = 
-                    vendor.status === 'pending' ? 'status-pending' : 
-                    vendor.status === 'approved' ? 'status-approved' : 
-                    'status-rejected';
-                
-                row.innerHTML = `
-                    <td>#${vendor.id}</td>
-                    <td>${vendor.business_name}</td>
-                    <td>${vendor.contact_name}</td>
-                    <td>${vendor.email}</td>
-                    <td>${vendor.phone}</td>
-                    <td>${vendor.service_type}</td>
-                    <td>${formatDate(vendor.registration_date)}</td>
-                    <td><span class="status-badge ${statusClass}">${vendor.status}</span></td>
-                    <td>
-                        <button class="btn btn-primary btn-sm view-vendor-btn" data-id="${vendor.id}">View</button>
-                        ${vendor.status === 'pending' ? 
-                            `<button class="btn btn-success btn-sm approve-vendor-btn" data-id="${vendor.id}">Approve</button>
-                             <button class="btn btn-danger btn-sm reject-vendor-btn" data-id="${vendor.id}">Reject</button>` : ''}
-                    </td>
-                `;
-                
-                vendorsTable.appendChild(row);
-            });
-            
-            // Add event listeners to buttons
-            document.querySelectorAll('.view-vendor-btn').forEach(btn => {
-                btn.addEventListener('click', () => viewVendor(btn.dataset.id));
-            });
-            
-            document.querySelectorAll('.approve-vendor-btn').forEach(btn => {
-                btn.addEventListener('click', () => approveVendor(btn.dataset.id));
-            });
-            
-            document.querySelectorAll('.reject-vendor-btn').forEach(btn => {
-                btn.addEventListener('click', () => rejectVendor(btn.dataset.id));
-            });
-        }
+    vendorsTable.innerHTML = '';
+    
+    if (!vendorsData || vendorsData.length === 0) {
+        vendorsTable.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 20px; color: var(--gray);">No vendors found.</td></tr>';
+        return;
+    }
+    
+    vendorsData.forEach(vendor => {
+        const row = document.createElement('tr');
         
+        const statusClass = 
+            vendor.status === 'pending' ? 'status-pending' : 
+            vendor.status === 'approved' ? 'status-approved' : 
+            'status-rejected';
+        
+        // Document status styling
+        const docStatusClass = 
+            vendor.document_verified === 'verified' ? 'status-approved' : 
+            vendor.document_verified === 'rejected' ? 'status-rejected' : 
+            'status-pending';
+        
+        // Document name or indicator
+        const documentIndicator = vendor.business_document ? 
+            `<a href="${vendor.document_url || '#'}" target="_blank" title="View Document">
+                <i class="fas fa-file-pdf"></i> View
+            </a>` : 
+            'No Document';
+        
+        row.innerHTML = `
+            <td>#${vendor.id}</td>
+            <td>${vendor.business_name}</td>
+            <td>${vendor.contact_name}</td>
+            <td>${vendor.email}</td>
+            <td>${vendor.phone}</td>
+            <td>${vendor.service_type}</td>
+            <td>${documentIndicator}</td>
+            <td>
+                <span class="status-badge ${docStatusClass}">
+                    ${vendor.document_verified || 'pending'}
+                </span>
+            </td>
+            <td>${formatDate(vendor.registration_date)}</td>
+            <td><span class="status-badge ${statusClass}">${vendor.status}</span></td>
+            <td>
+                <button class="btn btn-primary btn-sm view-vendor-btn" data-id="${vendor.id}">View</button>
+                ${vendor.status === 'pending' ? 
+                    `<button class="btn btn-success btn-sm approve-vendor-btn" data-id="${vendor.id}">Approve</button>
+                     <button class="btn btn-danger btn-sm reject-vendor-btn" data-id="${vendor.id}">Reject</button>` : ''}
+                ${vendor.business_document ? 
+                    `<div style="margin-top: 5px;">
+                        <button class="btn btn-info btn-sm verify-doc-btn" data-id="${vendor.id}" data-status="verified" style="font-size: 0.7rem; padding: 2px 6px;">Verify Doc</button>
+                        <button class="btn btn-warning btn-sm reject-doc-btn" data-id="${vendor.id}" data-status="rejected" style="font-size: 0.7rem; padding: 2px 6px;">Reject Doc</button>
+                    </div>` : ''}
+            </td>
+        `;
+        
+        vendorsTable.appendChild(row);
+    });
+    
+    // Add event listeners to buttons
+    document.querySelectorAll('.view-vendor-btn').forEach(btn => {
+        btn.addEventListener('click', () => viewVendor(btn.dataset.id));
+    });
+    
+    document.querySelectorAll('.approve-vendor-btn').forEach(btn => {
+        btn.addEventListener('click', () => approveVendor(btn.dataset.id));
+    });
+    
+    document.querySelectorAll('.reject-vendor-btn').forEach(btn => {
+        btn.addEventListener('click', () => rejectVendor(btn.dataset.id));
+    });
+    
+    // Add event listeners for document verification buttons
+    document.querySelectorAll('.verify-doc-btn').forEach(btn => {
+        btn.addEventListener('click', () => verifyVendorDocument(btn.dataset.id, btn.dataset.status));
+    });
+    
+    document.querySelectorAll('.reject-doc-btn').forEach(btn => {
+        btn.addEventListener('click', () => verifyVendorDocument(btn.dataset.id, btn.dataset.status));
+    });
+}
+async function verifyVendorDocument(vendorId, status) {
+    if (confirm(`Are you sure you want to mark this document as ${status}?`)) {
+        const result = await postData('/api/admin/vendor/document/verify', {
+            vendor_id: vendorId,
+            status: status
+        });
+        
+        if (result && result.success) {
+            showNotification(`Document marked as ${status} successfully!`, 'success');
+            // Reload vendors data
+            loadVendors();
+        } else {
+            showNotification('Failed to update document status: ' + (result.error || 'Unknown error'), 'error');
+        }
+    }
+}
         // View detail functions
         function viewFarmer(farmerId) {
             const farmer = farmersData.find(f => f.id === parseInt(farmerId));
@@ -1824,77 +3033,129 @@ setInterval(() => {
             farmerModal.style.display = 'flex';
         }
         
-        function viewVendor(vendorId) {
-            const vendor = vendorsData.find(v => v.id === parseInt(vendorId));
-            if (!vendor) return;
-            
-            document.getElementById('vendorModalTitle').textContent = `Vendor Details - ${vendor.business_name}`;
-            
-            const modalBody = document.getElementById('vendorModalBody');
-            modalBody.innerHTML = `
-                <div class="detail-row">
-                    <div class="detail-label">Business Name:</div>
-                    <div class="detail-value">${vendor.business_name}</div>
+       function viewVendor(vendorId) {
+    const vendor = vendorsData.find(v => v.id === parseInt(vendorId));
+    if (!vendor) return;
+    
+    document.getElementById('vendorModalTitle').textContent = `Vendor Details - ${vendor.business_name}`;
+    
+    // Document verification status with options
+    const docStatusSection = vendor.business_document ? `
+        <div class="detail-row">
+            <div class="detail-label">Document:</div>
+            <div class="detail-value">
+                <a href="${vendor.document_url || '#'}" target="_blank" class="btn btn-sm btn-info">
+                    <i class="fas fa-eye"></i> View Document
+                </a>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Document Status:</div>
+            <div class="detail-value">
+                <span class="status-badge ${vendor.document_verified === 'verified' ? 'status-approved' : vendor.document_verified === 'rejected' ? 'status-rejected' : 'status-pending'}">
+                    ${vendor.document_verified || 'pending'}
+                </span>
+                ${vendor.business_document ? `
+                <div style="margin-top: 10px;">
+                    <button class="btn btn-success btn-sm" id="verifyDocBtn" data-id="${vendor.id}" data-status="verified">
+                        <i class="fas fa-check"></i> Verify Document
+                    </button>
+                    <button class="btn btn-danger btn-sm" id="rejectDocBtn" data-id="${vendor.id}" data-status="rejected">
+                        <i class="fas fa-times"></i> Reject Document
+                    </button>
                 </div>
-                <div class="detail-row">
-                    <div class="detail-label">Contact Person:</div>
-                    <div class="detail-value">${vendor.contact_name}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Email:</div>
-                    <div class="detail-value">${vendor.email}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Phone:</div>
-                    <div class="detail-value">${vendor.phone}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Service Type:</div>
-                    <div class="detail-value">${vendor.service_type}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Description:</div>
-                    <div class="detail-value">${vendor.description || 'N/A'}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Registration Date:</div>
-                    <div class="detail-value">${formatDate(vendor.registration_date)}</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Status:</div>
-                    <div class="detail-value"><span class="status-badge ${vendor.status === 'pending' ? 'status-pending' : vendor.status === 'approved' ? 'status-approved' : 'status-rejected'}">${vendor.status}</span></div>
-                </div>
-            `;
-            
-            const modalFooter = document.getElementById('vendorModalFooter');
-            if (vendor.status === 'pending') {
-                modalFooter.innerHTML = `
-                    <button class="btn btn-success" id="modalApproveVendor" data-id="${vendor.id}">Approve</button>
-                    <button class="btn btn-danger" id="modalRejectVendor" data-id="${vendor.id}">Reject</button>
-                    <button class="btn btn-primary" id="closeVendorModal">Close</button>
-                `;
-                
-                document.getElementById('modalApproveVendor').addEventListener('click', () => {
-                    approveVendor(vendor.id);
-                    vendorModal.style.display = 'none';
-                });
-                
-                document.getElementById('modalRejectVendor').addEventListener('click', () => {
-                    rejectVendor(vendor.id);
-                    vendorModal.style.display = 'none';
-                });
-            } else {
-                modalFooter.innerHTML = `
-                    <button class="btn btn-primary" id="closeVendorModal">Close</button>
-                `;
-            }
-            
-            document.getElementById('closeVendorModal').addEventListener('click', () => {
-                vendorModal.style.display = 'none';
-            });
-            
-            vendorModal.style.display = 'flex';
-        }
+                ` : ''}
+            </div>
+        </div>
+    ` : '<div class="detail-row"><div class="detail-label">Document:</div><div class="detail-value">No document uploaded</div></div>';
+    
+    const modalBody = document.getElementById('vendorModalBody');
+    modalBody.innerHTML = `
+        <div class="detail-row">
+            <div class="detail-label">Business Name:</div>
+            <div class="detail-value">${vendor.business_name}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Contact Person:</div>
+            <div class="detail-value">${vendor.contact_name}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Email:</div>
+            <div class="detail-value">${vendor.email}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Phone:</div>
+            <div class="detail-value">${vendor.phone}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Service Type:</div>
+            <div class="detail-value">${vendor.service_type}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Description:</div>
+            <div class="detail-value">${vendor.description || 'N/A'}</div>
+        </div>
+        ${docStatusSection}
+        <div class="detail-row">
+            <div class="detail-label">Registration Date:</div>
+            <div class="detail-value">${formatDate(vendor.registration_date)}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Account Status:</div>
+            <div class="detail-value"><span class="status-badge ${vendor.status === 'pending' ? 'status-pending' : vendor.status === 'approved' ? 'status-approved' : 'status-rejected'}">${vendor.status}</span></div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Equipment Count:</div>
+            <div class="detail-value">${vendor.equipment_count || 0}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Booking Count:</div>
+            <div class="detail-value">${vendor.booking_count || 0}</div>
+        </div>
+    `;
+    
+    const modalFooter = document.getElementById('vendorModalFooter');
+    if (vendor.status === 'pending') {
+        modalFooter.innerHTML = `
+            <button class="btn btn-success" id="modalApproveVendor" data-id="${vendor.id}">Approve Account</button>
+            <button class="btn btn-danger" id="modalRejectVendor" data-id="${vendor.id}">Reject Account</button>
+            <button class="btn btn-primary" id="closeVendorModal">Close</button>
+        `;
+        
+        document.getElementById('modalApproveVendor').addEventListener('click', () => {
+            approveVendor(vendor.id);
+            vendorModal.style.display = 'none';
+        });
+        
+        document.getElementById('modalRejectVendor').addEventListener('click', () => {
+            rejectVendor(vendor.id);
+            vendorModal.style.display = 'none';
+        });
+    } else {
+        modalFooter.innerHTML = `
+            <button class="btn btn-primary" id="closeVendorModal">Close</button>
+        `;
+    }
+    
+    // Add event listeners for document verification buttons in modal
+    if (vendor.business_document) {
+        document.getElementById('verifyDocBtn')?.addEventListener('click', () => {
+            verifyVendorDocument(vendor.id, 'verified');
+            vendorModal.style.display = 'none';
+        });
+        
+        document.getElementById('rejectDocBtn')?.addEventListener('click', () => {
+            verifyVendorDocument(vendor.id, 'rejected');
+            vendorModal.style.display = 'none';
+        });
+    }
+    
+    document.getElementById('closeVendorModal').addEventListener('click', () => {
+        vendorModal.style.display = 'none';
+    });
+    
+    vendorModal.style.display = 'flex';
+}
         
         // Approval functions
         async function approveFarmer(farmerId) {
@@ -2095,7 +3356,31 @@ setInterval(() => {
                 activeLink.classList.add('active');
             }
         }
-        
+        function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn',
+        autoDisplay: false
+    }, 'google_translate_element');
+    
+    // Apply saved language
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if(savedLang === 'kn') {
+        setTimeout(() => {
+            var iframe = document.querySelector('.goog-te-menu-frame');
+            if(iframe) {
+                var select = iframe.contentWindow.document.querySelector('.goog-te-menu2-select');
+                if(select) {
+                    select.value = 'kn';
+                    select.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 1000);
+    }
+}
+var script = document.createElement('script');
+script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+document.head.appendChild(script);
         // Initialize the dashboard
         function initDashboard() {
             // Load initial data
@@ -2155,5 +3440,7 @@ setInterval(() => {
         document.addEventListener('DOMContentLoaded', initDashboard);
         
     </script>
+    <style>.goog-te-banner-frame{display:none!important;}.goog-te-gadget{font-size:0!important;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
