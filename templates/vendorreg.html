@@ -238,7 +238,33 @@
                 font-size: 2rem;
             }
         }
+     .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-banner-wrapper,
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover,
+    .goog-text-highlight {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+    }
     
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
         /* Password strength indicator styles */
         .password-strength {
             font-size: 0.85rem;
@@ -302,6 +328,13 @@
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+<div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+    <button onclick="window.location.href='/dashboard?lang=en'" style="padding: 5px 10px;">EN</button>
+    <button onclick="window.location.href='/dashboard?lang=kn'" style="padding: 5px 10px;">ಕನ್ನಡ</button>
+    <!-- Google Translate for this page -->
+<div id="google_translate_element"></div>
+</div>
     <div class="header">
         <h1>Vendor Registration</h1>
         <p>Join our farming cooperative as a service provider</p>
@@ -380,7 +413,22 @@
                     <label for="description">Business Description</label>
                     <textarea id="description" name="description" rows="4"></textarea>
                 </div>
-                
+                <!-- Add this in your form after other fields -->
+<div class="form-group">
+    <label for="business_document">Business Registration Document *</label>
+    <div class="file-upload">
+        <label for="business_document" class="file-upload-label">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <span id="file-label">Click to upload business document</span>
+        </label>
+        <input type="file" id="business_document" name="business_document" 
+               class="file-upload-input" accept=".pdf,.jpg,.jpeg,.png">
+        <div class="file-name" id="file-name">No file chosen</div>
+        <div class="file-requirements">
+            Accepted formats: PDF, JPG, PNG (Max 5MB)
+        </div>
+    </div>
+</div>
                 <button type="submit" class="btn" id="submitButton">Submit Application</button>
                 
                 <!-- Login link added here -->
@@ -408,7 +456,25 @@
         const form = document.querySelector('#vendorForm');
         const fileInput = document.querySelector('#business_document');
         const fileName = document.querySelector('#file-name');
+        const fileLabel = document.querySelector('#file-label');
+
+    fileInput.addEventListener('change', function() {
+    if (this.files.length > 0) {
+        fileName.textContent = this.files[0].name;
+        fileLabel.textContent = 'Document selected';
         
+        // Validate file size (max 5MB)
+        if (this.files[0].size > 5 * 1024 * 1024) {
+            alert('File size exceeds 5MB. Please choose a smaller file.');
+            this.value = '';
+            fileName.textContent = 'No file chosen';
+            fileLabel.textContent = 'Click to upload business document';
+        }
+    } else {
+        fileName.textContent = 'No file chosen';
+        fileLabel.textContent = 'Click to upload business document';
+    }
+});
         togglePassword.addEventListener('click', function() {
             // Toggle the type attribute
             const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -429,6 +495,31 @@
             this.classList.toggle('fa-eye-slash');
         });
         
+        function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn',
+        autoDisplay: false
+    }, 'google_translate_element');
+    
+    // Apply saved language
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if(savedLang === 'kn') {
+        setTimeout(() => {
+            var iframe = document.querySelector('.goog-te-menu-frame');
+            if(iframe) {
+                var select = iframe.contentWindow.document.querySelector('.goog-te-menu2-select');
+                if(select) {
+                    select.value = 'kn';
+                    select.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 1000);
+    }
+}
+var script = document.createElement('script');
+script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+document.head.appendChild(script);
         // Check password strength
         function checkPasswordStrength(password) {
             let strength = 0;
@@ -543,5 +634,6 @@
             
         });
     </script>
+    <style>.goog-te-banner-frame{display:none!important;}.goog-te-gadget{font-size:0!important;}</style>
 </body>
 </html>
