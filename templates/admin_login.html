@@ -205,9 +205,51 @@
                 font-size: 2rem;
             }
         }
+         
+    
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
+    /* Add this to admin_login.html CSS */
+.goog-te-banner-frame,
+.skiptranslate,
+.goog-te-gadget,
+.goog-te-combo,
+#google_translate_element,
+.goog-te-banner,
+.goog-te-footer,
+.goog-te-menu-value {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    top: -9999px !important;
+    opacity: 0 !important;
+}
+
+body {
+    top: 0 !important;
+    position: static !important;
+}
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+<div style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+    <button onclick="window.location.href='/dashboard?lang=en'" style="padding: 5px 10px;">EN</button>
+    <button onclick="window.location.href='/dashboard?lang=kn'" style="padding: 5px 10px;">ಕನ್ನಡ</button>
+</div>
+<!-- Google Translate for this page -->
+<div id="google_translate_element"></div>
     <div class="header">
         <h1>Admin Login</h1>
         <p>Access the administrative dashboard</p>
@@ -250,21 +292,137 @@
             </form>
         </div>
     </div>
-    
     <script>
-        // Toggle password visibility
+    // ============================================
+    // LANGUAGE MANAGEMENT FOR ADMIN PAGE
+    // ============================================
+    
+    // 1. Function to apply saved language
+    function applySavedLanguage() {
+        // Get saved language from localStorage
+        const savedLang = localStorage.getItem('selectedLanguage') || 'en';
+        
+        // Also check URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLang = urlParams.get('lang');
+        
+        // Priority: URL parameter > localStorage
+        const langToApply = urlLang || savedLang;
+        
+        if (langToApply === 'kn') {
+            // Apply Kannada
+            window.location.hash = '#googtrans(kn|en)';
+            
+            // Force apply after Google Translate loads
+            setTimeout(function() {
+                if (window.google && google.translate) {
+                    try {
+                        // Look for Google Translate dropdown
+                        var iframe = document.querySelector('.goog-te-menu-frame');
+                        if (iframe && iframe.contentDocument) {
+                            var select = iframe.contentDocument.querySelector('.goog-te-menu2-select');
+                            if (select) {
+                                select.value = 'kn';
+                                select.dispatchEvent(new Event('change'));
+                            }
+                        }
+                        
+                        // Also try direct method
+                        var combo = document.querySelector('.goog-te-combo');
+                        if (combo) {
+                            combo.value = 'kn';
+                            combo.dispatchEvent(new Event('change'));
+                        }
+                    } catch(e) {
+                        console.log('Applied Kannada translation');
+                    }
+                }
+            }, 1500);
+        }
+    }
+    
+    // 2. Initialize Google Translate for admin page
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'en',
+            includedLanguages: 'en,kn',
+            layout: google.translate.TranslateElement.InlineLayout.HORIZONTAL,
+            autoDisplay: false
+        }, 'google_translate_element');
+        
+        // Immediately hide Google Translate elements
+        setTimeout(function() {
+            // Hide ALL Google Translate UI elements
+            var elements = document.querySelectorAll(
+                '.goog-te-banner, .skiptranslate, .goog-te-gadget, .goog-te-banner-frame'
+            );
+            elements.forEach(function(el) {
+                el.style.display = 'none';
+                el.style.visibility = 'hidden';
+                el.style.height = '0';
+                el.style.opacity = '0';
+                el.style.position = 'absolute';
+                el.style.top = '-9999px';
+            });
+            
+            // Fix body position
+            document.body.style.top = '0';
+            document.body.style.position = 'static';
+            
+            // Apply saved language
+            setTimeout(applySavedLanguage, 500);
+        }, 100);
+    }
+    
+    // 3. Load Google Translate
+    function loadGoogleTranslate() {
+        if (window.google && google.translate) {
+            googleTranslateElementInit();
+            return;
+        }
+        
+        var script = document.createElement('script');
+        script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+        script.type = 'text/javascript';
+        document.head.appendChild(script);
+    }
+    
+    // 4. On page load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load Google Translate
+        loadGoogleTranslate();
+        
+        // Apply saved language immediately (in case Google Translate is slow)
+        applySavedLanguage();
+        
+        // ============================================
+        // EXISTING CODE - Password toggle
+        // ============================================
         const togglePassword = document.querySelector('#togglePassword');
         const password = document.querySelector('#password');
         
-        togglePassword.addEventListener('click', function() {
-            // Toggle the type attribute
-            const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
-            password.setAttribute('type', type);
-            
-            // Toggle the eye icon
-            this.classList.toggle('fa-eye');
-            this.classList.toggle('fa-eye-slash');
+        if (togglePassword && password) {
+            togglePassword.addEventListener('click', function() {
+                const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+                password.setAttribute('type', type);
+                this.classList.toggle('fa-eye');
+                this.classList.toggle('fa-eye-slash');
+            });
+        }
+        
+        // ============================================
+        // ADD: Pass language parameter to all links
+        // ============================================
+        document.querySelectorAll('a').forEach(link => {
+            const href = link.getAttribute('href');
+            if (href && !href.includes('#') && href !== '#' && !href.includes('javascript:')) {
+                const lang = localStorage.getItem('selectedLanguage') || 'en';
+                const separator = href.includes('?') ? '&' : '?';
+                link.href = href + separator + 'lang=' + lang;
+            }
         });
-    </script>
+    });
+</script>
+
 </body>
 </html>
