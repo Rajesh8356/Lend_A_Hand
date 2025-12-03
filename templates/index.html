@@ -70,7 +70,354 @@
             gap: 10px;
             margin-top: 15px;
         }
-        
+         .goog-te-banner-frame,
+    .goog-te-banner,
+    .goog-te-banner-wrapper,
+    .skiptranslate,
+    #goog-gt-tt,
+    .goog-te-balloon-frame,
+    .goog-tooltip,
+    .goog-tooltip:hover,
+    .goog-text-highlight {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+    }
+    
+    /* Prevent body shift */
+    body {
+        top: 0px !important;
+        position: static !important;
+    }
+    
+    /* Hide the translation menu if it appears */
+    .goog-te-menu-frame {
+        display: none !important;
+    }
+        /* ================= REVIEW SECTION STYLES ================= */
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.review-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary);
+    transition: all 0.3s ease;
+}
+
+.review-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.reviewer-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.reviewer-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.reviewer-details h4 {
+    margin: 0 0 5px 0;
+    color: var(--dark);
+}
+
+.review-date {
+    color: var(--gray);
+    font-size: 0.85rem;
+}
+
+.review-rating {
+    display: flex;
+    gap: 3px;
+    margin: 10px 0;
+}
+
+.review-rating i {
+    color: #f59e0b;
+    font-size: 1.1rem;
+}
+
+.review-content {
+    margin-top: 15px;
+}
+
+.review-title {
+    color: var(--primary);
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.review-comment {
+    color: var(--dark);
+    line-height: 1.6;
+    margin: 0 0 15px 0;
+}
+
+.review-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid var(--gray-light);
+}
+
+.equipment-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.equipment-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+}
+
+.equipment-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.equipment-details h5 {
+    margin: 0 0 5px 0;
+    color: var(--dark);
+    font-size: 0.9rem;
+}
+
+.equipment-category {
+    font-size: 0.8rem;
+    color: var(--gray);
+    background: #f7fafc;
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.order-type-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.badge-booking {
+    background: #bee3f8;
+    color: #2c5282;
+}
+
+.badge-rental {
+    background: #c6f6d5;
+    color: #2f855a;
+}
+
+/* No Reviews State */
+.no-reviews {
+    text-align: center;
+    padding: 60px 20px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.no-reviews i {
+    font-size: 4rem;
+    color: var(--gray-light);
+    margin-bottom: 20px;
+    display: block;
+}
+
+.no-reviews h3 {
+    color: var(--dark);
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+}
+
+.no-reviews p {
+    color: var(--gray);
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Review Summary */
+.review-summary {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: var(--radius);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.rating-overview {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rating-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--dark);
+}
+
+.rating-stars-large {
+    display: flex;
+    gap: 5px;
+}
+
+.rating-stars-large i {
+    color: #f59e0b;
+    font-size: 1.5rem;
+}
+
+.rating-distribution {
+    flex: 1;
+}
+
+.rating-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.rating-label {
+    width: 60px;
+    font-size: 0.9rem;
+    color: var(--gray);
+}
+
+.rating-bar-container {
+    flex: 1;
+    height: 8px;
+    background: #e2e8f0;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.rating-bar-fill {
+    height: 100%;
+    background: #f59e0b;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .review-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .reviewer-info {
+        width: 100%;
+    }
+    
+    .review-meta {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+    
+    .review-summary {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .rating-overview {
+        width: 100%;
+        justify-content: center;
+    }
+}
+        /* Cancellation Request Styles */
+.cancellation-request-card {
+    transition: all 0.3s ease;
+    border: 1px solid #e2e8f0;
+}
+
+.cancellation-request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cancellation-request-card.processed {
+    opacity: 0.8;
+    background: #f7fafc;
+}
+
+.request-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.stat-badge {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* Status badges */
+.status-pending { background: #feebcb; color: #b45309; }
+.status-approved { background: #c6f6d5; color: #2f855a; }
+.status-completed { background: #bee3f8; color: #2c5282; }
+.status-rejected { background: #fed7d7; color: #c53030; }
+
+.badge-available { background: #c6f6d5; color: #2f855a; }
+.badge-unavailable { background: #fed7d7; color: #c53030; }
+.badge-maintenance { background: #feebcb; color: #b45309; }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .request-actions {
+        flex-direction: column;
+    }
+    
+    .request-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .cancellation-stats {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
         /* Sidebar Navigation */
         .sidebar {
             width: 260px;
@@ -812,9 +1159,13 @@
             gap: 10px;
             margin-top: 15px;
         }
+        
     </style>
 </head>
 <body>
+   
+<!-- Google Translate for this page -->
+<div id="google_translate_element"></div>
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" style="display: none;">
         <i class="fas fa-bars"></i>
@@ -838,7 +1189,7 @@
             <li><a href="#" class="nav-link" data-section="bookings"><i class="fas fa-calendar-alt"></i> <span>Bookings</span></a></li>
             <li><a href="#" class="nav-link" data-section="rent-requests"><i class="fas fa-clipboard-list"></i> <span>Rent Requests</span></a></li>
             <li><a href="#" class="nav-link" data-section="reviews"><i class="fas fa-star"></i> <span>Reviews</span></a></li>
-            <li><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            <li><a href="#" class="nav-link" data-section="cancellation-requests"><i class="fas fa-ban"></i> <span>Cancellation Requests</span></a></li>
             <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
         </ul>
     </div>
@@ -1071,7 +1422,39 @@
             </div>
         </div>
         
-      <!-- Add this modal to your existing vendor dashboard HTML -->
+<!-- Cancellation Requests Section -->
+<div class="content-section" id="cancellation-requests-section">
+    <div class="section-header">
+        <h2><i class="fas fa-ban"></i> Cancellation Requests</h2>
+        <div>
+            <select id="cancellationFilter" class="form-control" style="width: auto; display: inline-block;">
+                <option value="all">All Requests</option>
+                <option value="pending">Pending Only</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <button class="btn btn-primary" onclick="loadCancellationRequests()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
+    
+    <div class="cancellation-stats" style="display: flex; gap: 15px; margin-bottom: 20px;">
+        <div class="stat-badge pending" style="background: #feebcb; color: #b45309; padding: 10px 15px; border-radius: 8px;">
+            <strong>Pending: <span id="pendingCount">0</span></strong>
+        </div>
+        <div class="stat-badge approved" style="background: #c6f6d5; color: #2f855a; padding: 10px 15px; border-radius: 8px;">
+            <strong>Approved: <span id="approvedCount">0</span></strong>
+        </div>
+        <div class="stat-badge rejected" style="background: #fed7d7; color: #c53030; padding: 10px 15px; border-radius: 8px;">
+            <strong>Rejected: <span id="rejectedCount">0</span></strong>
+        </div>
+    </div>
+    
+    <div id="cancellationRequestsContainer">
+        <!-- Cancellation requests will be loaded here -->
+    </div>
+</div>
  
 <!-- Add this to your vendor dashboard HTML (index.html) -->
 <div class="content-section" id="rent-requests-section">
@@ -1111,27 +1494,40 @@
         </div>
     </div>
 </div>
-        <!-- Reviews Section -->
-        <div class="content-section" id="reviews-section">
-            <div class="section-header">
-                <h2>Customer Reviews</h2>
+       <!-- Reviews Section -->
+<div class="content-section" id="reviews-section">
+    <div class="section-header">
+        <h2><i class="fas fa-star"></i> Customer Reviews</h2>
+        <div>
+            <select id="reviewSortFilter" class="form-control" style="width: auto; display: inline-block; margin-right: 10px;">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="highest">Highest Rating</option>
+                <option value="lowest">Lowest Rating</option>
+            </select>
+            <div class="review-summary" style="display: inline-block; background: #f7fafc; padding: 8px 15px; border-radius: 8px;">
+                <i class="fas fa-star" style="color: #f59e0b;"></i>
+                <strong id="averageRating">0.0</strong> / 5.0 • 
+                <span id="totalReviews">0</span> reviews
             </div>
-            
-            <div class="reviews-list" id="vendorReviewsList">
-                <!-- Reviews will be loaded here -->
-            </div>
-        </div>
-        
-        <!-- Settings Section -->
-        <div class="content-section" id="settings-section">
-            <div class="section-header">
-                <h2>Settings</h2>
-            </div>
-            <p style="text-align: center; padding: 40px; color: var(--gray);">
-                Settings and configuration options would be displayed here
-            </p>
         </div>
     </div>
+    
+    <div id="vendorReviewsContainer">
+        <!-- No Data Message -->
+        <div class="no-reviews" style="text-align: center; padding: 40px; color: var(--gray); display: none;">
+            <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 15px; color: var(--gray-light);"></i>
+            <h3>No Reviews Yet</h3>
+            <p>Your equipment hasn't received any reviews yet.</p>
+        </div>
+        
+        <!-- Reviews List -->
+        <div class="reviews-list" id="vendorReviewsList">
+            <!-- Reviews will be loaded here dynamically -->
+        </div>
+    </div>
+</div>
+       
     
     <!-- Add/Edit Equipment Modal -->
     <div class="modal" id="equipmentModal">
@@ -1329,8 +1725,328 @@
     const bookingFilter = document.getElementById('bookingFilter');
     const rentRequestFilter = document.getElementById('rentRequestFilter');
     
-    // ================= DATABASE FUNCTIONS =================
+  let cancellationRequests = [];
+
+// Load cancellation requests for vendor
+function loadCancellationRequests() {
+    const container = document.getElementById('cancellationRequestsContainer');
+    if (!container) {
+        console.error('❌ Cancellation container not found');
+        return;
+    }
     
+    container.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--gray);"><i class="fas fa-spinner fa-spin"></i> Loading cancellation requests...</div>';
+    
+    const filter = document.getElementById('cancellationFilter')?.value || 'all';
+    
+    fetch('/api/vendor/cancellation-requests')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(requests => {
+            cancellationRequests = requests;
+            displayCancellationRequests(requests, filter);
+            updateCancellationStats(requests);
+        })
+        .catch(error => {
+            console.error('❌ Error loading cancellation requests:', error);
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: var(--accent);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Requests</h3>
+                    <p>Failed to load cancellation requests. Please try again.</p>
+                    <button class="btn btn-primary" onclick="loadCancellationRequests()">
+                        <i class="fas fa-redo"></i> Retry
+                    </button>
+                </div>
+            `;
+        });
+}
+
+function displayCancellationRequests(requests, filter = 'all') {
+    const container = document.getElementById('cancellationRequestsContainer');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    // Filter requests
+    let filteredRequests = requests;
+    if (filter === 'pending') {
+        filteredRequests = requests.filter(req => 
+            !req.cancelled_date && !req.status_before_cancel
+        );
+    } else if (filter === 'approved') {
+        filteredRequests = requests.filter(req => req.cancelled_date);
+    } else if (filter === 'rejected') {
+        filteredRequests = requests.filter(req => 
+            req.status_before_cancel && !req.cancelled_date
+        );
+    }
+    
+    if (!filteredRequests || filteredRequests.length === 0) {
+        container.innerHTML = `
+            <div class="no-data" style="text-align: center; padding: 40px; color: var(--gray);">
+                <i class="fas fa-check-circle" style="font-size: 3rem; margin-bottom: 15px;"></i>
+                <h3>No Cancellation Requests</h3>
+                <p>You don't have any ${filter !== 'all' ? filter + ' ' : ''}cancellation requests.</p>
+            </div>
+        `;
+        return;
+    }
+    
+    console.log(`📋 Displaying ${filteredRequests.length} cancellation requests`);
+    
+    filteredRequests.forEach(request => {
+        const requestCard = createCancellationRequestCard(request);
+        container.appendChild(requestCard);
+    });
+}
+
+function createCancellationRequestCard(request) {
+    const card = document.createElement('div');
+    card.className = 'card cancellation-request-card';
+    card.style.marginBottom = '20px';
+    card.style.padding = '20px';
+    card.style.borderLeft = '4px solid #ed8936';
+    card.style.position = 'relative';
+    
+    const isProcessed = request.cancelled_date || request.status_before_cancel;
+    const isApproved = request.cancelled_date;
+    const isRejected = request.status_before_cancel && !request.cancelled_date;
+    
+    if (isApproved) {
+        card.style.borderLeftColor = '#38a169';
+    } else if (isRejected) {
+        card.style.borderLeftColor = '#e53e3e';
+    }
+    
+    const requestDate = new Date(request.requested_date).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    const createdDate = new Date(request.created_date).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+    
+    let statusBadge = '';
+    if (isApproved) {
+        statusBadge = '<span class="item-badge badge-available"><i class="fas fa-check"></i> APPROVED</span>';
+    } else if (isRejected) {
+        statusBadge = '<span class="item-badge badge-unavailable"><i class="fas fa-times"></i> REJECTED</span>';
+    } else {
+        statusBadge = '<span class="item-badge badge-maintenance"><i class="fas fa-clock"></i> PENDING</span>';
+    }
+    
+    let actionButtons = '';
+    if (!isProcessed) {
+        actionButtons = `
+            <div class="request-actions">
+                <button class="btn btn-success approve-cancellation" 
+                        data-cancellation-id="${request.cancellation_id}" 
+                        data-order-type="${request.order_type}" 
+                        data-order-id="${request.order_id}">
+                    <i class="fas fa-check"></i> Approve & Restock
+                </button>
+                <button class="btn btn-danger reject-cancellation" 
+                        data-cancellation-id="${request.cancellation_id}" 
+                        data-order-type="${request.order_type}" 
+                        data-order-id="${request.order_id}">
+                    <i class="fas fa-times"></i> Reject
+                </button>
+            </div>
+        `;
+    } else {
+        const processedDate = isApproved ? request.cancelled_date : request.requested_date;
+        const actionText = isApproved ? 'Approved' : 'Rejected';
+        const actionIcon = isApproved ? 'check' : 'times';
+        
+        actionButtons = `
+            <div class="request-actions" style="opacity: 0.7;">
+                <span class="item-badge ${isApproved ? 'badge-available' : 'badge-unavailable'}">
+                    <i class="fas fa-${actionIcon}"></i> ${actionText} on ${new Date(processedDate).toLocaleDateString()}
+                </span>
+            </div>
+        `;
+    }
+    
+    card.innerHTML = `
+        <div class="request-header">
+            <div>
+                <h3 style="margin: 0 0 5px 0;">${request.equipment_name}</h3>
+                <p style="margin: 0; color: var(--gray); font-size: 0.9em;">
+                    ${request.order_type === 'booking' ? '📅 Booking' : '🔄 Rental'} • Requested ${requestDate}
+                </p>
+            </div>
+            ${statusBadge}
+        </div>
+        
+        <div class="customer-info" style="background: #f7fafc; padding: 15px; border-radius: 8px; margin: 15px 0;">
+            <h4 style="margin: 0 0 10px 0; color: var(--dark);"><i class="fas fa-user"></i> Customer Details</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <div><strong>Name:</strong> ${request.user_name}</div>
+                <div><strong>Phone:</strong> ${request.user_phone}</div>
+                <div><strong>Email:</strong> ${request.user_email || 'Not provided'}</div>
+            </div>
+        </div>
+        
+        <div class="request-details">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                <div><strong>Order Date:</strong> ${createdDate}</div>
+                ${request.start_date ? `<div><strong>Start Date:</strong> ${request.start_date}</div>` : ''}
+                ${request.end_date ? `<div><strong>End Date:</strong> ${request.end_date}</div>` : ''}
+                <div><strong>Total Amount:</strong> ₹${request.total_amount}</div>
+                <div><strong>Previous Status:</strong> <span class="item-badge ${getStatusClass(request.previous_status)}">${request.previous_status}</span></div>
+            </div>
+            
+            <div style="background: #fffaf0; padding: 15px; border-radius: 8px; border-left: 4px solid #ed8936;">
+                <strong><i class="fas fa-comment"></i> Cancellation Reason:</strong>
+                <p style="margin: 8px 0 0 0; color: var(--dark);">${request.cancellation_reason || 'No reason provided'}</p>
+            </div>
+        </div>
+        
+        ${actionButtons}
+    `;
+    
+    // Add event listeners for action buttons
+    if (!isProcessed) {
+        const approveBtn = card.querySelector('.approve-cancellation');
+        const rejectBtn = card.querySelector('.reject-cancellation');
+        
+        approveBtn.addEventListener('click', function() {
+            const cancellationId = this.getAttribute('data-cancellation-id');
+            const orderType = this.getAttribute('data-order-type');
+            const orderId = this.getAttribute('data-order-id');
+            approveCancellationRequest(cancellationId, orderType, orderId);
+        });
+        
+        rejectBtn.addEventListener('click', function() {
+            const cancellationId = this.getAttribute('data-cancellation-id');
+            const orderType = this.getAttribute('data-order-type');
+            const orderId = this.getAttribute('data-order-id');
+            rejectCancellationRequest(cancellationId, orderType, orderId);
+        });
+    }
+    
+    return card;
+}
+
+function updateCancellationStats(requests) {
+    const pendingCount = requests.filter(req => !req.cancelled_date && !req.status_before_cancel).length;
+    const approvedCount = requests.filter(req => req.cancelled_date).length;
+    const rejectedCount = requests.filter(req => req.status_before_cancel && !req.cancelled_date).length;
+    
+    document.getElementById('pendingCount').textContent = pendingCount;
+    document.getElementById('approvedCount').textContent = approvedCount;
+    document.getElementById('rejectedCount').textContent = rejectedCount;
+}
+
+function getStatusClass(status) {
+    const statusClasses = {
+        'pending': 'status-pending',
+        'confirmed': 'status-approved',
+        'approved': 'status-approved',
+        'completed': 'status-completed',
+        'rejected': 'status-rejected'
+    };
+    return statusClasses[status] || 'status-pending';
+}
+
+function approveCancellationRequest(cancellationId, orderType, orderId) {
+    if (!confirm('Are you sure you want to APPROVE this cancellation?\n\n✅ Equipment will be restocked\n✅ Customer will be notified\n✅ Order will be marked as cancelled')) {
+        return;
+    }
+    
+    console.log(`✅ Approving cancellation #${cancellationId} for ${orderType} #${orderId}`);
+    
+    // Show loading state
+    showToast('Processing approval...', 'warning');
+    
+    fetch('/api/vendor/cancellation-request/approve', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            cancellation_id: cancellationId,
+            order_type: orderType,
+            order_id: orderId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || 'Network error') });
+        }
+        return response.json();
+    })
+    .then(result => {
+        if (result.success) {
+            showToast('✅ Cancellation approved! Equipment has been restocked.', 'success');
+            // Reload the cancellation requests
+            loadCancellationRequests();
+            // Refresh equipment data if function exists
+            if (typeof loadEquipmentFromDB === 'function') {
+                setTimeout(() => loadEquipmentFromDB(), 1000);
+            }
+        } else {
+            showToast(result.error || 'Error approving cancellation', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Error approving cancellation:', error);
+        showToast(error.message || 'Error approving cancellation', 'error');
+    });
+}
+
+function rejectCancellationRequest(cancellationId, orderType, orderId) {
+    if (!confirm('Are you sure you want to REJECT this cancellation?\n\n❌ Order will remain active\n❌ Customer will be notified\n❌ Equipment will NOT be restocked')) {
+        return;
+    }
+    
+    console.log(`❌ Rejecting cancellation #${cancellationId} for ${orderType} #${orderId}`);
+    
+    // Show loading state
+    showToast('Processing rejection...', 'warning');
+    
+    fetch('/api/vendor/cancellation-request/reject', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            cancellation_id: cancellationId,
+            order_type: orderType,
+            order_id: orderId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => { throw new Error(err.error || 'Network error') });
+        }
+        return response.json();
+    })
+    .then(result => {
+        if (result.success) {
+            showToast('❌ Cancellation request rejected. Order remains active.', 'success');
+            // Reload the cancellation requests
+            loadCancellationRequests();
+        } else {
+            showToast(result.error || 'Error rejecting cancellation', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Error rejecting cancellation:', error);
+        showToast(error.message || 'Error rejecting cancellation', 'error');
+    });
+}
     // Function to load equipment from database
     async function loadEquipmentFromDB() {
         try {
@@ -1478,6 +2194,7 @@ async function saveEquipment() {
         }
     }
 
+
     // ================= EQUIPMENT MANAGEMENT =================
     
     // Function to count equipment by category
@@ -1540,68 +2257,7 @@ async function updateStats() {
         document.getElementById('averageRating').textContent = '0.0';
     }
 }
-// Load vendor reviews
-async function loadVendorReviews() {
-    try {
-        const response = await fetch('/api/vendor/reviews');
-        const reviews = await response.json();
-        
-        const reviewsContainer = document.getElementById('vendorReviewsList');
-        if (!reviewsContainer) return;
-        
-        reviewsContainer.innerHTML = '';
-        
-        if (!reviews || reviews.length === 0 || reviews.error) {
-            reviewsContainer.innerHTML = `
-                <div style="text-align: center; padding: 40px; color: var(--gray);">
-                    <i class="fas fa-star" style="font-size: 3rem; margin-bottom: 15px;"></i>
-                    <h3>No Reviews Yet</h3>
-                    <p>Your equipment hasn't received any reviews yet.</p>
-                </div>
-            `;
-            return;
-        }
-        
-        reviews.forEach(review => {
-            const reviewCard = document.createElement('div');
-            reviewCard.className = 'review-card';
-            
-            // Create stars
-            let starsHtml = '';
-            for (let i = 1; i <= 5; i++) {
-                starsHtml += `<i class="fas fa-star" style="color: ${i <= review.rating ? '#f59e0b' : '#e2e8f0'};"></i>`;
-            }
-            
-            const reviewDate = new Date(review.created_date).toLocaleDateString('en-IN', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
-            
-            reviewCard.innerHTML = `
-                <div class="review-header">
-                    <div class="reviewer">${review.user_name}</div>
-                    <div class="review-date">${reviewDate}</div>
-                </div>
-                <div class="review-rating">
-                    ${starsHtml}
-                </div>
-                <div class="review-content">
-                    <h4>${review.title}</h4>
-                    <p>${review.comment}</p>
-                </div>
-                <div class="review-meta">
-                    <small>For: ${review.equipment_name}</small>
-                </div>
-            `;
-            
-            reviewsContainer.appendChild(reviewCard);
-        });
-        
-    } catch (error) {
-        console.error('Error loading vendor reviews:', error);
-    }
-}
+
     // Equipment management functions
     function loadEquipment() {
         equipmentGrid.innerHTML = '';
@@ -1617,7 +2273,20 @@ async function loadVendorReviews() {
         });
     }
 
-   
+// In vendor dashboard - update the booking/rent request display
+function addCancellationActionButtons(requestId, type) {
+    return `
+        <div class="cancellation-actions" style="margin-top: 10px; padding: 10px; background: #fff3cd; border-radius: 5px;">
+            <p style="margin: 0 0 10px 0; font-weight: bold;">Cancellation Requested</p>
+            <button class="btn btn-success btn-sm approve-cancel" data-id="${requestId}" data-type="${type}">
+                <i class="fas fa-check"></i> Approve Cancel
+            </button>
+            <button class="btn btn-danger btn-sm reject-cancel" data-id="${requestId}" data-type="${type}">
+                <i class="fas fa-times"></i> Reject Cancel
+            </button>
+        </div>
+    `;
+}
 
  // In vendor dashboard JavaScript, update the createEquipmentCard function
 function createEquipmentCard(item) {
@@ -2087,7 +2756,173 @@ async function getBookingDetails(bookingId) {
     }
     return null;
 }
+// ================= VENDOR REVIEWS FUNCTIONS =================
 
+async function loadVendorReviews() {
+    try {
+        const response = await fetch('/api/vendor/reviews');
+        const reviews = await response.json();
+        
+        const container = document.getElementById('vendorReviewsList');
+        const noReviewsMsg = document.querySelector('.no-reviews');
+        
+        if (!container) return;
+        
+        container.innerHTML = '';
+        
+        if (!reviews || reviews.length === 0 || reviews.error) {
+            if (noReviewsMsg) noReviewsMsg.style.display = 'block';
+            updateReviewStats(0, 0);
+            return;
+        }
+        
+        if (noReviewsMsg) noReviewsMsg.style.display = 'none';
+        
+        // Sort reviews based on filter
+        const sortFilter = document.getElementById('reviewSortFilter').value;
+        let sortedReviews = [...reviews];
+        
+        switch(sortFilter) {
+            case 'newest':
+                sortedReviews.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+                break;
+            case 'oldest':
+                sortedReviews.sort((a, b) => new Date(a.created_date) - new Date(b.created_date));
+                break;
+            case 'highest':
+                sortedReviews.sort((a, b) => b.rating - a.rating);
+                break;
+            case 'lowest':
+                sortedReviews.sort((a, b) => a.rating - b.rating);
+                break;
+        }
+        
+        // Display reviews
+        sortedReviews.forEach(review => {
+            const reviewCard = createVendorReviewCard(review);
+            container.appendChild(reviewCard);
+        });
+        
+        // Update stats
+        updateReviewStats(reviews);
+        
+    } catch (error) {
+        console.error('❌ Error loading vendor reviews:', error);
+        const container = document.getElementById('vendorReviewsList');
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: var(--accent);">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h3>Error Loading Reviews</h3>
+                <p>Failed to load reviews. Please try again.</p>
+                <button class="btn btn-primary" onclick="loadVendorReviews()">
+                    <i class="fas fa-redo"></i> Retry
+                </button>
+            </div>
+        `;
+    }
+}
+
+function createVendorReviewCard(review) {
+    const card = document.createElement('div');
+    card.className = 'card review-card';
+    
+    // Get user initials for avatar
+    const userInitials = review.user_name.split(' ').map(n => n[0]).join('').toUpperCase();
+    
+    // Format date
+    const reviewDate = new Date(review.created_date).toLocaleDateString('en-IN', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    // Create stars
+    let starsHtml = '';
+    for (let i = 1; i <= 5; i++) {
+        starsHtml += `<i class="fas fa-star" style="color: ${i <= review.rating ? '#f59e0b' : '#e2e8f0'};"></i>`;
+    }
+    
+    // Order type badge
+    const orderTypeBadge = review.order_type === 'booking' 
+        ? '<span class="order-type-badge badge-booking">Booking</span>'
+        : '<span class="order-type-badge badge-rental">Rental</span>';
+    
+    card.innerHTML = `
+        <div class="review-header">
+            <div class="reviewer-info">
+                <div class="reviewer-avatar">
+                    ${userInitials}
+                </div>
+                <div class="reviewer-details">
+                    <h4>${review.user_name}</h4>
+                    <div class="review-rating">
+                        ${starsHtml}
+                    </div>
+                </div>
+            </div>
+            <div class="review-date">
+                ${reviewDate}
+            </div>
+        </div>
+        
+        <div class="review-content">
+            <h3 class="review-title">${review.title}</h3>
+            <p class="review-comment">${review.comment}</p>
+        </div>
+        
+        <div class="review-meta">
+            <div class="equipment-info">
+                <div class="equipment-image">
+                    ${review.equipment_image ? 
+                        `<img src="${review.equipment_image}" alt="${review.equipment_name}" 
+                              onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\'fas fa-tractor\\' style=\\'font-size: 1.5rem; color: var(--gray);\\'></i>';">
+                        ` : 
+                        `<i class="fas fa-tractor" style="font-size: 1.5rem; color: var(--gray);"></i>`
+                    }
+                </div>
+                <div class="equipment-details">
+                    <h5>${review.equipment_name}</h5>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        ${review.equipment_category ? 
+                            `<span class="equipment-category">${review.equipment_category}</span>` : ''}
+                        ${orderTypeBadge}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return card;
+}
+
+function updateReviewStats(reviews) {
+    if (!reviews || reviews.length === 0) {
+        document.getElementById('totalReviews').textContent = '0';
+        document.getElementById('averageRating').textContent = '0.0';
+        return;
+    }
+    
+    // Calculate average rating
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = (totalRating / reviews.length).toFixed(1);
+    
+    // Update UI
+    document.getElementById('totalReviews').textContent = reviews.length;
+    document.getElementById('averageRating').textContent = averageRating;
+    
+    // Also update the stats in dashboard
+    document.querySelector('.stat-card:nth-child(4) h3').textContent = averageRating;
+}
+
+// Add event listener for review filter
+document.addEventListener('DOMContentLoaded', function() {
+    const reviewSortFilter = document.getElementById('reviewSortFilter');
+    if (reviewSortFilter) {
+        reviewSortFilter.addEventListener('change', loadVendorReviews);
+    }
+});
 // UPDATE THE EXISTING updateRentRequestStatus function - REPLACE IT with this:
 // Update the rent request approval function
 async function updateRentRequestStatus(requestId, status) {
@@ -2429,7 +3264,49 @@ async function completeRentRequest(requestId) {
             sidebar.classList.add('active');
         }
     }
-
+// Initialize cancellation system
+function initCancellationSystem() {
+    console.log('🔄 Initializing cancellation system...');
+    
+    // Add filter event listener
+    const filter = document.getElementById('cancellationFilter');
+    if (filter) {
+        filter.addEventListener('change', () => {
+            displayCancellationRequests(cancellationRequests, filter.value);
+        });
+    }
+    
+    // Load cancellation requests if on that section
+    if (window.location.hash === '#cancellation-requests' || 
+        document.getElementById('cancellation-requests-section')?.classList.contains('active')) {
+        loadCancellationRequests();
+    }
+}
+function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,kn',
+        autoDisplay: false
+    }, 'google_translate_element');
+    
+    // Apply saved language
+    const savedLang = localStorage.getItem('selectedLanguage');
+    if(savedLang === 'kn') {
+        setTimeout(() => {
+            var iframe = document.querySelector('.goog-te-menu-frame');
+            if(iframe) {
+                var select = iframe.contentWindow.document.querySelector('.goog-te-menu2-select');
+                if(select) {
+                    select.value = 'kn';
+                    select.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 1000);
+    }
+}
+var script = document.createElement('script');
+script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+document.head.appendChild(script);
  function showSection(sectionId) {
     contentSections.forEach(section => {
         section.classList.remove('active');
@@ -2440,6 +3317,9 @@ async function completeRentRequest(requestId) {
         section.classList.add('active');
         
         // Load data when section becomes active
+         if (sectionId === 'cancellation-requests') {
+            loadCancellationRequests();
+        }
         if (sectionId === 'rent-requests') {
             loadRentRequests();
         }
@@ -2457,6 +3337,10 @@ async function completeRentRequest(requestId) {
             loadReviews();
         }
     }
+    // Initialize when vendor dashboard loads
+document.addEventListener('DOMContentLoaded', function() {
+    initCancellationSystem();
+});
 }
 
     function setActiveNavLink(sectionId) {
@@ -2601,6 +3485,6 @@ cancelBtn.addEventListener('click', () => {
     window.addEventListener('resize', checkScreenSize);
 
     </script>
-
+<style>.goog-te-banner-frame{display:none!important;}.goog-te-gadget{font-size:0!important;}</style>
 </body>
 </html>
